@@ -10,15 +10,15 @@ import UIKit
 
 // -MARK: UIView EXTENSION
 
-extension UIView
+public extension UIView
 {
-    public func setCorner(radius: CGFloat)
+    func setCorner(radius: CGFloat)
     {
         layer.cornerRadius = radius
         clipsToBounds = true
     }
     
-    public func circleCorner()
+    func circleCorner()
     {
         superview?.layoutIfNeeded()
         setCorner(radius: frame.height / 2)
@@ -27,12 +27,12 @@ extension UIView
 
 // -MARK: ReusableView EXTENSION
 
-protocol ReusableView: class
+public protocol ReusableView: class
 {
     static var defaultReuseIdentifier: String { get }
 }
 
-extension ReusableView where Self: UIView
+public extension ReusableView where Self: UIView
 {
     static var defaultReuseIdentifier: String
     {
@@ -42,12 +42,12 @@ extension ReusableView where Self: UIView
 
 // -MARK: NibLoadableView EXTENSION
 
-protocol NibLoadableView: class
+public protocol NibLoadableView: class
 {
     static var nibName: String { get }
 }
 
-extension NibLoadableView where Self: UIView
+public extension NibLoadableView where Self: UIView
 {
     static var nibName: String
     {
@@ -56,7 +56,7 @@ extension NibLoadableView where Self: UIView
 }
 
 // -MARK: UICollectionView EXTENSION
-extension UICollectionView
+public extension UICollectionView
 {
     
     func register<T: UICollectionViewCell>(_: T.Type) where T: ReusableView

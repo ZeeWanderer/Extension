@@ -8,9 +8,9 @@
 
 import UIKit
 
-extension UIFont
+public extension UIFont
 {
-    public convenience init?(named fontName: String, fitting text: String, into targetSize: CGSize, with attributes: [NSAttributedString.Key: Any], options: NSStringDrawingOptions)
+    convenience init?(named fontName: String, fitting text: String, into targetSize: CGSize, with attributes: [NSAttributedString.Key: Any], options: NSStringDrawingOptions)
     {
         var attributes = attributes
         let fontSize = targetSize.height

@@ -8,19 +8,19 @@
 
 import UIKit
 
-extension UIApplication
+public extension UIApplication
 {
 
-    public var screenShot: UIImage?
+    var screenShot: UIImage?
     {
         return keyWindow?.layer.screenShot
     }
 }
 
-extension CALayer
+public extension CALayer
 {
 
-    public var screenShot: UIImage?
+    var screenShot: UIImage?
     {
         let scale = UIScreen.main.scale
         UIGraphicsBeginImageContextWithOptions(frame.size, false, scale)

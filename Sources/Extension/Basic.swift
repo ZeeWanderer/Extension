@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct DTraits
+public struct DTraits
 {
     public static let is_iphone = UIDevice.current.userInterfaceIdiom == .phone
     public static let is_ipad = UIDevice.current.userInterfaceIdiom == .pad
@@ -106,9 +106,9 @@ struct DTraits
             }
 }
 
-extension String
+public extension String
 {
-    public func condenseWhitespace() -> String
+    func condenseWhitespace() -> String
     {
         let components = self.components(separatedBy: .whitespacesAndNewlines)
         return components.filter
@@ -118,9 +118,9 @@ extension String
     }
 }
 
-extension CGSize
+public extension CGSize
 {
-    public func square() -> CGFloat
+    func square() -> CGFloat
     {
         return self.height * self.width
     }
