@@ -29,12 +29,12 @@ extension UIView
 
 protocol ReusableView: class
 {
-    public static var defaultReuseIdentifier: String { get }
+    static var defaultReuseIdentifier: String { get }
 }
 
 extension ReusableView where Self: UIView
 {
-    public static var defaultReuseIdentifier: String
+    static var defaultReuseIdentifier: String
     {
         return NSStringFromClass(self)
     }
@@ -44,12 +44,12 @@ extension ReusableView where Self: UIView
 
 protocol NibLoadableView: class
 {
-    public static var nibName: String { get }
+    static var nibName: String { get }
 }
 
 extension NibLoadableView where Self: UIView
 {
-    public static var nibName: String
+    static var nibName: String
     {
         return NSStringFromClass(self).components(separatedBy: ".").last!
     }
@@ -59,12 +59,12 @@ extension NibLoadableView where Self: UIView
 extension UICollectionView
 {
     
-    public func register<T: UICollectionViewCell>(_: T.Type) where T: ReusableView
+    func register<T: UICollectionViewCell>(_: T.Type) where T: ReusableView
     {
         register(T.self, forCellWithReuseIdentifier: T.defaultReuseIdentifier)
     }
     
-    public func register<T: UICollectionViewCell>(_: T.Type) where T: ReusableView, T: NibLoadableView
+    func register<T: UICollectionViewCell>(_: T.Type) where T: ReusableView, T: NibLoadableView
     {
         let bundle = Bundle(for: T.self)
         let nib = UINib(nibName: T.nibName, bundle: bundle)
@@ -72,7 +72,7 @@ extension UICollectionView
         register(nib, forCellWithReuseIdentifier: T.defaultReuseIdentifier)
     }
     
-    public func dequeueReusableCell<T: UICollectionViewCell>(forIndexPath indexPath: IndexPath) -> T where T: ReusableView
+    func dequeueReusableCell<T: UICollectionViewCell>(forIndexPath indexPath: IndexPath) -> T where T: ReusableView
     {
         guard let cell = dequeueReusableCell(withReuseIdentifier: T.defaultReuseIdentifier, for: indexPath) as? T else
         {
