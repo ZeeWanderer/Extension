@@ -10,15 +10,15 @@ import UIKit
 
 struct DTraits
 {
-    static let is_iphone = UIDevice.current.userInterfaceIdiom == .phone
-    static let is_ipad = UIDevice.current.userInterfaceIdiom == .pad
-    static let is_tv = UIDevice.current.userInterfaceIdiom == .tv
-    static let is_car_play = UIDevice.current.userInterfaceIdiom == .carPlay
+    public static let is_iphone = UIDevice.current.userInterfaceIdiom == .phone
+    public static let is_ipad = UIDevice.current.userInterfaceIdiom == .pad
+    public static let is_tv = UIDevice.current.userInterfaceIdiom == .tv
+    public static let is_car_play = UIDevice.current.userInterfaceIdiom == .carPlay
     
     @available(iOS 14.0, *)
-    static let is_mac = UIDevice.current.userInterfaceIdiom == .mac
+    public static let is_mac = UIDevice.current.userInterfaceIdiom == .mac
     
-    static let identifier =
+    public static let identifier =
     {() -> String in
         var systemInfo = utsname()
         uname(&systemInfo)
@@ -30,10 +30,10 @@ struct DTraits
         return identifier
     }()
     
-    static let device = map_to_device(identifier: identifier)
+    public static let device = map_to_device(identifier: identifier)
     
     // Requires updating on new device releases
-    static func map_to_device(identifier: String) -> String { // swiftlint:disable:this cyclomatic_complexity
+    public static func map_to_device(identifier: String) -> String { // swiftlint:disable:this cyclomatic_complexity
                 #if os(iOS)
                 switch identifier {
                 case "iPod5,1":                                 return "iPod touch (5th generation)"
@@ -108,7 +108,7 @@ struct DTraits
 
 extension String
 {
-    func condenseWhitespace() -> String
+    public func condenseWhitespace() -> String
     {
         let components = self.components(separatedBy: .whitespacesAndNewlines)
         return components.filter
@@ -120,7 +120,7 @@ extension String
 
 extension CGSize
 {
-    func square() -> CGFloat
+    public func square() -> CGFloat
     {
         return self.height * self.width
     }

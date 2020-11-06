@@ -11,7 +11,7 @@ import UIKit
 extension UIApplication
 {
 
-    var screenShot: UIImage?
+    public var screenShot: UIImage?
     {
         return keyWindow?.layer.screenShot
     }
@@ -20,7 +20,7 @@ extension UIApplication
 extension CALayer
 {
 
-    var screenShot: UIImage?
+    public var screenShot: UIImage?
     {
         let scale = UIScreen.main.scale
         UIGraphicsBeginImageContextWithOptions(frame.size, false, scale)

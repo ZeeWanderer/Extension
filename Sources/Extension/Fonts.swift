@@ -10,7 +10,7 @@ import UIKit
 
 extension UIFont
 {
-    convenience init?(named fontName: String, fitting text: String, into targetSize: CGSize, with attributes: [NSAttributedString.Key: Any], options: NSStringDrawingOptions)
+    public convenience init?(named fontName: String, fitting text: String, into targetSize: CGSize, with attributes: [NSAttributedString.Key: Any], options: NSStringDrawingOptions)
     {
         var attributes = attributes
         let fontSize = targetSize.height
@@ -28,7 +28,7 @@ extension UIFont
     }
 }
 
-func adjustAttributesToFit(line: String, in rect : CGRect, m_attributes:inout [NSAttributedString.Key : Any], options: NSStringDrawingOptions, context: NSStringDrawingContext?)
+public func adjustAttributesToFit(line: String, in rect : CGRect, m_attributes:inout [NSAttributedString.Key : Any], options: NSStringDrawingOptions, context: NSStringDrawingContext?)
 {
     let s_font = m_attributes[.font] as! UIFont
     let s_font_size = rect.size.height

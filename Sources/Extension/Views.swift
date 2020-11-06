@@ -12,13 +12,13 @@ import UIKit
 
 extension UIView
 {
-    func setCorner(radius: CGFloat)
+    public func setCorner(radius: CGFloat)
     {
         layer.cornerRadius = radius
         clipsToBounds = true
     }
     
-    func circleCorner()
+    public func circleCorner()
     {
         superview?.layoutIfNeeded()
         setCorner(radius: frame.height / 2)
@@ -29,12 +29,12 @@ extension UIView
 
 protocol ReusableView: class
 {
-    static var defaultReuseIdentifier: String { get }
+    public static var defaultReuseIdentifier: String { get }
 }
 
 extension ReusableView where Self: UIView
 {
-    static var defaultReuseIdentifier: String
+    public static var defaultReuseIdentifier: String
     {
         return NSStringFromClass(self)
     }
@@ -44,12 +44,12 @@ extension ReusableView where Self: UIView
 
 protocol NibLoadableView: class
 {
-    static var nibName: String { get }
+    public static var nibName: String { get }
 }
 
 extension NibLoadableView where Self: UIView
 {
-    static var nibName: String
+    public static var nibName: String
     {
         return NSStringFromClass(self).components(separatedBy: ".").last!
     }
@@ -59,12 +59,12 @@ extension NibLoadableView where Self: UIView
 extension UICollectionView
 {
     
-    func register<T: UICollectionViewCell>(_: T.Type) where T: ReusableView
+    public func register<T: UICollectionViewCell>(_: T.Type) where T: ReusableView
     {
         register(T.self, forCellWithReuseIdentifier: T.defaultReuseIdentifier)
     }
     
-    func register<T: UICollectionViewCell>(_: T.Type) where T: ReusableView, T: NibLoadableView
+    public func register<T: UICollectionViewCell>(_: T.Type) where T: ReusableView, T: NibLoadableView
     {
         let bundle = Bundle(for: T.self)
         let nib = UINib(nibName: T.nibName, bundle: bundle)
@@ -72,7 +72,7 @@ extension UICollectionView
         register(nib, forCellWithReuseIdentifier: T.defaultReuseIdentifier)
     }
     
-    func dequeueReusableCell<T: UICollectionViewCell>(forIndexPath indexPath: IndexPath) -> T where T: ReusableView
+    public func dequeueReusableCell<T: UICollectionViewCell>(forIndexPath indexPath: IndexPath) -> T where T: ReusableView
     {
         guard let cell = dequeueReusableCell(withReuseIdentifier: T.defaultReuseIdentifier, for: indexPath) as? T else
         {
