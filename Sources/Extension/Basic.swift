@@ -125,3 +125,20 @@ public extension CGSize
         return self.height * self.width
     }
 }
+
+
+public extension CGRect
+{
+    var center: CGPoint
+    {
+        return CGPoint(x: self.width/2.0, y: self.height/2.0)
+    }
+}
+
+public extension CGPoint
+{
+    @inlinable func translateBy(dx:CGFloat, dy:CGFloat) -> CGPoint
+    {
+        return CGPoint(x:self.x+dx, y:self.y+dy)
+    }
+}
