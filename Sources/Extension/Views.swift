@@ -60,7 +60,7 @@ public extension UIView
 
 // -MARK: ReusableView EXTENSION
 
-public protocol ReusableView: class
+public protocol ReusableView: AnyObject
 {
     static var defaultReuseIdentifier: String { get }
 }
@@ -69,13 +69,13 @@ public extension ReusableView where Self: UIView
 {
     static var defaultReuseIdentifier: String
     {
-        return NSStringFromClass(self)
+        return String(describing: Self.self)
     }
 }
 
 // -MARK: NibLoadableView EXTENSION
 
-public protocol NibLoadableView: class
+public protocol NibLoadableView: AnyObject
 {
     static var nibName: String { get }
 }
@@ -84,7 +84,7 @@ public extension NibLoadableView where Self: UIView
 {
     static var nibName: String
     {
-        return NSStringFromClass(self).components(separatedBy: ".").last!
+        return String(describing: Self.self)
     }
 }
 
@@ -105,6 +105,19 @@ public extension UICollectionView
         register(nib, forCellWithReuseIdentifier: T.defaultReuseIdentifier)
     }
     
+    func register<T: UICollectionReusableView>(_: T.Type, ofKind elementKind: String = T.defaultReuseIdentifier) where T: ReusableView
+    {
+        register(T.self, forSupplementaryViewOfKind: elementKind, withReuseIdentifier: T.defaultReuseIdentifier)
+    }
+    
+    func register<T: UICollectionReusableView>(_: T.Type, ofKind elementKind: String = T.defaultReuseIdentifier) where T: ReusableView, T: NibLoadableView
+    {
+        let bundle = Bundle(for: T.self)
+        let nib = UINib(nibName: T.nibName, bundle: bundle)
+        
+        register(nib, forSupplementaryViewOfKind: elementKind, withReuseIdentifier: T.defaultReuseIdentifier)
+    }
+    
     func dequeueReusableCell<T: UICollectionViewCell>(forIndexPath indexPath: IndexPath) -> T where T: ReusableView
     {
         guard let cell = dequeueReusableCell(withReuseIdentifier: T.defaultReuseIdentifier, for: indexPath) as? T else
@@ -112,5 +125,14 @@ public extension UICollectionView
             fatalError("Could not dequeue cell with identifier: \(T.defaultReuseIdentifier)")
         }
         return cell
+    }
+    
+    func dequeueReusableSupplementaryView<T: UICollectionReusableView>(ofKind elementKind: String, for indexPath: IndexPath) -> T where T: ReusableView
+    {
+        guard let sup = dequeueReusableSupplementaryView(ofKind: elementKind, withReuseIdentifier: T.defaultReuseIdentifier, for: indexPath) as? T else
+        {
+            fatalError("Could not dequeue SupplementaryView with identifier: \(T.defaultReuseIdentifier)")
+        }
+        return sup
     }
 }
