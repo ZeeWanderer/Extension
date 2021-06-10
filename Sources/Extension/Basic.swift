@@ -108,7 +108,7 @@ public struct DTraits
 
 public extension String
 {
-    func condenseWhitespace() -> String
+    @inlinable func condenseWhitespace() -> String
     {
         let components = self.components(separatedBy: .whitespacesAndNewlines)
         return components.filter
@@ -120,7 +120,7 @@ public extension String
 
 public extension CGSize
 {
-    func square() -> CGFloat
+    @inlinable func square() -> CGFloat
     {
         return self.height * self.width
     }
@@ -129,9 +129,9 @@ public extension CGSize
 
 public extension CGRect
 {
-    var center: CGPoint
+    @inlinable var center: CGPoint
     {
-        return CGPoint(x: self.width/2.0, y: self.height/2.0)
+        return self.origin.translateBy(dx: self.width/2.0, dy: self.height/2.0)
     }
 }
 

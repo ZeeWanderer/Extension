@@ -18,7 +18,7 @@ public extension Collection
 
 public extension Dictionary where Key: Equatable, Value: Equatable
 {
-    func minus(dict: [Key:Value]) -> [Key:Value] {
+    @inlinable func minus(dict: [Key:Value]) -> [Key:Value] {
         let entriesInSelfAndNotInDict = filter { dict[$0.0] != self[$0.0] }
         return entriesInSelfAndNotInDict.reduce([Key:Value]()) { (res, entry) -> [Key:Value] in
             var res = res
@@ -30,7 +30,7 @@ public extension Dictionary where Key: Equatable, Value: Equatable
 
 public extension Array
 {
-    func chunked(into size: Int) -> [[Element]]
+    @inlinable func chunked(into size: Int) -> [[Element]]
     {
         return stride(from: 0, to: count, by: size).map
         {
@@ -57,7 +57,7 @@ public protocol Stackable
 
 public extension Stackable
 {
-    var isEmpty: Bool { peek() == nil }
+    @inlinable var isEmpty: Bool { peek() == nil }
 }
 
 public struct Stack<Element>: Stackable where Element: Equatable {
