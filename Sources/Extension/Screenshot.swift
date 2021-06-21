@@ -10,7 +10,7 @@ import UIKit
 
 public extension UIApplication
 {
-
+    @inlinable
     var screenShot: UIImage?
     {
         return keyWindow?.layer.screenShot
@@ -19,7 +19,7 @@ public extension UIApplication
 
 public extension CALayer
 {
-
+    @inlinable
     var screenShot: UIImage?
     {
         let scale = UIScreen.main.scale

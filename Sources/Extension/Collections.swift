@@ -9,16 +9,18 @@ import Foundation
 
 public extension Collection
 {
-    
     /// Returns the element at the specified index if it is within bounds, otherwise nil.
-    subscript (safe index: Index) -> Element? {
+    @inlinable
+    subscript (safe index: Index) -> Element?
+    {
         return indices.contains(index) ? self[index] : nil
     }
 }
 
 public extension Dictionary where Key: Equatable, Value: Equatable
 {
-    @inlinable func minus(dict: [Key:Value]) -> [Key:Value] {
+    @inlinable func minus(dict: [Key:Value]) -> [Key:Value]
+    {
         let entriesInSelfAndNotInDict = filter { dict[$0.0] != self[$0.0] }
         return entriesInSelfAndNotInDict.reduce([Key:Value]()) { (res, entry) -> [Key:Value] in
             var res = res
@@ -41,9 +43,32 @@ public extension Array
 
 public extension Array
 {
+    @inlinable
     subscript(safe range: Range<Index>) -> ArraySlice<Element>
     {
-        return self[Swift.min(range.startIndex, self.endIndex)..<Swift.min(range.endIndex, self.endIndex)]
+        let lowerBound = range.lowerBound
+        if lowerBound < self.endIndex
+        {
+            return self[lowerBound..<Swift.min(range.endIndex, self.endIndex)]
+        }
+        else
+        {
+            return []
+        }
+    }
+    
+    @inlinable
+    subscript(safe range: ClosedRange<Index>) -> ArraySlice<Element>
+    {
+        let lowerBound = range.lowerBound
+        if lowerBound < self.endIndex
+        {
+            return self[lowerBound...Swift.min(range.upperBound, self.endIndex - 1)]
+        }
+        else
+        {
+            return []
+        }
     }
 }
 
@@ -60,7 +85,8 @@ public extension Stackable
     @inlinable var isEmpty: Bool { peek() == nil }
 }
 
-public struct Stack<Element>: Stackable where Element: Equatable {
+public struct Stack<Element>: Stackable where Element: Equatable
+{
     private var storage = [Element]()
     public func peek() -> Element? { storage.last }
     public mutating func push(_ element: Element) { storage.append(element)  }
