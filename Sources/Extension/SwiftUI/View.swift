@@ -11,6 +11,14 @@ import SwiftUI
 public extension View
 {
     
+    // MARK: Keyboard
+    @inlinable
+    func endTextEditing()
+    {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                        to: nil, from: nil, for: nil)
+    }
+    
     // MARK: Notifications
     @inlinable
     func onNotification(_ notificationName: Notification.Name, perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
