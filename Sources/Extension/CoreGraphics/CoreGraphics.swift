@@ -44,12 +44,6 @@ public extension CGPoint
 public extension CGSize
 {
     @inlinable
-    func square() -> CGFloat
-    {
-        return self.height * self.width
-    }
-    
-    @inlinable
     var square: CGFloat
     {
         return self.height * self.width
