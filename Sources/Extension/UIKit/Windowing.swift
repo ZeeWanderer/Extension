@@ -10,11 +10,19 @@ import UIKit
 public extension UIApplication
 {
     @inlinable
-    static func get_keyWindow() -> UIWindow?
+    var keyWindow: UIWindow?
     {
-        return UIApplication.shared.windows.filter {$0.isKeyWindow}.first
+        connectedScenes
+            .compactMap {
+                $0 as? UIWindowScene
+            }
+            .flatMap {
+                $0.windows
+            }
+            .first {
+                $0.isKeyWindow
+            }
     }
-    
 }
 
 // -MARK: UIViewController EXTENSION
@@ -24,7 +32,7 @@ public extension UIViewController
     @inlinable
     static func topMostViewController() -> UIViewController?
     {
-        let keyWindow = UIApplication.get_keyWindow()
+        let keyWindow = UIApplication.shared.keyWindow
         return keyWindow?.rootViewController?.topMostViewController()
     }
     

@@ -15,6 +15,7 @@ public extension Bundle
     {
         return infoDictionary?["CFBundleShortVersionString"] as? String
     }
+    
     @inlinable
     var buildVersionNumber: String?
     {

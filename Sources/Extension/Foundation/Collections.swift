@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Collections.swift
 //  
 //
 //  Created by Maksym Kulyk on 27.04.2021.
