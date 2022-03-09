@@ -10,7 +10,7 @@ import UIKit
 public extension UIApplication
 {
     @inlinable
-    var keyWindow: UIWindow?
+    var keyWindow_: UIWindow?
     {
         connectedScenes
             .compactMap {
@@ -32,7 +32,7 @@ public extension UIViewController
     @inlinable
     static func topMostViewController() -> UIViewController?
     {
-        let keyWindow = UIApplication.shared.keyWindow
+        let keyWindow = UIApplication.shared.keyWindow_
         return keyWindow?.rootViewController?.topMostViewController()
     }
     

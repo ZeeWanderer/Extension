@@ -11,7 +11,7 @@ public struct SafeAreaInsetsKey: EnvironmentKey
 {
     public static var defaultValue: EdgeInsets
     {
-        UIApplication.shared.keyWindow?.safeAreaInsets.swiftUIInsets ?? EdgeInsets()
+        UIApplication.shared.keyWindow_?.safeAreaInsets.swiftUIInsets ?? EdgeInsets()
     }
 }
 

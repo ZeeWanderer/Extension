@@ -29,7 +29,7 @@ public extension SKScene
     @inlinable
     var screenShot_composite: UIImage?
     {
-        guard let keyWindow = UIApplication.shared.keyWindow
+        guard let keyWindow = UIApplication.shared.keyWindow_
         else {return nil}
         guard let skview = self.view
         else {return nil}

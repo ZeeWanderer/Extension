@@ -13,7 +13,7 @@ public extension UIApplication
     @inlinable
     var screenShot: UIImage?
     {
-        return UIApplication.shared.keyWindow?.layer.screenShot
+        return UIApplication.shared.keyWindow_?.layer.screenShot
     }
 }
 

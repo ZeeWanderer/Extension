@@ -10,6 +10,8 @@ import SwiftUI
 //MARK: - View
 public extension View
 {
+    
+    // MARK: Notifications
     @inlinable
     func onNotification(_ notificationName: Notification.Name, perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
     {
@@ -32,5 +34,26 @@ public extension View
             UIApplication.willEnterForegroundNotification,
             perform: action
         )
+    }
+    
+    // MARK: Debug
+    @inlinable
+    func debugRect(color: Color = .red) -> some View
+    {
+#if DEBUG
+        self.overlay(Rectangle().stroke(color))
+#else
+        return self
+#endif
+    }
+    
+    @inlinable
+    func debugBorder(color: Color = .red) -> some View
+    {
+#if DEBUG
+        self.border(color)
+#else
+        self
+#endif
     }
 }
