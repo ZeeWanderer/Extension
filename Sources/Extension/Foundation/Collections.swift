@@ -55,6 +55,42 @@ extension Dictionary: RawRepresentable where Key: Codable, Value: Codable
     }
 }
 
+// MARK: LocalizationDictionary
+public typealias LanguageCodeKey = String
+public typealias LocalizedStringValue = String
+public typealias LocalizationDictionary = Dictionary<LanguageCodeKey, LocalizedStringValue>
+public extension LocalizationDictionary
+{
+    @inlinable
+    subscript(_ locale: Locale) -> LocalizedStringValue
+    {
+        // check provided locale
+        if let languageCode = locale.languageCode, let l_string = self[languageCode]
+        {
+            return l_string
+        }
+        else // fallback on current locale if provided locale is not current
+        if Locale.current != locale, let languageCode = Locale.current.languageCode, let l_string = self[languageCode]
+        {
+            return l_string
+        }
+        else // fallback on preffered languages
+        {
+            for language in Locale.preferredLanguages
+            {
+                let languageCode = String(language.prefix(2)) // exctract language code from language
+                if let l_string = self[languageCode]
+                {
+                    return l_string
+                }
+            }
+        }
+        
+        // return any value if there are any values at all
+        return self.first?.value ?? ""
+    }
+}
+
 //MARK: - Array
 public extension Array
 {
