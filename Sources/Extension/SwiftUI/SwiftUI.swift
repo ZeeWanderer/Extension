@@ -18,31 +18,31 @@ public extension UIEdgeInsets
 
 public extension EdgeInsets
 {
-    /// Returns default padding if inset is not 0
+    /// Returns default padding if inset is 0
     @inlinable
     var trailingDefaultPadding: CGFloat?
     {
-        trailing != 0 ? nil : 0
+        trailing == 0 ? nil : 0
     }
     
-    /// Returns default padding if inset is not 0
+    /// Returns default padding if inset is 0
     @inlinable
     var leadingDefaultPadding: CGFloat?
     {
-        leading != 0 ? nil : 0
+        leading == 0 ? nil : 0
     }
     
-    /// Returns default padding if inset is not 0
+    /// Returns default padding if inset is 0
     @inlinable
     var topDefaultPadding: CGFloat?
     {
-        top != 0 ? nil : 0
+        top == 0 ? nil : 0
     }
     
-    /// Returns default padding if inset is not 0
+    /// Returns default padding if inset is 0
     @inlinable
     var bottomDefaultPadding: CGFloat?
     {
-        bottom != 0 ? nil : 0
+        bottom == 0 ? nil : 0
     }
 }
