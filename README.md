@@ -28,6 +28,7 @@ let point = CGPoint.zero / 5
 ```swift
 class CellClass: UICollectionViewCell, ReusableView {}
 
+collectionView.register(CellClass.self)
 let cell: CellClass = collectionView.dequeueReusableCell(forIndexPath: indexPath)
 ```
 

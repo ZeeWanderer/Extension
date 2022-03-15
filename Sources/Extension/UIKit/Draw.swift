@@ -8,7 +8,6 @@
 
 import UIKit
 
-// overrides default print function in release build
 #if DEBUG
 public func debug_rect_stroke(_ rect: CGRect, color: CGColor = UIColor.white.cgColor)
 {
