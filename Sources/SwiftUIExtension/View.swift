@@ -7,7 +7,33 @@
 
 import SwiftUI
 
-//MARK: - View
+// MARK: - UIViewRepresentables
+public struct ClearBackgroundView: UIViewRepresentable
+{
+    public func makeUIView(context: Context) -> some UIView
+    {
+        let view = UIView()
+        DispatchQueue.main.async {
+            view.superview?.superview?.backgroundColor = .clear
+        }
+        return view
+    }
+    
+    public func updateUIView(_ uiView: UIViewType, context: Context)
+    {
+    }
+}
+
+// MARK: - ViewModifiers
+public struct ClearBackgroundViewModifier: ViewModifier {
+    
+    public func body(content: Content) -> some View {
+        content
+            .background(ClearBackgroundView())
+    }
+}
+
+// MARK: - View
 public extension View
 {
     
@@ -58,6 +84,11 @@ public extension View
         self
             .shadow(color: color, radius: radius / 2)
             .shadow(color: color, radius: radius / 2)
+    }
+    
+    func clearModalBackground() -> some View
+    {
+        self.modifier(ClearBackgroundViewModifier())
     }
     
     // MARK: Debug

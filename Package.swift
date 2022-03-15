@@ -30,7 +30,7 @@ let package = Package(
             dependencies: []),
         .target(
             name: "UIKitExtension",
-            dependencies: []),
+            dependencies: ["FoundationExtension"]),
         .target(
             name: "SpriteKitExtension",
             dependencies: ["UIKitExtension"]),
