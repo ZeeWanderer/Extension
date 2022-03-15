@@ -39,9 +39,9 @@ let cell: CellClass = collectionView.dequeueReusableCell(forIndexPath: indexPath
 @Environment(\.safeAreaInsets) var safeAreaInsets
 ```
 
-`View.onNotification`
-`View.onDidEnterBackgroundNotification`
-`View.onWillEnterForegroundNotification`
+`View.onNotification`  
+`View.onDidEnterBackgroundNotification`  
+`View.onWillEnterForegroundNotification`  
 `View.glow`  
 `View.debugRect`  
 `View.debugBorder`  
