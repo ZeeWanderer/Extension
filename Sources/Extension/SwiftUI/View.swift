@@ -44,6 +44,22 @@ public extension View
         )
     }
     
+    // MARK: Modifiers
+    @inlinable
+    func glow(radius: CGFloat = 5) -> some View
+    {
+        self
+            .overlay(self.blur(radius: radius))
+    }
+    
+    @inlinable
+    func glow(color: Color = .yellow, radius: CGFloat = 5) -> some View
+    {
+        self
+            .shadow(color: color, radius: radius / 2)
+            .shadow(color: color, radius: radius / 2)
+    }
+    
     // MARK: Debug
     @inlinable
     func debugRect(color: Color = .red) -> some View

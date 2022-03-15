@@ -34,10 +34,14 @@ let cell: CellClass = collectionView.dequeueReusableCell(forIndexPath: indexPath
 ## SwiftUI
 
 ### Environment
+
 ```swift
 @Environment(\.safeAreaInsets) var safeAreaInsets
 ```
 
+`View.onNotification`
+`View.onDidEnterBackgroundNotification`
+`View.onWillEnterForegroundNotification`
 `View.glow`  
 `View.debugRect`  
 `View.debugBorder`  
