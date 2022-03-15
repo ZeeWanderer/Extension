@@ -1,11 +1,12 @@
 //
-//  SpriteKitScreenshot.swift
+//  Screenshot.swift
 //  
 //
 //  Created by Maksym Kulyk on 09.03.2022.
 //
 
 import SpriteKit
+import UIKitExtension
 
 public extension SKScene
 {

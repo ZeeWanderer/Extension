@@ -6,14 +6,14 @@ import PackageDescription
 let package = Package(
     name: "Extension",
     platforms: [
-        .iOS(.v14),
+        .iOS(.v13),
         .macOS(.v11)
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "Extension",
-            targets: ["Extension"]),
+            targets: ["FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -23,10 +23,22 @@ let package = Package(
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
-            name: "Extension",
+            name: "FoundationExtension",
             dependencies: []),
-        .testTarget(
-            name: "ExtensionTests",
-            dependencies: ["Extension"]),
+        .target(
+            name: "CoreGraphicsExtension",
+            dependencies: []),
+        .target(
+            name: "UIKitExtension",
+            dependencies: []),
+        .target(
+            name: "SpriteKitExtension",
+            dependencies: ["UIKitExtension"]),
+        .target(
+            name: "SwiftUIExtension",
+            dependencies: ["UIKitExtension"]),
+//        .testTarget(
+//            name: "ExtensionTests",
+//            dependencies: ["Extension"]),
     ]
 )

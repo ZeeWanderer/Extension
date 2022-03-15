@@ -1,5 +1,5 @@
 //
-//  UIKitScreenshot.swift
+//  Screenshot.swift
 //  Extension
 //
 //  Created by Maksym Kulyk on 8/26/20.
