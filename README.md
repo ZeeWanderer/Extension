@@ -3,26 +3,26 @@
 An extension of `Foundation`, `CoreGraphics`, `UIKit`, `SwiftUI` and `SpriteKit` frameworks i use across my projects.
 
 Some features to remeber:
-## `Foundation`
+## Foundation
 
-`LocalizationDictionary`
-`Calendar.dateComponentDifference`
-`String.condenseWhitespace`
+`LocalizationDictionary`  
+`Calendar.dateComponentDifference`  
+`String.condenseWhitespace`  
 
-## `CoreGraphics`
+## CoreGraphics
 
-`CGPoint.translate`
-`CGPoint.translateBy`
-`CGSize.square`
-`CGSize.center`
-`CGRect.center`
+`CGPoint.translate`  
+`CGPoint.translateBy`  
+`CGSize.square`  
+`CGSize.center`  
+`CGRect.center`  
 
 ```swift
 let point = CGPoint.zero * 5
 let point = CGPoint.zero / 5
 ```
 
-## `UIKit`
+## UIKit
 
 ### CollectionViews
 ```swift
@@ -31,16 +31,17 @@ class CellClass: UICollectionViewCell, ReusableView {}
 let cell: CellClass = collectionView.dequeueReusableCell(forIndexPath: indexPath)
 ```
 
-## `SwiftUI`
+## SwiftUI
 
 ### Environment
 ```swift
 @Environment(\.safeAreaInsets) var safeAreaInsets
 ```
 
-`View.glow`
-`View.debug[Rect,Border]`
+`View.glow`  
+`View.debugRect`  
+`View.debugBorder`  
 
-## `SpriteKit`
+## SpriteKit
 
-`SKScene.screenShot_composite`
+`SKScene.screenShot_composite`  
