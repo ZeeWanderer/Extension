@@ -27,7 +27,7 @@ let package = Package(
             dependencies: []),
         .target(
             name: "CoreGraphicsExtension",
-            dependencies: []),
+            dependencies: ["FoundationExtension"]),
         .target(
             name: "UIKitExtension",
             dependencies: ["FoundationExtension"]),

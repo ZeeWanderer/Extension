@@ -7,37 +7,63 @@
 //
 
 import CoreGraphics
+import FoundationExtension
+import SwiftUI
 
 public extension CGPoint
 {
-    @inlinable
+    @inline(__always)
     func translateBy(dx:CGFloat, dy:CGFloat) -> CGPoint
     {
-        return CGPoint(x:self.x+dx, y:self.y+dy)
+        return CGPoint(x:self.x + dx, y:self.y + dy)
     }
     
-    @inlinable
+    @inline(__always)
     func translate(by point: CGPoint) -> CGPoint
     {
-        return CGPoint(x:self.x+point.x, y:self.y+point.y)
+        return CGPoint(x:self.x + point.x, y:self.y + point.y)
     }
     
-    @inlinable
+    @inline(__always)
     func translate(by size: CGSize) -> CGPoint
     {
-        return CGPoint(x:self.x+size.width, y:self.y+size.height)
+        return CGPoint(x:self.x + size.width, y:self.y + size.height)
     }
     
-    @inlinable
+    @inline(__always)
     static func * (_ lhs: CGPoint, _ rhs: CGFloat) -> CGPoint
     {
         return CGPoint(x: lhs.x * rhs, y: lhs.y * rhs)
     }
     
-    @inlinable
+    @inline(__always)
     static func / (_ lhs: CGPoint, _ rhs: CGFloat) -> CGPoint
     {
         return CGPoint(x: lhs.x / rhs, y: lhs.y / rhs)
+    }
+    
+    @inline(__always)
+    static func + (lhs:CGPoint, rhs: CGFloat) -> CGPoint
+    {
+        return CGPoint(x: lhs.x + rhs, y: lhs.y + rhs)
+    }
+    
+    @inline(__always)
+    static func - (lhs:CGPoint, rhs: CGFloat) -> CGPoint
+    {
+        return CGPoint(x: lhs.x - rhs, y: lhs.y - rhs)
+    }
+    
+    @inline(__always)
+    static func + (lhs:CGPoint, rhs: CGPoint) -> CGPoint
+    {
+        return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
+    }
+    
+    @inline(__always)
+    static func - (lhs:CGPoint, rhs: CGPoint) -> CGPoint
+    {
+        return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
     }
 }
 
