@@ -21,7 +21,8 @@ public extension Collection
 //MARK: - Dictionary
 public extension Dictionary where Key: Equatable, Value: Equatable
 {
-    @inlinable func minus(dict: [Key:Value]) -> [Key:Value]
+    @inlinable
+    func minus(dict: [Key:Value]) -> [Key:Value]
     {
         let entriesInSelfAndNotInDict = filter { dict[$0.0] != self[$0.0] }
         return entriesInSelfAndNotInDict.reduce([Key:Value]()) { (res, entry) -> [Key:Value] in
@@ -94,17 +95,15 @@ public extension LocalizationDictionary
 //MARK: - Array
 public extension Array
 {
-    @inlinable func chunked(into size: Int) -> [[Element]]
+    @inlinable
+    func chunked(into size: Int) -> [[Element]]
     {
         return stride(from: 0, to: count, by: size).map
         {
             Array(self[$0 ..< Swift.min($0 + size, count)])
         }
     }
-}
-
-public extension Array
-{
+    
     @inlinable
     subscript(safe range: Range<Index>) -> ArraySlice<Element>
     {
