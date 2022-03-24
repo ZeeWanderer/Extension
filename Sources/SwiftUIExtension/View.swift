@@ -25,9 +25,12 @@ public struct ClearBackgroundView: UIViewRepresentable
 }
 
 // MARK: - ViewModifiers
-public struct ClearBackgroundViewModifier: ViewModifier {
+public struct ClearBackgroundViewModifier: ViewModifier
+{
+    public init() {} // for @inlinable
     
-    public func body(content: Content) -> some View {
+    public func body(content: Content) -> some View
+    {
         content
             .background(ClearBackgroundView())
     }
@@ -86,6 +89,7 @@ public extension View
             .shadow(color: color, radius: radius / 2)
     }
     
+    @inlinable
     func clearModalBackground() -> some View
     {
         self.modifier(ClearBackgroundViewModifier())
