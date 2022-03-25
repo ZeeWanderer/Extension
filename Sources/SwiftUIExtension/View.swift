@@ -13,7 +13,7 @@ public struct ClearBackgroundView: UIViewRepresentable
     public func makeUIView(context: Context) -> some UIView
     {
         let view = UIView()
-        DispatchQueue.main.async {
+        Task { @MainActor in
             view.superview?.superview?.backgroundColor = .clear
         }
         return view
@@ -94,25 +94,62 @@ public extension View
     {
         self.modifier(ClearBackgroundViewModifier())
     }
+}
+
+// MARK: - View DEBUG
+public extension View
+{
     
-    // MARK: Debug
+    // MARK: Debug Actions
     @inlinable
-    func debugRect(color: Color = .red) -> some View
+    func debugAction(_ closure: () -> Void) -> Self
     {
 #if DEBUG
-        self.overlay(Rectangle().stroke(color))
+        closure()
+#endif
+        
+        return self
+    }
+    
+    @inlinable
+    func debugPrint(_ value: Any) -> Self
+    {
+        debugAction { print(value) }
+    }
+    
+    // MARK: Debug Modifiers
+    @inlinable
+    func debugModifier<T: View>(_ modifier: (Self) -> T) -> some View
+    {
+#if DEBUG
+        return modifier(self)
 #else
         return self
 #endif
     }
     
     @inlinable
-    func debugBorder(color: Color = .red) -> some View
+    func debugRect(color: Color = .red, width: CGFloat = 1) -> some View
     {
-#if DEBUG
-        self.border(color)
-#else
-        self
-#endif
+        debugModifier { view in
+            view.overlay(Rectangle().stroke(color, lineWidth: width))
+        }
     }
+    
+    @inlinable
+    func debugBorder(_ color: Color = .red, width: CGFloat = 1) -> some View
+    {
+        debugModifier { view in
+            view.border(color, width: width)
+        }
+    }
+    
+    @inlinable
+    func debugBackground(_ color: Color = .red) -> some View
+    {
+        debugModifier { view in
+            view.background(color)
+        }
+    }
+    
 }
