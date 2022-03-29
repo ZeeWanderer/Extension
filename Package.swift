@@ -13,7 +13,7 @@ let package = Package(
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "Extension",
-            targets: ["FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension"]),
+            targets: ["FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -37,6 +37,9 @@ let package = Package(
         .target(
             name: "SwiftUIExtension",
             dependencies: ["UIKitExtension"]),
+        .target(
+            name: "GeneralExtensions",
+            dependencies: []),
 //        .testTarget(
 //            name: "ExtensionTests",
 //            dependencies: ["Extension"]),
