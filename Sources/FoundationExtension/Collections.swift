@@ -62,25 +62,55 @@ public typealias LocalizedStringValue = String
 public typealias LocalizationDictionary = Dictionary<LanguageCodeKey, LocalizedStringValue>
 public extension LocalizationDictionary
 {
-    @inlinable
-    subscript(_ locale: Locale) -> LocalizedStringValue
+    @usableFromInline
+    internal func check_locale(_ locale: Locale) -> LocalizedStringValue?
     {
-        // check provided locale
+        // simple check
+        if let l_string = self[locale.identifier]
+        {
+            return l_string
+        }
+        
+        // require lang code
+        guard let languageCode = locale.languageCode
+        else {return nil}
+        
+        // check for Script, this format is used by lproj files
+        if let regionCode = locale.regionCode, let l_string = self["\(languageCode)-\(regionCode)"]
+        {
+            return l_string
+        }
+        else // Fallback on language code
         if let languageCode = locale.languageCode, let l_string = self[languageCode]
         {
             return l_string
         }
-        else // fallback on current locale if provided locale is not current
-        if Locale.current != locale, let languageCode = Locale.current.languageCode, let l_string = self[languageCode]
+        
+        return nil
+    }
+    
+    @inlinable
+    subscript(_ locale: Locale) -> LocalizedStringValue
+    {
+        // check provided locale
+        if let l_string = check_locale(locale)
         {
             return l_string
+        }
+        else // fallback on current locale if provided locale is not current
+        if Locale.current != locale
+        {
+            if let l_string = check_locale(Locale.current)
+            {
+                return l_string
+            }
         }
         else // fallback on preffered languages
         {
             for language in Locale.preferredLanguages
             {
-                let languageCode = String(language.prefix(2)) // exctract language code from language
-                if let l_string = self[languageCode]
+                let locale_ = Locale(identifier: language) // create locale from language
+                if let l_string = check_locale(locale_)
                 {
                     return l_string
                 }
