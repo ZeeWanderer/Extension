@@ -10,22 +10,23 @@ import CoreGraphics
 import FoundationExtension
 import SwiftUI
 
+// MARK: - CGPoint
 public extension CGPoint
 {
     @inline(__always)
-    func translateBy(dx:CGFloat, dy:CGFloat) -> CGPoint
+    func translatedBy(dx:CGFloat, dy:CGFloat) -> CGPoint
     {
         return CGPoint(x:self.x + dx, y:self.y + dy)
     }
     
     @inline(__always)
-    func translate(by point: CGPoint) -> CGPoint
+    func translated(by point: CGPoint) -> CGPoint
     {
         return CGPoint(x:self.x + point.x, y:self.y + point.y)
     }
     
     @inline(__always)
-    func translate(by size: CGSize) -> CGPoint
+    func translated(by size: CGSize) -> CGPoint
     {
         return CGPoint(x:self.x + size.width, y:self.y + size.height)
     }
@@ -65,28 +66,113 @@ public extension CGPoint
     {
         return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
     }
+    
+    // MARK: DEPRECATED
+    @available(*, deprecated, renamed: "translatedBy(dx:dy:)")
+    @inline(__always)
+    func translateBy(dx:CGFloat, dy:CGFloat) -> CGPoint
+    {
+        return translatedBy(dx: dx, dy: dy)
+    }
+    
+    @available(*, deprecated, renamed: "translated(by:)")
+    @inline(__always)
+    func translate(by point: CGPoint) -> CGPoint
+    {
+        return translated(by: point)
+    }
+    
+    @available(*, deprecated, renamed: "translated(by:)")
+    @inline(__always)
+    func translate(by size: CGSize) -> CGPoint
+    {
+        return translated(by: size)
+    }
 }
 
+// MARK: - CGSize
 public extension CGSize
 {
-    @inlinable
+    @inline(__always)
+    static func * (lhs: CGSize, rhs: CGFloat) -> CGSize
+    {
+        return CGSize(width: lhs.width * rhs, height: lhs.height * rhs)
+    }
+    
+    @inline(__always)
     var square: CGFloat
     {
         return self.height * self.width
     }
     
-    @inlinable
+    @inline(__always)
     var center: CGPoint
     {
         return CGPoint(x: self.width/2.0, y: self.width/2.0)
     }
 }
 
+// MARK: - CGSize
 public extension CGRect
 {
-    @inlinable
+    @inline(__always)
+    func translatedBy(dx:CGFloat, dy:CGFloat) -> CGRect
+    {
+        return CGRect(origin: self.origin.translatedBy(dx: dx, dy: dy), size: size)
+    }
+    
+    @inline(__always)
+    func translated(by point: CGPoint) -> CGRect
+    {
+        return CGRect(origin: self.origin.translated(by: point), size: size)
+    }
+    
+    @inline(__always)
+    func translated(by size: CGSize) -> CGRect
+    {
+        return CGRect(origin: self.origin.translated(by: size), size: size)
+    }
+    
+    // Includes origin into scaling because CGSize describes
+    // an are without position, but CGRect describes an area
+    // with position.
+    @inline(__always)
+    static func * (lhs: CGRect, rhs: CGFloat) -> CGRect
+    {
+        return CGRect(origin: lhs.origin * rhs, size: lhs.size * rhs)
+    }
+    
+    @inline(__always)
+    var square: CGFloat
+    {
+        return self.size.square
+    }
+    
+    @inline(__always)
     var center: CGPoint
     {
-        return self.origin.translateBy(dx: self.width/2.0, dy: self.height/2.0)
+        return self.origin.translatedBy(dx: self.width/2.0, dy: self.height/2.0)
+    }
+    
+    // MARK: DEPRECATED
+    @available(*, deprecated, renamed: "translatedBy(dx:dy:)")
+    @inline(__always)
+    func translateBy(dx:CGFloat, dy:CGFloat) -> CGRect
+    {
+        return CGRect(origin: self.origin.translatedBy(dx: dx, dy: dy), size: size)
+    }
+    
+    @available(*, deprecated, renamed: "translated(by:)")
+    @inline(__always)
+    func translate(by point: CGPoint) -> CGRect
+    {
+        return CGRect(origin: self.origin.translated(by: point), size: size)
+    }
+    
+    @available(*, deprecated, renamed: "translated(by:)")
+    @inline(__always)
+    func translate(by size: CGSize) -> CGRect
+    {
+        return CGRect(origin: self.origin.translated(by: size), size: size)
     }
 }
