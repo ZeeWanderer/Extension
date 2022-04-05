@@ -105,11 +105,11 @@ public extension LocalizationDictionary
                 return l_string
             }
         }
-        else // fallback on preffered languages
+        else // fallback on preffered localizations
         {
-            for language in Locale.preferredLanguages
+            for localization in Bundle.main.preferredLocalizations
             {
-                let locale_ = Locale(identifier: language) // create locale from language
+                let locale_ = Locale(identifier: localization) // create locale from localization
                 if let l_string = check_locale(locale_)
                 {
                     return l_string
