@@ -12,7 +12,7 @@ public extension View
 {
     
     // MARK: Actions
-    @inlinable
+    @inlinable @discardableResult
     func debugAction(_ closure: () -> Void) -> Self
     {
 #if DEBUG
@@ -21,7 +21,7 @@ public extension View
         return self
     }
     
-    @inlinable
+    @inlinable @discardableResult
     func debugPrint(_ items: Any..., separator: String = " ", terminator: String = "\n") -> Self
     {
         debugAction { print(items, separator: separator, terminator: terminator) }
