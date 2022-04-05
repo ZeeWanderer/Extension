@@ -112,9 +112,9 @@ public extension View
     }
     
     @inlinable
-    func debugPrint(_ value: Any) -> Self
+    func debugPrint(_ items: Any..., separator: String = " ", terminator: String = "\n") -> Self
     {
-        debugAction { print(value) }
+        debugAction { print(items, separator: separator, terminator: terminator) }
     }
     
     // MARK: Debug Modifiers
