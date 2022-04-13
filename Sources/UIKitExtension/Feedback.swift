@@ -8,7 +8,7 @@
 import UIKit
 import AVFoundation
 
-final class FeedbackHelper
+public final class FeedbackHelper
 {
     //TODO: AudioServicesPlaySystemSound(SystemSoundID(1104))
     
