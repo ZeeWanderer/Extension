@@ -10,6 +10,7 @@ import AVFoundation
 
 public final class FeedbackHelper
 {
+    // MARK: - Internal
     //TODO: AudioServicesPlaySystemSound(SystemSoundID(1104))
     
     @usableFromInline internal static let impact_generator_light: UIImpactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
@@ -29,32 +30,6 @@ public final class FeedbackHelper
     
     @usableFromInline internal static var bShouldUseVibration: Bool? = nil
     @usableFromInline internal static var bShouldUseGeneralSoundEffects: Bool? = nil
-    
-    @inlinable
-    static func set_dynamic_vibration_preference(_ closure: @escaping ()->Bool)
-    {
-        bShouldUseVibrationDyn = closure
-    }
-    
-    @inlinable
-    static func set_dynamic_sound_preference(_ closure: @escaping ()->Bool)
-    {
-        bShouldUseGeneralSoundEffectsDyn = closure
-    }
-    
-    @inlinable
-    static func set_dynamic_preferences(vibration: @escaping ()->Bool, sound: @escaping ()->Bool)
-    {
-        bShouldUseVibrationDyn = vibration
-        bShouldUseGeneralSoundEffectsDyn = sound
-    }
-    
-    @inlinable
-    static func set_static_preferences(vibration: Bool, sound: Bool)
-    {
-        bShouldUseVibration = vibration
-        bShouldUseGeneralSoundEffects = sound
-    }
     
     @usableFromInline
     internal static func should_use_vibration()->Bool
@@ -87,6 +62,34 @@ public final class FeedbackHelper
         }
         
         return true
+    }
+    
+    // MARK: - Interface
+    
+    @inlinable
+    public static func set_dynamic_vibration_preference(_ closure: @escaping ()->Bool)
+    {
+        bShouldUseVibrationDyn = closure
+    }
+    
+    @inlinable
+    public static func set_dynamic_sound_preference(_ closure: @escaping ()->Bool)
+    {
+        bShouldUseGeneralSoundEffectsDyn = closure
+    }
+    
+    @inlinable
+    public static func set_dynamic_preferences(vibration: @escaping ()->Bool, sound: @escaping ()->Bool)
+    {
+        bShouldUseVibrationDyn = vibration
+        bShouldUseGeneralSoundEffectsDyn = sound
+    }
+    
+    @inlinable
+    public static func set_static_preferences(vibration: Bool, sound: Bool)
+    {
+        bShouldUseVibration = vibration
+        bShouldUseGeneralSoundEffects = sound
     }
     
     @inlinable
