@@ -90,7 +90,7 @@ public final class FeedbackHelper
     }
     
     @inlinable
-    static func prepare_selection_generator()
+    public static func prepare_selection_generator()
     {
         if !should_use_vibration()
         {
@@ -101,7 +101,7 @@ public final class FeedbackHelper
     }
     
     @inlinable
-    static func prepare_notification_generator()
+    public static func prepare_notification_generator()
     {
         if !should_use_vibration()
         {
@@ -112,7 +112,7 @@ public final class FeedbackHelper
     }
     
     @inlinable
-    static func prepare_impact_generator(_ fs: UIImpactFeedbackGenerator.FeedbackStyle)
+    public static func prepare_impact_generator(_ fs: UIImpactFeedbackGenerator.FeedbackStyle)
     {
         if !should_use_vibration()
         {
@@ -137,7 +137,7 @@ public final class FeedbackHelper
     }
     
     @inlinable
-    static func prepare_impact_generators()
+    public static func prepare_impact_generators()
     {
         if !should_use_vibration()
         {
@@ -152,7 +152,7 @@ public final class FeedbackHelper
     }
     
     @inlinable
-    static func play_button_sound()
+    public static func play_button_sound()
     {
         if !should_use_sound()
         {
@@ -164,7 +164,7 @@ public final class FeedbackHelper
     }
     
     @inlinable
-    static func selectionChanged()
+    public static func selectionChanged()
     {
         if !should_use_vibration()
         {
@@ -174,7 +174,7 @@ public final class FeedbackHelper
     }
     
     @inlinable
-    static func notificationOccurred(_ ft: UINotificationFeedbackGenerator.FeedbackType)
+    public static func notificationOccurred(_ ft: UINotificationFeedbackGenerator.FeedbackType)
     {
         if !should_use_vibration()
         {
@@ -185,7 +185,7 @@ public final class FeedbackHelper
     }
     
     @inlinable
-    static func impactOccurred(_ fs: UIImpactFeedbackGenerator.FeedbackStyle)
+    public static func impactOccurred(_ fs: UIImpactFeedbackGenerator.FeedbackStyle)
     {
         if !should_use_vibration()
         {
@@ -210,7 +210,7 @@ public final class FeedbackHelper
     }
     
     @inlinable
-    static func impactOccurred(_ fs: UIImpactFeedbackGenerator.FeedbackStyle, intensity: CGFloat)
+    public static func impactOccurred(_ fs: UIImpactFeedbackGenerator.FeedbackStyle, intensity: CGFloat)
     {
         if !should_use_vibration()
         {

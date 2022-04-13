@@ -46,7 +46,7 @@ public class KeyboardHeightHelper: ObservableObject
         }
     }
     
-    init()
+    public init()
     {
         self.listenForKeyboardNotifications()
     }
