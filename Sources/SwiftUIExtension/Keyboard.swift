@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class KeyboardHeightHelper: ObservableObject
+public class KeyboardHeightHelper: ObservableObject
 {
     @Published public var keyboardHeight: CGFloat = 0
     
@@ -17,12 +17,13 @@ class KeyboardHeightHelper: ObservableObject
         keyboardHeight != 0
     }
     
-    private func listenForKeyboardNotifications() {
+    @usableFromInline
+    internal func listenForKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboard_appear(_:)), name: UIWindow.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboard_hide(_:)), name: UIWindow.keyboardWillHideNotification, object: nil)
     }
     
-    @objc func keyboard_appear(_ notification: Notification)
+    @objc internal func keyboard_appear(_ notification: Notification)
     {
         guard let userInfo = notification.userInfo,
               let keyboardRect = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect
@@ -37,7 +38,7 @@ class KeyboardHeightHelper: ObservableObject
         }
     }
     
-    @objc func keyboard_hide(_ notification: Notification)
+    @objc internal func keyboard_hide(_ notification: Notification)
     {
         withAnimation
         {
