@@ -43,19 +43,19 @@ public extension UIViewController
             return presentedViewController.topMostViewController()
         }
         else
-            if let navigationController = self as? UINavigationController
+        if let navigationController = self as? UINavigationController
         {
-                return navigationController.topViewController?.topMostViewController()
-            }
+            return navigationController.topViewController?.topMostViewController()
+        }
         else
-            if let tabBarController = self as? UITabBarController
+        if let tabBarController = self as? UITabBarController
         {
-                if let selectedViewController = tabBarController.selectedViewController
-                {
-                    return selectedViewController.topMostViewController()
-                }
-                return tabBarController.topMostViewController()
+            if let selectedViewController = tabBarController.selectedViewController
+            {
+                return selectedViewController.topMostViewController()
             }
+            return tabBarController.topMostViewController()
+        }
         else
         {
             return self

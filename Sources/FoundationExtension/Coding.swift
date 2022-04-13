@@ -63,7 +63,6 @@ public extension SingleValueDecodingContainer
     }
 }
 
-
 //MARK: JSONDecoder
 public extension JSONDecoder
 {
@@ -96,8 +95,6 @@ public extension JSONDecoder
 }
 
 //MARK: load_collection - json
-
-
 /// Loads json file from bundle and decodes it into collection
 /// - Parameters:
 ///   - collection: inout collection to decode into

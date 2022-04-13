@@ -27,7 +27,6 @@ public extension UIView
 
 public extension UIView
 {
-    
     class func getAllSubviews<T: UIView>(from parenView: UIView) -> [T]
     {
         return parenView.subviews.flatMap { subView -> [T] in
