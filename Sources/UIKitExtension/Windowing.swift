@@ -9,8 +9,26 @@ import UIKit
 
 public extension UIApplication
 {
-    @inlinable
-    var keyWindow_: UIWindow?
+    /// Replacement for deprecated `UIApplication.keyWindow`
+    /// - Returns: First key window managed by one of the `connectedScenes`
+    /// ---
+    /// [UIApplication.keyWindow](https://developer.apple.com/documentation/uikit/uiapplication/1622924-keywindow)
+    @inlinable var keySceneWindow: UIWindow?
+    {
+        connectedScenes
+            .compactMap {
+                $0 as? UIWindowScene
+            }
+            .flatMap {
+                $0.windows
+            }
+            .first {
+                $0.isKeyWindow
+            }
+    }
+    
+    @available(*, deprecated, renamed: "keySceneWindow")
+    @inlinable var keyWindow_: UIWindow?
     {
         connectedScenes
             .compactMap {
@@ -32,7 +50,7 @@ public extension UIViewController
     @inlinable
     static func topMostViewController() -> UIViewController?
     {
-        let keyWindow = UIApplication.shared.keyWindow_
+        let keyWindow = UIApplication.shared.keySceneWindow
         return keyWindow?.rootViewController?.topMostViewController()
     }
     
