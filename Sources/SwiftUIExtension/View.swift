@@ -10,6 +10,8 @@ import SwiftUI
 // MARK: - UIViewRepresentables
 public struct ClearBackgroundView: UIViewRepresentable
 {
+    public init() {} // for @inlinable
+    
     public func makeUIView(context: Context) -> some UIView
     {
         let view = UIView()
@@ -73,6 +75,33 @@ public extension View
         )
     }
     
+    @inlinable
+    func onDidReceiveMemoryWarningNotification(perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
+    {
+        onNotification (
+            UIApplication.didReceiveMemoryWarningNotification,
+            perform: action
+        )
+    }
+    
+    @inlinable
+    func onDidFinishLaunchingNotification(perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
+    {
+        onNotification (
+            UIApplication.didFinishLaunchingNotification,
+            perform: action
+        )
+    }
+    
+    @inlinable
+    func onWillTerminateNotification(perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
+    {
+        onNotification (
+            UIApplication.willTerminateNotification,
+            perform: action
+        )
+    }
+    
     // MARK: Modifiers
     @inlinable
     func glow(radius: CGFloat = 5) -> some View
@@ -93,5 +122,18 @@ public extension View
     func clearModalBackground() -> some View
     {
         self.modifier(ClearBackgroundViewModifier())
+    }
+    
+    @inlinable
+    @ViewBuilder func hidden(_ hidden: Bool) -> some View
+    {
+        if hidden
+        {
+            self.hidden()
+        }
+        else
+        {
+            self
+        }
     }
 }
