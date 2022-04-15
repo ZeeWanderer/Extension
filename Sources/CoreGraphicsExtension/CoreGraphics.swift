@@ -8,23 +8,25 @@
 
 import CoreGraphics
 import FoundationExtension
-import SwiftUI
 
 // MARK: - CGPoint
 public extension CGPoint
 {
+    /// Translate CGPoint by a given ammount
     @inline(__always)
     func translatedBy(dx:CGFloat, dy:CGFloat) -> CGPoint
     {
         return CGPoint(x:self.x + dx, y:self.y + dy)
     }
     
+    /// Translate CGPoint by a vector defined as ((0,0), point)
     @inline(__always)
     func translated(by point: CGPoint) -> CGPoint
     {
         return CGPoint(x:self.x + point.x, y:self.y + point.y)
     }
     
+    /// Translate CGPoint by a vector defined as ((0,0), size)
     @inline(__always)
     func translated(by size: CGSize) -> CGPoint
     {
@@ -99,12 +101,14 @@ public extension CGSize
         return CGSize(width: lhs.width * rhs, height: lhs.height * rhs)
     }
     
+    /// `width * height`
     @inline(__always)
     var square: CGFloat
     {
         return self.height * self.width
     }
     
+    /// Center point of the rectange area defined by `CGSize`
     @inline(__always)
     var center: CGPoint
     {
@@ -115,18 +119,21 @@ public extension CGSize
 // MARK: - CGSize
 public extension CGRect
 {
+    /// Translate CGRect by a given ammount
     @inline(__always)
     func translatedBy(dx:CGFloat, dy:CGFloat) -> CGRect
     {
         return CGRect(origin: self.origin.translatedBy(dx: dx, dy: dy), size: size)
     }
     
+    /// Translate CGRect by a vector defined as ((0,0), point)
     @inline(__always)
     func translated(by point: CGPoint) -> CGRect
     {
         return CGRect(origin: self.origin.translated(by: point), size: size)
     }
     
+    /// Translate CGRect by a vector defined as ((0,0), size)
     @inline(__always)
     func translated(by size: CGSize) -> CGRect
     {
@@ -142,12 +149,15 @@ public extension CGRect
         return CGRect(origin: lhs.origin * rhs, size: lhs.size * rhs)
     }
     
+    /// `width * height`
     @inline(__always)
     var square: CGFloat
     {
         return self.size.square
     }
     
+    /// Center point of the `CGRect`
+    /// - Note: With respect to origin
     @inline(__always)
     var center: CGPoint
     {
