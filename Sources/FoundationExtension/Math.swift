@@ -21,7 +21,7 @@ public func clamp<T>(_ value: T, to limits: ClosedRange<T>) -> T where T: Compar
     return min(max(value, limits.lowerBound), limits.upperBound)
 }
 
-/// Linear interpolate value in `[min,max]` with for `parameter`.
+/// Linear interpolate value in `[min,max]` with `parameter`.
 /// - Precondition: `parameter` in `[0,1]`
 /// - Note: May be imprecise due to floating point rounding
 /// ---
