@@ -9,6 +9,18 @@
 import CoreGraphics
 import FoundationExtension
 
+// MARK: - CGFloat
+public extension CGFloat
+{
+    /// linear intepolate a point between `min` and `max` with `self` as `parameter` (t).
+    /// See: ``FoundationExtension/lerp(_:min:max:)``
+    @inline(__always)
+    func lerped(min: CGPoint, max: CGPoint) -> CGPoint
+    {
+        return lerp(self, min: min, max: max)
+    }
+}
+
 // MARK: - CGPoint
 public extension CGPoint
 {
@@ -69,6 +81,30 @@ public extension CGPoint
         return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
     }
     
+    /// linear intepolate a point between `min` and `max` with `self` as `parameter`.
+    /// See:  ``lerp(_:min:max:)-z0dd``
+    @inline(__always)
+    func lerped(min: CGPoint, max: CGPoint) -> CGPoint
+    {
+        return lerp(self, min: min, max: max)
+    }
+    
+    /// linear intepolate a point between `min` and `max` for `parameter`  with `self` as `min`.
+    /// See:  ``lerp(_:min:max:)-z0dd``
+    @inline(__always)
+    func lerped(_ parameter: CGPoint, max: CGPoint) -> CGPoint
+    {
+        return lerp(parameter, min: self, max: max)
+    }
+    
+    /// linear intepolate a point between `min` and `max` for `parameter`  with `self` as `max`.
+    /// See:  ``lerp(_:min:max:)-z0dd``
+    @inline(__always)
+    func lerped(_ parameter: CGPoint, min: CGPoint) -> CGPoint
+    {
+        return lerp(parameter, min: min, max: self)
+    }
+    
     // MARK: DEPRECATED
     @available(*, deprecated, renamed: "translatedBy(dx:dy:)")
     @inline(__always)
@@ -95,6 +131,12 @@ public extension CGPoint
 // MARK: - CGSize
 public extension CGSize
 {
+    @inlinable
+    init(_ point: CGPoint)
+    {
+        self.init(width: point.x, height: point.y)
+    }
+    
     @inline(__always)
     static func * (lhs: CGSize, rhs: CGFloat) -> CGSize
     {
