@@ -27,3 +27,23 @@ public func lerp(_ parameter: CGPoint, min: CGPoint, max: CGPoint) -> CGPoint
     let y = lerp(parameter.y, min: min.y, max: max.y)
     return CGPoint(x: x, y: y)
 }
+
+/// Inverse Linear interpolate value in `[min,max]` for `parameter`.
+/// Each axis is intepolated separately.
+/// See: ``FoundationExtension/ilerp(_:min:max:)``
+public func ilerp(_ parameter: CGFloat, min: CGPoint, max: CGPoint) -> CGPoint
+{
+    let x = ilerp(parameter, min: min.x, max: max.x)
+    let y = ilerp(parameter, min: min.y, max: max.y)
+    return CGPoint(x: x, y: y)
+}
+
+/// Inverse Linear interpolate value in `[min,max]` for `parameter`.
+/// Each axis is intepolated separately with corresponding `parameter` coordinate as parameter
+/// See: ``FoundationExtension/ilerp(_:min:max:)``
+public func ilerp(_ parameter: CGPoint, min: CGPoint, max: CGPoint) -> CGPoint
+{
+    let x = ilerp(parameter.x, min: min.x, max: max.x)
+    let y = ilerp(parameter.y, min: min.y, max: max.y)
+    return CGPoint(x: x, y: y)
+}

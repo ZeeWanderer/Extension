@@ -13,11 +13,19 @@ import FoundationExtension
 public extension CGFloat
 {
     /// linear intepolate a point between `min` and `max` with `self` as `parameter` (t).
-    /// See: ``FoundationExtension/lerp(_:min:max:)``
+    /// See: ``lerp(_:min:max:)-lglu``
     @inline(__always)
     func lerped(min: CGPoint, max: CGPoint) -> CGPoint
     {
         return lerp(self, min: min, max: max)
+    }
+    
+    /// inverse linear intepolate a point between `min` and `max` with `self` as `parameter` (t).
+    /// See:  ``ilerp(_:min:max:)-59add``
+    @inline(__always)
+    func ilerped(min: CGPoint, max: CGPoint) -> CGPoint
+    {
+        return ilerp(self, min: min, max: max)
     }
 }
 
@@ -26,7 +34,7 @@ public extension CGPoint
 {
     /// Translate CGPoint by a given ammount
     @inline(__always)
-    func translatedBy(dx:CGFloat, dy:CGFloat) -> CGPoint
+    func translatedBy(dx: CGFloat, dy: CGFloat) -> CGPoint
     {
         return CGPoint(x:self.x + dx, y:self.y + dy)
     }
@@ -105,10 +113,34 @@ public extension CGPoint
         return lerp(parameter, min: min, max: self)
     }
     
+    /// inverse linear intepolate a point between `min` and `max` with `self` as `parameter`.
+    /// See:  ``ilerp(_:min:max:)-24jcs``
+    @inline(__always)
+    func ilerped(min: CGPoint, max: CGPoint) -> CGPoint
+    {
+        return ilerp(self, min: min, max: max)
+    }
+    
+    /// inverse linear intepolate a point between `min` and `max` for `parameter`  with `self` as `min`.
+    /// See:  ``ilerp(_:min:max:)-24jcs``
+    @inline(__always)
+    func ilerped(_ parameter: CGPoint, max: CGPoint) -> CGPoint
+    {
+        return ilerp(parameter, min: self, max: max)
+    }
+    
+    /// inverse linear intepolate a point between `min` and `max` for `parameter`  with `self` as `max`.
+    /// See:  ``ilerp(_:min:max:)-24jcs``
+    @inline(__always)
+    func ilerped(_ parameter: CGPoint, min: CGPoint) -> CGPoint
+    {
+        return ilerp(parameter, min: min, max: self)
+    }
+    
     // MARK: DEPRECATED
     @available(*, deprecated, renamed: "translatedBy(dx:dy:)")
     @inline(__always)
-    func translateBy(dx:CGFloat, dy:CGFloat) -> CGPoint
+    func translateBy(dx: CGFloat, dy: CGFloat) -> CGPoint
     {
         return translatedBy(dx: dx, dy: dy)
     }
@@ -163,7 +195,7 @@ public extension CGRect
 {
     /// Translate CGRect by a given ammount
     @inline(__always)
-    func translatedBy(dx:CGFloat, dy:CGFloat) -> CGRect
+    func translatedBy(dx: CGFloat, dy: CGFloat) -> CGRect
     {
         return CGRect(origin: self.origin.translatedBy(dx: dx, dy: dy), size: size)
     }
