@@ -39,6 +39,17 @@ public extension Numeric
     }
 }
 
+public extension FloatingPoint
+{
+    /// Inverse Linear interpolate value in `[min,max]` with `self` for `parameter`.
+    /// See: ``ilerp(_:min:max:)``
+    @inline(__always)
+    func ilerped(min: Self, max: Self) -> Self
+    {
+        return lerp(self, min: min, max: max)
+    }
+}
+
 // MARK: - Classes
 public extension String
 {

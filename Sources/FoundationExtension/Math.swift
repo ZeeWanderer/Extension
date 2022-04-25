@@ -23,7 +23,7 @@ public func clamp<T>(_ value: T, to limits: ClosedRange<T>) -> T where T: Compar
 
 /// Linear interpolate value in `[min,max]` with `parameter`.
 /// - Precondition: `parameter` in `[0,1]`
-/// - Note: May be imprecise due to floating point rounding
+/// - Note: May be imprecise due to floating point rounding. Precision depends on operand type.
 /// ---
 /// # Formula
 /// `min + (parameter * (max - min))`
@@ -31,4 +31,16 @@ public func clamp<T>(_ value: T, to limits: ClosedRange<T>) -> T where T: Compar
 public func lerp<T>(_ parameter: T, min: T, max: T) -> T where T: Numeric
 {
     return min + (parameter * (max - min))
+}
+
+/// Inverse Linear interpolate value in `[min,max]` with `parameter`.
+/// - Precondition: `parameter` in `[min,max]`
+/// - Note: May be imprecise due to floating point rounding. Precision depends on operand type.
+/// ---
+/// # Formula
+/// `(parameter - min) / (max - min)`
+@inline(__always)
+public func ilerp<T>(_ parameter: T, min: T, max: T) -> T where T: FloatingPoint
+{
+    return (parameter - min) / (max - min)
 }
