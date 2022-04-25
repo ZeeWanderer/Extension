@@ -197,28 +197,32 @@ public protocol Stackable
 
 public extension Stackable
 {
-    @inlinable var isEmpty: Bool { peek() == nil }
+    @inlinable
+    var isEmpty: Bool { peek() == nil }
 }
 
 public struct Stack<Element>: Stackable where Element: Equatable
 {
-    private var storage = [Element]()
-    public func peek() -> Element? { storage.last }
-    public mutating func push(_ element: Element) { storage.append(element)  }
-    public mutating func pop() -> Element? { storage.popLast() }
+    @usableFromInline internal var storage = [Element]()
+    @inlinable public func peek() -> Element? { storage.last }
+    @inlinable public mutating func push(_ element: Element) { storage.append(element)  }
+    @inlinable public mutating func pop() -> Element? { storage.popLast() }
 }
 
 extension Stack: Equatable
 {
+    @inlinable
     public static func == (lhs: Stack<Element>, rhs: Stack<Element>) -> Bool { lhs.storage == rhs.storage }
 }
 
 extension Stack: CustomStringConvertible
 {
+    @inlinable
     public var description: String { "\(storage)" }
 }
 
 extension Stack: ExpressibleByArrayLiteral
 {
+    @inlinable
     public init(arrayLiteral elements: Self.Element...) { storage = elements }
 }
