@@ -8,15 +8,19 @@
 import SwiftUI
 
 // MARK: - UIViewRepresentables
+/// A hack to get access to `UIView.backgroundColor` of modal superview. Remove when this functionality beomes available in SwiftUI.
 public struct ClearBackgroundView: UIViewRepresentable
 {
+    @inlinable
     public init() {} // for @inlinable
     
     public func makeUIView(context: Context) -> some UIView
     {
         let view = UIView()
-        Task { @MainActor in
-            view.superview?.superview?.backgroundColor = .clear
+        Task {
+            await MainActor.run {
+                view.superview?.superview?.backgroundColor = .clear
+            }
         }
         return view
     }
@@ -27,14 +31,41 @@ public struct ClearBackgroundView: UIViewRepresentable
 }
 
 // MARK: - ViewModifiers
+/// Clears background on modal views. Uses ``ClearBackgroundView``.
 public struct ClearBackgroundViewModifier: ViewModifier
 {
+    @inlinable
     public init() {} // for @inlinable
     
     public func body(content: Content) -> some View
     {
         content
             .background(ClearBackgroundView())
+    }
+}
+
+// MARK: - Views
+/// Delays instantiation of wrapped view untill it is actually displayed.
+/// - Note: May degrade perfomance, use carefully.
+public struct LazyView<Content>: View where Content : View
+{
+    public let build: () -> Content
+    
+    @inlinable
+    public init(_ build: @autoclosure @escaping () -> Content)
+    {
+        self.build = build
+    }
+    
+    @inlinable
+    public init(_ build: @escaping () -> Content)
+    {
+        self.build = build
+    }
+    
+    public var body: Content
+    {
+        build()
     }
 }
 
@@ -104,36 +135,110 @@ public extension View
     
     // MARK: Modifiers
     @inlinable
-    func glow(radius: CGFloat = 5) -> some View
+    @ViewBuilder func `if`<Content>(_ condition: Bool, transform: (Self) -> Content) -> some View where Content : View
     {
-        self
-            .overlay(self.blur(radius: radius))
+        if condition
+        {
+            transform(self)
+        }
+        else
+        {
+            self
+        }
     }
     
+    /// Applies glow determined by the View content with radius of `radius`.
+    @inlinable
+    func glow(radius: CGFloat = 5) -> some View
+    {
+        self.overlay(self.blur(radius: radius))
+    }
+    
+    /// Applies glow of color `color` with radius of `radius`. Uses double `.shadow()` with halved radius.
     @inlinable
     func glow(color: Color = .yellow, radius: CGFloat = 5) -> some View
     {
-        self
-            .shadow(color: color, radius: radius / 2)
+        self.shadow(color: color, radius: radius / 2)
             .shadow(color: color, radius: radius / 2)
     }
     
+    /// Clears background on modal views. Applies ``ClearBackgroundViewModifier``.
     @inlinable
     func clearModalBackground() -> some View
     {
         self.modifier(ClearBackgroundViewModifier())
     }
     
+    /// Applies `.hidden()` to view on provided condition
     @inlinable
-    @ViewBuilder func hidden(_ hidden: Bool) -> some View
+    func hidden(_ hidden: Bool) -> some View
     {
-        if hidden
-        {
+        self.if(hidden) { view in
             self.hidden()
+        }
+    }
+    
+    // MARK: Navigation
+    /// Navigate to `destination` using a `binding`. Destination is instantiated imideately and repeatedly on any state changes.
+    @inlinable
+    func navigate<Destination>(using binding: Binding<Bool>, @ViewBuilder destination: () -> Destination, isDetailLink: Bool = true) -> some View where Destination : View
+    {
+        self.background(NavigationLink(destination: destination(), isActive: binding, label: EmptyView.init).isDetailLink(isDetailLink))
+    }
+    
+    /// Navigate to `destination` using a `binding`. Destination is warapped into ``LazyView`` to avoid unnececery initis.
+    @inlinable
+    func lazyNavigate<Destination>(using binding: Binding<Bool>, @ViewBuilder destination: @escaping () -> Destination, isDetailLink: Bool = true) -> some View where Destination : View
+    {
+        self.background(NavigationLink(destination: LazyView(destination), isActive: binding, label: EmptyView.init).isDetailLink(isDetailLink))
+    }
+    
+    // MARK: Compatibility
+    /// Backwards compatible `task` call.
+    @inlinable
+    @ViewBuilder func compat_task(_ action: @escaping () async -> Void) -> some View
+    {
+        if #available(iOS 15, *)
+        {
+            self.task {
+                await action()
+            }
         }
         else
         {
-            self
+            self.onAppear {
+                Task {
+                    await action()
+                }
+            }
+        }
+    }
+    
+    /// Backwards compatible `overlay` call.
+    @inlinable
+    @ViewBuilder func compat_overlay<V>(alignment: Alignment = .center, content: () -> V) -> some View where V: View
+    {
+        if #available(iOS 15, *)
+        {
+            self.overlay(alignment: alignment, content: content)
+        }
+        else
+        {
+            self.overlay(content(), alignment: alignment)
+        }
+    }
+    
+    /// Backwards compatible `background` call.
+    @inlinable
+    @ViewBuilder func compat_background<V>(alignment: Alignment = .center, content: () -> V) -> some View where V: View
+    {
+        if #available(iOS 15, *)
+        {
+            self.background(alignment: alignment, content: content)
+        }
+        else
+        {
+            self.background(content(), alignment: alignment)
         }
     }
 }
