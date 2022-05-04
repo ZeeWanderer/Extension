@@ -12,3 +12,9 @@ public func debug_action(_ closure: () -> Void)
     closure()
 #endif
 }
+
+@inlinable
+public func debug_print(_ items: Any..., separator: String = " ", terminator: String = "\n")
+{
+    debug_action { print(items, separator: separator, terminator: terminator) }
+}
