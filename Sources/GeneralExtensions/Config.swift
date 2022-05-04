@@ -1,5 +1,5 @@
 //
-//  General.swift
+//  Config.swift
 //  
 //
 //  Created by Maksym Kulyk on 29.03.2022.

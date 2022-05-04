@@ -1,12 +1,17 @@
 import XCTest
-@testable import Extension
+@testable import SwiftExtension
+@testable import FoundationExtension
+@testable import CoreGraphicsExtension
+@testable import UIKitExtension
+@testable import SpriteKitExtension
+@testable import SwiftUIExtension
+@testable import GeneralExtensions
 
-final class ExtensionTests: XCTestCase {
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        //XCTAssertEqual(Extension.text, "Hello, World!")
+final class ExtensionTests: XCTestCase
+{
+    func testExample()
+    {
+        debug_print("test")
     }
 
     static var allTests = [
