@@ -5,8 +5,9 @@
 //  Created by Maksym Kulyk on 19.04.2022.
 //
 
+
+@_exported import SwiftExtension
 import CoreGraphics
-import FoundationExtension
 
 /// Linear interpolate value in `[min,max]` for `parameter`.
 /// Each axis is intepolated separately.

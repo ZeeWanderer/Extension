@@ -14,7 +14,7 @@ let package = Package(
         .library(
             name: "Extension",
             type: .static,
-            targets: ["FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions"]),
+            targets: ["SwiftExtension","FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -24,20 +24,23 @@ let package = Package(
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
-            name: "FoundationExtension",
+            name: "SwiftExtension",
             dependencies: []),
         .target(
+            name: "FoundationExtension",
+            dependencies: ["SwiftExtension"]),
+        .target(
             name: "CoreGraphicsExtension",
-            dependencies: ["FoundationExtension"]),
+            dependencies: ["SwiftExtension"]),
         .target(
             name: "UIKitExtension",
-            dependencies: ["FoundationExtension"]),
+            dependencies: ["SwiftExtension"]),
         .target(
             name: "SpriteKitExtension",
-            dependencies: ["UIKitExtension"]),
+            dependencies: ["SwiftExtension", "UIKitExtension"]),
         .target(
             name: "SwiftUIExtension",
-            dependencies: ["UIKitExtension"]),
+            dependencies: ["SwiftExtension", "UIKitExtension"]),
         .target(
             name: "GeneralExtensions",
             dependencies: []),

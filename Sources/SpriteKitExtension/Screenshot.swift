@@ -5,8 +5,8 @@
 //  Created by Maksym Kulyk on 09.03.2022.
 //
 
+@_exported import UIKitExtension
 import SpriteKit
-import UIKitExtension
 
 public extension SKScene
 {

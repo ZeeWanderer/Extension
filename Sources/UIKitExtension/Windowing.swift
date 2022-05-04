@@ -7,6 +7,7 @@
 
 import UIKit
 
+// MARK: - UIApplication
 public extension UIApplication
 {
     /// Replacement for deprecated `UIApplication.keyWindow`
@@ -26,25 +27,9 @@ public extension UIApplication
                 $0.isKeyWindow
             }
     }
-    
-    @available(*, deprecated, renamed: "keySceneWindow")
-    @inlinable var keyWindow_: UIWindow?
-    {
-        connectedScenes
-            .compactMap {
-                $0 as? UIWindowScene
-            }
-            .flatMap {
-                $0.windows
-            }
-            .first {
-                $0.isKeyWindow
-            }
-    }
 }
 
-// -MARK: UIViewController EXTENSION
-
+// MARK: - UIViewController
 public extension UIViewController
 {
     @inlinable

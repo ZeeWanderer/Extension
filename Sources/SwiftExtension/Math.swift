@@ -5,8 +5,6 @@
 //  Created by Maksym Kulyk on 18.03.2022.
 //
 
-import Foundation
-
 /// Clamp `value` to `[min,max]`
 @inline(__always)
 public func clamp<T>(_ value: T, min minValue: T, max maxValue: T) -> T where T: Comparable

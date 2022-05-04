@@ -6,8 +6,8 @@
 //  Copyright © 2020 max. All rights reserved.
 //
 
+@_exported import SwiftExtension
 import CoreGraphics
-import FoundationExtension
 
 // MARK: - CGFloat
 public extension CGFloat
@@ -136,28 +136,6 @@ public extension CGPoint
     {
         return ilerp(parameter, min: min, max: self)
     }
-    
-    // MARK: DEPRECATED
-    @available(*, deprecated, renamed: "translatedBy(dx:dy:)")
-    @inline(__always)
-    func translateBy(dx: CGFloat, dy: CGFloat) -> CGPoint
-    {
-        return translatedBy(dx: dx, dy: dy)
-    }
-    
-    @available(*, deprecated, renamed: "translated(by:)")
-    @inline(__always)
-    func translate(by point: CGPoint) -> CGPoint
-    {
-        return translated(by: point)
-    }
-    
-    @available(*, deprecated, renamed: "translated(by:)")
-    @inline(__always)
-    func translate(by size: CGSize) -> CGPoint
-    {
-        return translated(by: size)
-    }
 }
 
 // MARK: - CGSize
@@ -236,27 +214,5 @@ public extension CGRect
     var center: CGPoint
     {
         return self.origin.translatedBy(dx: self.width/2.0, dy: self.height/2.0)
-    }
-    
-    // MARK: DEPRECATED
-    @available(*, deprecated, renamed: "translatedBy(dx:dy:)")
-    @inline(__always)
-    func translateBy(dx:CGFloat, dy:CGFloat) -> CGRect
-    {
-        return CGRect(origin: self.origin.translatedBy(dx: dx, dy: dy), size: size)
-    }
-    
-    @available(*, deprecated, renamed: "translated(by:)")
-    @inline(__always)
-    func translate(by point: CGPoint) -> CGRect
-    {
-        return CGRect(origin: self.origin.translated(by: point), size: size)
-    }
-    
-    @available(*, deprecated, renamed: "translated(by:)")
-    @inline(__always)
-    func translate(by size: CGSize) -> CGRect
-    {
-        return CGRect(origin: self.origin.translated(by: size), size: size)
     }
 }
