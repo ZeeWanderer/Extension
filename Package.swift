@@ -37,10 +37,10 @@ let package = Package(
             dependencies: ["SwiftExtension"]),
         .target(
             name: "SpriteKitExtension",
-            dependencies: ["SwiftExtension", "UIKitExtension"]),
+            dependencies: ["UIKitExtension"]),
         .target(
             name: "SwiftUIExtension",
-            dependencies: ["SwiftExtension", "UIKitExtension"]),
+            dependencies: ["UIKitExtension"]),
         .target(
             name: "GeneralExtensions",
             dependencies: []),
