@@ -5,7 +5,7 @@
 //  Created by Maksym Kulyk on 05.04.2022.
 //
 
-@_exported import SwiftExtension
+import SwiftExtension
 import UIKit
 
 /// Strokes specified rect in current CGContext if it can get one

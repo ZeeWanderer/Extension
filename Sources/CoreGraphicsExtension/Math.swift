@@ -6,7 +6,7 @@
 //
 
 
-@_exported import SwiftExtension
+import SwiftExtension
 import CoreGraphics
 
 /// Linear interpolate value in `[min,max]` for `parameter`.

@@ -6,7 +6,7 @@
 //  Copyright © 2020 max. All rights reserved.
 //
 
-@_exported import SwiftExtension
+import SwiftExtension
 import CoreGraphics
 
 // MARK: - CGFloat

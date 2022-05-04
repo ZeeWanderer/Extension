@@ -5,7 +5,7 @@
 //  Created by Maksym Kulyk on 27.04.2021.
 //
 
-@_exported import SwiftExtension
+import SwiftExtension
 import Foundation
 
 //MARK: - Dictionary
