@@ -1,6 +1,6 @@
 # ``SwiftExtension``
 
-<!--@START_MENU_TOKEN@-->Summary<!--@END_MENU_TOKEN@-->
+Extension of Swift Standard Library
 
 ## Overview
 
@@ -8,6 +8,14 @@
 
 ## Topics
 
-### <!--@START_MENU_TOKEN@-->Group<!--@END_MENU_TOKEN@-->
+### Debug
 
-- <!--@START_MENU_TOKEN@-->``Symbol``<!--@END_MENU_TOKEN@-->
+- ``debug_action(_:)``
+- ``debug_print(_:separator:terminator:)``
+
+### Math
+
+- ``clamp(_:to:)``
+- ``clamp(_:min:max:)``
+- ``lerp(_:min:max:)``
+- ``ilerp(_:min:max:)``

@@ -5,6 +5,7 @@
 //  Created by Maksym Kulyk on 05.04.2022.
 //
 
+/// Helper function that executes given closure only if DEBUG is true
 @inlinable
 public func debug_action(_ closure: () -> Void)
 {
@@ -13,6 +14,7 @@ public func debug_action(_ closure: () -> Void)
 #endif
 }
 
+/// Helper function that prints only if DEBUG is true
 @inlinable
 public func debug_print(_ items: Any..., separator: String = " ", terminator: String = "\n")
 {

@@ -1,6 +1,6 @@
 # ``UIKitExtension``
 
-<!--@START_MENU_TOKEN@-->Summary<!--@END_MENU_TOKEN@-->
+Extension of UIKit
 
 ## Overview
 
@@ -8,6 +8,6 @@
 
 ## Topics
 
-### <!--@START_MENU_TOKEN@-->Group<!--@END_MENU_TOKEN@-->
+### Debug
 
-- <!--@START_MENU_TOKEN@-->``Symbol``<!--@END_MENU_TOKEN@-->
+- ``debug_rect(_:color:)``

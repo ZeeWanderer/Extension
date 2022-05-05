@@ -11,7 +11,7 @@ import CoreGraphics
 
 /// Linear interpolate value in `[min,max]` for `parameter`.
 /// Each axis is intepolated separately.
-/// See: `FoundationExtension/lerp(_:min:max:)`
+/// See: `SwiftExtension/lerp(_:min:max:)`
 public func lerp(_ parameter: CGFloat, min: CGPoint, max: CGPoint) -> CGPoint
 {
     let x = lerp(parameter, min: min.x, max: max.x)
@@ -21,7 +21,7 @@ public func lerp(_ parameter: CGFloat, min: CGPoint, max: CGPoint) -> CGPoint
 
 /// Linear interpolate value in `[min,max]` for `parameter`.
 /// Each axis is intepolated separately with corresponding `parameter` coordinate as parameter
-/// See: `FoundationExtension/lerp(_:min:max:)`
+/// See: `SwiftExtension/lerp(_:min:max:)`
 public func lerp(_ parameter: CGPoint, min: CGPoint, max: CGPoint) -> CGPoint
 {
     let x = lerp(parameter.x, min: min.x, max: max.x)
@@ -31,7 +31,7 @@ public func lerp(_ parameter: CGPoint, min: CGPoint, max: CGPoint) -> CGPoint
 
 /// Inverse Linear interpolate value in `[min,max]` for `parameter`.
 /// Each axis is intepolated separately.
-/// See: `FoundationExtension/ilerp(_:min:max:)`
+/// See: `SwiftExtension/ilerp(_:min:max:)`
 public func ilerp(_ parameter: CGFloat, min: CGPoint, max: CGPoint) -> CGPoint
 {
     let x = ilerp(parameter, min: min.x, max: max.x)
@@ -41,7 +41,7 @@ public func ilerp(_ parameter: CGFloat, min: CGPoint, max: CGPoint) -> CGPoint
 
 /// Inverse Linear interpolate value in `[min,max]` for `parameter`.
 /// Each axis is intepolated separately with corresponding `parameter` coordinate as parameter
-/// See: `FoundationExtension/ilerp(_:min:max:)`
+/// See: `SwiftExtension/ilerp(_:min:max:)`
 public func ilerp(_ parameter: CGPoint, min: CGPoint, max: CGPoint) -> CGPoint
 {
     let x = ilerp(parameter.x, min: min.x, max: max.x)

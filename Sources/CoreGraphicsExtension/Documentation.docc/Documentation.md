@@ -1,6 +1,6 @@
 # ``CoreGraphicsExtension``
 
-<!--@START_MENU_TOKEN@-->Summary<!--@END_MENU_TOKEN@-->
+Extension of Core Graphics
 
 ## Overview
 
@@ -8,6 +8,9 @@
 
 ## Topics
 
-### <!--@START_MENU_TOKEN@-->Group<!--@END_MENU_TOKEN@-->
+### Math
 
-- <!--@START_MENU_TOKEN@-->``Symbol``<!--@END_MENU_TOKEN@-->
+- ``lerp(_:min:max:)-z0dd``
+- ``lerp(_:min:max:)-lglu``
+- ``ilerp(_:min:max:)-59add``
+- ``ilerp(_:min:max:)-24jcs``
