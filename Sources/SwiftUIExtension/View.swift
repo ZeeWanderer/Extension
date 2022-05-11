@@ -216,7 +216,7 @@ public extension View
     
     /// Backwards compatible `overlay` call.
     @inlinable
-    @ViewBuilder func compat_overlay<V>(alignment: Alignment = .center, content: () -> V) -> some View where V: View
+    @ViewBuilder func compat_overlay<V>(alignment: Alignment = .center, @ViewBuilder content: () -> V) -> some View where V: View
     {
         if #available(iOS 15, *)
         {
@@ -230,7 +230,7 @@ public extension View
     
     /// Backwards compatible `background` call.
     @inlinable
-    @ViewBuilder func compat_background<V>(alignment: Alignment = .center, content: () -> V) -> some View where V: View
+    @ViewBuilder func compat_background<V>(alignment: Alignment = .center, @ViewBuilder content: () -> V) -> some View where V: View
     {
         if #available(iOS 15, *)
         {
