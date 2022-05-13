@@ -6,6 +6,7 @@
 //
 
 /// Clamp `value` to `[min,max]`
+@inlinable
 @inline(__always)
 public func clamp<T>(_ value: T, min minValue: T, max maxValue: T) -> T where T: Comparable
 {
@@ -13,6 +14,7 @@ public func clamp<T>(_ value: T, min minValue: T, max maxValue: T) -> T where T:
 }
 
 /// Clamp `value` to provided `limits`
+@inlinable
 @inline(__always)
 public func clamp<T>(_ value: T, to limits: ClosedRange<T>) -> T where T: Comparable
 {
@@ -25,6 +27,7 @@ public func clamp<T>(_ value: T, to limits: ClosedRange<T>) -> T where T: Compar
 /// ---
 /// # Formula
 /// `min + (parameter * (max - min))`
+@inlinable
 @inline(__always)
 public func lerp<T>(_ parameter: T, min: T, max: T) -> T where T: Numeric
 {
@@ -37,6 +40,7 @@ public func lerp<T>(_ parameter: T, min: T, max: T) -> T where T: Numeric
 /// ---
 /// # Formula
 /// `(parameter - min) / (max - min)`
+@inlinable
 @inline(__always)
 public func ilerp<T>(_ parameter: T, min: T, max: T) -> T where T: FloatingPoint
 {

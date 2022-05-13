@@ -63,6 +63,7 @@ public struct LazyView<Content>: View where Content : View
         self.build = build
     }
     
+    @inlinable
     public var body: Content
     {
         build()

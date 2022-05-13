@@ -14,6 +14,7 @@ public extension CGFloat
 {
     /// linear intepolate a point between `min` and `max` with `self` as `parameter` (t).
     /// See: ``lerp(_:min:max:)-lglu``
+    @inlinable
     @inline(__always)
     func lerped(min: CGPoint, max: CGPoint) -> CGPoint
     {
@@ -22,6 +23,7 @@ public extension CGFloat
     
     /// inverse linear intepolate a point between `min` and `max` with `self` as `parameter` (t).
     /// See:  ``ilerp(_:min:max:)-59add``
+    @inlinable
     @inline(__always)
     func ilerped(min: CGPoint, max: CGPoint) -> CGPoint
     {
@@ -33,6 +35,7 @@ public extension CGFloat
 public extension CGPoint
 {
     /// Translate CGPoint by a given ammount
+    @inlinable
     @inline(__always)
     func translatedBy(dx: CGFloat, dy: CGFloat) -> CGPoint
     {
@@ -40,6 +43,7 @@ public extension CGPoint
     }
     
     /// Translate CGPoint by a vector defined as ((0,0), point)
+    @inlinable
     @inline(__always)
     func translated(by point: CGPoint) -> CGPoint
     {
@@ -47,42 +51,49 @@ public extension CGPoint
     }
     
     /// Translate CGPoint by a vector defined as ((0,0), size)
+    @inlinable
     @inline(__always)
     func translated(by size: CGSize) -> CGPoint
     {
         return CGPoint(x:self.x + size.width, y:self.y + size.height)
     }
     
+    @inlinable
     @inline(__always)
     static func * (_ lhs: CGPoint, _ rhs: CGFloat) -> CGPoint
     {
         return CGPoint(x: lhs.x * rhs, y: lhs.y * rhs)
     }
     
+    @inlinable
     @inline(__always)
     static func / (_ lhs: CGPoint, _ rhs: CGFloat) -> CGPoint
     {
         return CGPoint(x: lhs.x / rhs, y: lhs.y / rhs)
     }
     
+    @inlinable
     @inline(__always)
     static func + (lhs:CGPoint, rhs: CGFloat) -> CGPoint
     {
         return CGPoint(x: lhs.x + rhs, y: lhs.y + rhs)
     }
     
+    @inlinable
     @inline(__always)
     static func - (lhs:CGPoint, rhs: CGFloat) -> CGPoint
     {
         return CGPoint(x: lhs.x - rhs, y: lhs.y - rhs)
     }
     
+    @inlinable
     @inline(__always)
     static func + (lhs:CGPoint, rhs: CGPoint) -> CGPoint
     {
         return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
     }
     
+    @inlinable
     @inline(__always)
     static func - (lhs:CGPoint, rhs: CGPoint) -> CGPoint
     {
@@ -91,6 +102,7 @@ public extension CGPoint
     
     /// linear intepolate a point between `min` and `max` with `self` as `parameter`.
     /// See:  ``lerp(_:min:max:)-z0dd``
+    @inlinable
     @inline(__always)
     func lerped(min: CGPoint, max: CGPoint) -> CGPoint
     {
@@ -99,6 +111,7 @@ public extension CGPoint
     
     /// linear intepolate a point between `min` and `max` for `parameter`  with `self` as `min`.
     /// See:  ``lerp(_:min:max:)-z0dd``
+    @inlinable
     @inline(__always)
     func lerped(_ parameter: CGPoint, max: CGPoint) -> CGPoint
     {
@@ -107,6 +120,7 @@ public extension CGPoint
     
     /// linear intepolate a point between `min` and `max` for `parameter`  with `self` as `max`.
     /// See:  ``lerp(_:min:max:)-z0dd``
+    @inlinable
     @inline(__always)
     func lerped(_ parameter: CGPoint, min: CGPoint) -> CGPoint
     {
@@ -115,6 +129,7 @@ public extension CGPoint
     
     /// inverse linear intepolate a point between `min` and `max` with `self` as `parameter`.
     /// See:  ``ilerp(_:min:max:)-24jcs``
+    @inlinable
     @inline(__always)
     func ilerped(min: CGPoint, max: CGPoint) -> CGPoint
     {
@@ -123,6 +138,7 @@ public extension CGPoint
     
     /// inverse linear intepolate a point between `min` and `max` for `parameter`  with `self` as `min`.
     /// See:  ``ilerp(_:min:max:)-24jcs``
+    @inlinable
     @inline(__always)
     func ilerped(_ parameter: CGPoint, max: CGPoint) -> CGPoint
     {
@@ -131,6 +147,7 @@ public extension CGPoint
     
     /// inverse linear intepolate a point between `min` and `max` for `parameter`  with `self` as `max`.
     /// See:  ``ilerp(_:min:max:)-24jcs``
+    @inlinable
     @inline(__always)
     func ilerped(_ parameter: CGPoint, min: CGPoint) -> CGPoint
     {
@@ -147,6 +164,7 @@ public extension CGSize
         self.init(width: point.x, height: point.y)
     }
     
+    @inlinable
     @inline(__always)
     static func * (lhs: CGSize, rhs: CGFloat) -> CGSize
     {
@@ -154,6 +172,7 @@ public extension CGSize
     }
     
     /// `width * height`
+    @inlinable
     @inline(__always)
     var square: CGFloat
     {
@@ -161,6 +180,7 @@ public extension CGSize
     }
     
     /// Center point of the rectange area defined by `CGSize`
+    @inlinable
     @inline(__always)
     var center: CGPoint
     {
@@ -172,6 +192,7 @@ public extension CGSize
 public extension CGRect
 {
     /// Translate CGRect by a given ammount
+    @inlinable
     @inline(__always)
     func translatedBy(dx: CGFloat, dy: CGFloat) -> CGRect
     {
@@ -179,6 +200,7 @@ public extension CGRect
     }
     
     /// Translate CGRect by a vector defined as ((0,0), point)
+    @inlinable
     @inline(__always)
     func translated(by point: CGPoint) -> CGRect
     {
@@ -186,6 +208,7 @@ public extension CGRect
     }
     
     /// Translate CGRect by a vector defined as ((0,0), size)
+    @inlinable
     @inline(__always)
     func translated(by size: CGSize) -> CGRect
     {
@@ -195,6 +218,7 @@ public extension CGRect
     // Includes origin into scaling because CGSize describes
     // an are without position, but CGRect describes an area
     // with position.
+    @inlinable
     @inline(__always)
     static func * (lhs: CGRect, rhs: CGFloat) -> CGRect
     {
@@ -202,6 +226,7 @@ public extension CGRect
     }
     
     /// `width * height`
+    @inlinable
     @inline(__always)
     var square: CGFloat
     {
@@ -210,6 +235,7 @@ public extension CGRect
     
     /// Center point of the `CGRect`
     /// - Note: With respect to origin
+    @inlinable
     @inline(__always)
     var center: CGPoint
     {
