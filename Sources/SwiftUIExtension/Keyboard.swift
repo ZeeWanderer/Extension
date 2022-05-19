@@ -17,13 +17,11 @@ public class KeyboardHeightHelper: ObservableObject
         keyboardHeight != 0
     }
     
-    @usableFromInline
     internal func listenForKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboard_appear(_:)), name: UIWindow.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboard_hide(_:)), name: UIWindow.keyboardWillHideNotification, object: nil)
     }
     
-    @usableFromInline
     @objc internal func keyboard_appear(_ notification: Notification)
     {
         guard let userInfo = notification.userInfo,
@@ -39,7 +37,6 @@ public class KeyboardHeightHelper: ObservableObject
         }
     }
     
-    @usableFromInline
     @objc internal func keyboard_hide(_ notification: Notification)
     {
         withAnimation
@@ -48,7 +45,6 @@ public class KeyboardHeightHelper: ObservableObject
         }
     }
     
-    @inlinable
     public init()
     {
         self.listenForKeyboardNotifications()
