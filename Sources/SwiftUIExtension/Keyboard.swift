@@ -9,7 +9,6 @@ import SwiftUI
 
 public class KeyboardHeightHelper: ObservableObject
 {
-    @inlinable
     @Published public var keyboardHeight: CGFloat = 0
     
     @inlinable
@@ -24,6 +23,7 @@ public class KeyboardHeightHelper: ObservableObject
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboard_hide(_:)), name: UIWindow.keyboardWillHideNotification, object: nil)
     }
     
+    @usableFromInline
     @objc internal func keyboard_appear(_ notification: Notification)
     {
         guard let userInfo = notification.userInfo,
@@ -39,6 +39,7 @@ public class KeyboardHeightHelper: ObservableObject
         }
     }
     
+    @usableFromInline
     @objc internal func keyboard_hide(_ notification: Notification)
     {
         withAnimation
