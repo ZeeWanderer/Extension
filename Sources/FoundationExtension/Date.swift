@@ -10,13 +10,16 @@ import Foundation
 //MARK: - Date
 extension Date: RawRepresentable
 {
-    private static let formatter = ISO8601DateFormatter()
+    @usableFromInline
+    internal static let formatter = ISO8601DateFormatter()
     
+    @inlinable
     public var rawValue: String
     {
         Date.formatter.string(from: self)
     }
     
+    @inlinable
     public init?(rawValue: String)
     {
         self = Date.formatter.date(from: rawValue) ?? Date()

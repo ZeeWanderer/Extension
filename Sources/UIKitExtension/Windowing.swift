@@ -39,6 +39,7 @@ public extension UIViewController
         return keyWindow?.rootViewController?.topMostViewController()
     }
     
+    @inlinable
     func topMostViewController() -> UIViewController?
     {
         if let presentedViewController = self.presentedViewController

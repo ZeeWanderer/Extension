@@ -10,6 +10,7 @@ import SwiftUI
 
 public struct SafeAreaInsetsKey: EnvironmentKey
 {
+    @inlinable
     public static var defaultValue: EdgeInsets
     {
         UIApplication.shared.keySceneWindow?.safeAreaInsets.swiftUIInsets ?? EdgeInsets()
@@ -22,6 +23,7 @@ public extension EnvironmentValues
     ///
     /// This value is set to provide observable EdgeInsets
     /// See `UIEdgeInsets.swiftUIInsets` extension
+    @inlinable
     var safeAreaInsets: EdgeInsets
     {
         self[SafeAreaInsetsKey.self]

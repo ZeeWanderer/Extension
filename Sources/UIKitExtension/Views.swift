@@ -12,12 +12,14 @@ import UIKit
 
 public extension UIView
 {
+    @inlinable
     func setCorner(radius: CGFloat)
     {
         layer.cornerRadius = radius
         clipsToBounds = true
     }
     
+    @inlinable
     func circleCorner()
     {
         superview?.layoutIfNeeded()
@@ -27,6 +29,7 @@ public extension UIView
 
 public extension UIView
 {
+    @inlinable
     class func getAllSubviews<T: UIView>(from parenView: UIView) -> [T]
     {
         return parenView.subviews.flatMap { subView -> [T] in
@@ -36,6 +39,7 @@ public extension UIView
         }
     }
     
+    @inlinable
     class func getAllSubviews(from parenView: UIView, types: [UIView.Type]) -> [UIView]
     {
         return parenView.subviews.flatMap { subView -> [UIView] in
@@ -52,9 +56,9 @@ public extension UIView
         }
     }
     
-    func getAllSubviews<T: UIView>() -> [T] { return UIView.getAllSubviews(from: self) as [T] }
-    func get<T: UIView>(all type: T.Type) -> [T] { return UIView.getAllSubviews(from: self) as [T] }
-    func get(all types: [UIView.Type]) -> [UIView] { return UIView.getAllSubviews(from: self, types: types) }
+    @inlinable func getAllSubviews<T: UIView>() -> [T] { return UIView.getAllSubviews(from: self) as [T] }
+    @inlinable func get<T: UIView>(all type: T.Type) -> [T] { return UIView.getAllSubviews(from: self) as [T] }
+    @inlinable func get(all types: [UIView.Type]) -> [UIView] { return UIView.getAllSubviews(from: self, types: types) }
 }
 
 // -MARK: ReusableView EXTENSION
@@ -66,6 +70,7 @@ public protocol ReusableView: AnyObject
 
 public extension ReusableView where Self: UIView
 {
+    @inlinable
     static var defaultReuseIdentifier: String
     {
         return String(describing: Self.self)
@@ -81,6 +86,7 @@ public protocol NibLoadableView: AnyObject
 
 public extension NibLoadableView where Self: UIView
 {
+    @inlinable
     static var nibName: String
     {
         return String(describing: Self.self)
@@ -98,6 +104,7 @@ public extension UICollectionView
      collectionView.register(CellClass.self)
      ```
      */
+    @inlinable
     func register<T: UICollectionViewCell>(_: T.Type) where T: ReusableView
     {
         register(T.self, forCellWithReuseIdentifier: T.defaultReuseIdentifier)
@@ -111,6 +118,7 @@ public extension UICollectionView
      collectionView.register(CellClass.self)
      ```
      */
+    @inlinable
     func register<T: UICollectionViewCell>(_: T.Type) where T: ReusableView, T: NibLoadableView
     {
         let bundle = Bundle(for: T.self)
@@ -127,6 +135,7 @@ public extension UICollectionView
      collectionView.register(ViewClass.self)
      ```
      */
+    @inlinable
     func register<T: UICollectionReusableView>(_: T.Type, ofKind elementKind: String = T.defaultReuseIdentifier) where T: ReusableView
     {
         register(T.self, forSupplementaryViewOfKind: elementKind, withReuseIdentifier: T.defaultReuseIdentifier)
@@ -140,6 +149,7 @@ public extension UICollectionView
      collectionView.register(ViewClass.self)
      ```
      */
+    @inlinable
     func register<T: UICollectionReusableView>(_: T.Type, ofKind elementKind: String = T.defaultReuseIdentifier) where T: ReusableView, T: NibLoadableView
     {
         let bundle = Bundle(for: T.self)
@@ -163,6 +173,7 @@ public extension UICollectionView
      let cell: CellClass = collectionView.dequeueReusableCell(forIndexPath: indexPath)
      ```
      */
+    @inlinable
     func dequeueReusableCell<T: UICollectionViewCell>(forIndexPath indexPath: IndexPath) -> T where T: ReusableView
     {
         guard let cell = dequeueReusableCell(withReuseIdentifier: T.defaultReuseIdentifier, for: indexPath) as? T else
@@ -185,6 +196,7 @@ public extension UICollectionView
      let sup: ViewClass = collectionView.dequeueReusableSupplementaryView(ofKind: kind, for: indexPath)
      ```
      */
+    @inlinable
     func dequeueReusableSupplementaryView<T: UICollectionReusableView>(ofKind elementKind: String, for indexPath: IndexPath) -> T where T: ReusableView
     {
         guard let sup = dequeueReusableSupplementaryView(ofKind: elementKind, withReuseIdentifier: T.defaultReuseIdentifier, for: indexPath) as? T else

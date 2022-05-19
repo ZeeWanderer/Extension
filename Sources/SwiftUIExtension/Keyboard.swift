@@ -9,6 +9,7 @@ import SwiftUI
 
 public class KeyboardHeightHelper: ObservableObject
 {
+    @inlinable
     @Published public var keyboardHeight: CGFloat = 0
     
     @inlinable
@@ -46,6 +47,7 @@ public class KeyboardHeightHelper: ObservableObject
         }
     }
     
+    @inlinable
     public init()
     {
         self.listenForKeyboardNotifications()

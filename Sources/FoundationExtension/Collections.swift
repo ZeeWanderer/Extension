@@ -11,6 +11,7 @@ import Foundation
 //MARK: - Dictionary
 extension Dictionary: RawRepresentable where Key: Codable, Value: Codable
 {
+    @inlinable
     public init?(rawValue: String)
     {
         guard let data = rawValue.data(using: .utf8),
@@ -21,6 +22,7 @@ extension Dictionary: RawRepresentable where Key: Codable, Value: Codable
         self = result
     }
     
+    @inlinable
     public var rawValue: String
     {
         guard let data = try? JSONEncoder().encode(self),
@@ -101,6 +103,7 @@ public extension LocalizationDictionary
 //MARK: - Array
 extension Array: RawRepresentable where Element: Codable
 {
+    @inlinable
     public init?(rawValue: String)
     {
         guard let data = rawValue.data(using: .utf8),
@@ -111,6 +114,7 @@ extension Array: RawRepresentable where Element: Codable
         self = result
     }
     
+    @inlinable
     public var rawValue: String
     {
         guard let data = try? JSONEncoder().encode(self),

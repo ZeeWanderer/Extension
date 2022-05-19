@@ -14,6 +14,7 @@ import Foundation
 //MARK: KeyedDecodingContainer
 public extension KeyedDecodingContainer
 {
+    @inlinable
     func decode<K, V, R>(_ type: [K:V].Type, forKey key: Key) throws -> [K:V]
     where K: RawRepresentable, K: Decodable, K.RawValue == R,
           V: Decodable,
@@ -40,6 +41,7 @@ public extension KeyedDecodingContainer
 //MARK: SingleValueDecodingContainer
 public extension SingleValueDecodingContainer
 {
+    @inlinable
     func decode<K, V, R>(_ type: [K:V].Type) throws -> [K:V]
     where K: RawRepresentable, K: Decodable, K.RawValue == R,
           V: Decodable,
@@ -66,11 +68,13 @@ public extension SingleValueDecodingContainer
 //MARK: JSONDecoder
 public extension JSONDecoder
 {
-    private enum JSONDecoder_dict_decoding: CodingKey
+    @usableFromInline
+    internal enum JSONDecoder_dict_decoding: CodingKey
     {
         case self_
     }
     
+    @inlinable
     func decode<K, V, R>(_ type: [K:V].Type, from data: Data) throws -> [K:V]
     where K: RawRepresentable, K: Decodable, K.RawValue == R,
           V: Decodable,

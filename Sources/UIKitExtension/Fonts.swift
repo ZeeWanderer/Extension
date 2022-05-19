@@ -10,6 +10,7 @@ import UIKit
 
 public extension UIFont
 {
+    @inlinable
     convenience init?(named fontName: String, fitting text: String, into targetSize: CGSize, with attributes: [NSAttributedString.Key: Any], options: NSStringDrawingOptions)
     {
         var attributes = attributes
@@ -28,6 +29,7 @@ public extension UIFont
     }
 }
 
+@inlinable
 public func adjustAttributesToFit(line: String, in rect : CGRect, m_attributes:inout [NSAttributedString.Key : Any], options: NSStringDrawingOptions, context: NSStringDrawingContext?)
 {
     let s_font = m_attributes[.font] as! UIFont
