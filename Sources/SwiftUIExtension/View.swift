@@ -14,6 +14,7 @@ public struct ClearBackgroundView: UIViewRepresentable
     @inlinable
     public init() {} // for @inlinable
     
+    @inlinable
     public func makeUIView(context: Context) -> some UIView
     {
         let view = UIView()
@@ -25,6 +26,7 @@ public struct ClearBackgroundView: UIViewRepresentable
         return view
     }
     
+    @inlinable
     public func updateUIView(_ uiView: UIViewType, context: Context)
     {
     }
@@ -135,6 +137,8 @@ public extension View
     }
     
     // MARK: Modifiers
+    /// Conditionaly executes closure.
+    /// - Note: Beware, this modifies view in a way that changes it's identifier.
     @inlinable
     @ViewBuilder func `if`<Content>(_ condition: Bool, transform: (Self) -> Content) -> some View where Content : View
     {
@@ -146,6 +150,15 @@ public extension View
         {
             self
         }
+    }
+    
+    /// Made for redibility. Conditionaly executes closure, inverses the condition.
+    /// Intended for use after `if` with the same condition to promote readibility. Equivalent to `if(!condition)`.
+    /// - Note: Beware, this modifies view in a way that changes it's identifier.
+    @inlinable
+    @ViewBuilder func `else`<Content>(_ condition: Bool, transform: (Self) -> Content) -> some View where Content : View
+    {
+        self.if(!condition, transform: transform)
     }
     
     /// Applies glow determined by the View content with radius of `radius`.
