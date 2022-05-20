@@ -7,7 +7,9 @@
 
 import SwiftUI
 
-public class KeyboardHeightHelper: ObservableObject
+/// Helper class that listens to keyboard notification and provides observable keyboard height and a number of helper functions
+/// - Note: Does not use `withAnimation`, so animation needs to be set by end user via `animation`.
+public final class KeyboardHeightHelper: ObservableObject
 {
     @Published public var keyboardHeight: CGFloat = 0
     
@@ -17,7 +19,15 @@ public class KeyboardHeightHelper: ObservableObject
         keyboardHeight != 0
     }
     
-    internal func listenForKeyboardNotifications() {
+    @inlinable
+    public func endTextEditing()
+    {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                        to: nil, from: nil, for: nil)
+    }
+    
+    internal func listenForKeyboardNotifications()
+    {
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboard_appear(_:)), name: UIWindow.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboard_hide(_:)), name: UIWindow.keyboardWillHideNotification, object: nil)
     }
@@ -31,22 +41,32 @@ public class KeyboardHeightHelper: ObservableObject
             return
         }
         
-        withAnimation
-        {
-            self.keyboardHeight = keyboardRect.height
-        }
+        self.keyboardHeight = keyboardRect.height
     }
     
     @objc internal func keyboard_hide(_ notification: Notification)
     {
-        withAnimation
-        {
-            self.keyboardHeight = 0
-        }
+        self.keyboardHeight = 0
     }
     
     public init()
     {
         self.listenForKeyboardNotifications()
+    }
+    
+    deinit
+    {
+        NotificationCenter.default.removeObserver(self)
+    }
+}
+
+// MARK: - View
+public extension View
+{
+    @inlinable
+    func endTextEditing()
+    {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                        to: nil, from: nil, for: nil)
     }
 }
