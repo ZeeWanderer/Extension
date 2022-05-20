@@ -75,6 +75,7 @@ public struct LazyView<Content>: View where Content : View
 // MARK: - View
 public extension View
 {
+    
     // MARK: Notifications
     @inlinable
     func onNotification(_ notificationName: Notification.Name, perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
