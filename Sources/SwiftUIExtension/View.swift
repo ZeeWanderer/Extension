@@ -189,14 +189,24 @@ public extension View
     @inlinable
     func navigate<Destination>(using binding: Binding<Bool>, @ViewBuilder destination: () -> Destination, isDetailLink: Bool = true) -> some View where Destination : View
     {
-        self.background(NavigationLink(destination: destination(), isActive: binding, label: EmptyView.init).isDetailLink(isDetailLink))
+        self.compat_background
+        {
+            NavigationLink(destination: destination(), isActive: binding, label: EmptyView.init)
+                .isDetailLink(isDetailLink)
+                .hidden()
+        }
     }
     
     /// Navigate to `destination` using a `binding`. Destination is warapped into ``LazyView`` to avoid unnececery initis.
     @inlinable
     func lazyNavigate<Destination>(using binding: Binding<Bool>, @ViewBuilder destination: @escaping () -> Destination, isDetailLink: Bool = true) -> some View where Destination : View
     {
-        self.background(NavigationLink(destination: LazyView(destination), isActive: binding, label: EmptyView.init).isDetailLink(isDetailLink))
+        self.compat_background
+        {
+            NavigationLink(destination: LazyView(destination), isActive: binding, label: EmptyView.init)
+                .isDetailLink(isDetailLink)
+                .hidden()
+        }
     }
     
     // MARK: Compatibility
