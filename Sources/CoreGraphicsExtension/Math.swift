@@ -54,27 +54,17 @@ public func ilerp(_ parameter: CGPoint, min: CGPoint, max: CGPoint) -> CGPoint
 }
 
 /// All rectangles are standardized prior to calculating the union.
-/// If either of the rectangles is a null rectangle, it is ignored. If all rectangles are null, a null rectangle is returned
+/// If either of the rectangles is a null rectangle, it is ignored. If all rectangles are null, a null rectangle is returned.
 /// Otherwise a rectangle that completely contains the source rectangles is returned.
 @inlinable
 public func union(_ rects: [CGRect]) -> CGRect
 {
-    var minx: CGFloat = .infinity
-    var miny: CGFloat = .infinity
-    var maxx: CGFloat = -.infinity
-    var maxy: CGFloat = -.infinity
+    var bounding_rect = CGRect.null
     
     for rect in rects
     {
-        let standardized = rect.standardized
-        
-        minx = min(minx, standardized.minX)
-        miny = min(miny, standardized.minY)
-        maxx = max(maxx, standardized.maxX)
-        maxy = max(maxy, standardized.maxY)
+        bounding_rect = bounding_rect.union(rect)
     }
-    
-    let bounding_rect = CGRect(x: minx, y: miny, width: maxx - minx, height: maxy - miny)
     
     return bounding_rect
 }
