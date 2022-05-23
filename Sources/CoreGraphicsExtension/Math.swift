@@ -59,11 +59,8 @@ public func ilerp(_ parameter: CGPoint, min: CGPoint, max: CGPoint) -> CGPoint
 @inlinable
 public func union(_ rects: [CGRect]) -> CGRect
 {
-    var bounding_rect = CGRect.null
-    
-    for rect in rects
-    {
-        bounding_rect = bounding_rect.union(rect)
+    let bounding_rect = rects.reduce(CGRect.null) { (result, element) in
+        return result.union(element)
     }
     
     return bounding_rect
