@@ -241,4 +241,12 @@ public extension CGRect
     {
         return self.origin.translatedBy(dx: self.width/2.0, dy: self.height/2.0)
     }
+    
+    /// Computes CGRect that acts as a Bounding Box for current and provided rectangles.
+    /// See: ``union(_:)``
+    @inlinable
+    func union(_ rects: [CGRect]) -> CGRect
+    {
+        return CoreGraphicsExtension.union([self]+rects)
+    }
 }

@@ -12,6 +12,7 @@ import CoreGraphics
 /// Linear interpolate value in `[min,max]` for `parameter`.
 /// Each axis is intepolated separately.
 /// See: `SwiftExtension/lerp(_:min:max:)`
+@inlinable
 public func lerp(_ parameter: CGFloat, min: CGPoint, max: CGPoint) -> CGPoint
 {
     let x = lerp(parameter, min: min.x, max: max.x)
@@ -22,6 +23,7 @@ public func lerp(_ parameter: CGFloat, min: CGPoint, max: CGPoint) -> CGPoint
 /// Linear interpolate value in `[min,max]` for `parameter`.
 /// Each axis is intepolated separately with corresponding `parameter` coordinate as parameter
 /// See: `SwiftExtension/lerp(_:min:max:)`
+@inlinable
 public func lerp(_ parameter: CGPoint, min: CGPoint, max: CGPoint) -> CGPoint
 {
     let x = lerp(parameter.x, min: min.x, max: max.x)
@@ -32,6 +34,7 @@ public func lerp(_ parameter: CGPoint, min: CGPoint, max: CGPoint) -> CGPoint
 /// Inverse Linear interpolate value in `[min,max]` for `parameter`.
 /// Each axis is intepolated separately.
 /// See: `SwiftExtension/ilerp(_:min:max:)`
+@inlinable
 public func ilerp(_ parameter: CGFloat, min: CGPoint, max: CGPoint) -> CGPoint
 {
     let x = ilerp(parameter, min: min.x, max: max.x)
@@ -42,9 +45,36 @@ public func ilerp(_ parameter: CGFloat, min: CGPoint, max: CGPoint) -> CGPoint
 /// Inverse Linear interpolate value in `[min,max]` for `parameter`.
 /// Each axis is intepolated separately with corresponding `parameter` coordinate as parameter
 /// See: `SwiftExtension/ilerp(_:min:max:)`
+@inlinable
 public func ilerp(_ parameter: CGPoint, min: CGPoint, max: CGPoint) -> CGPoint
 {
     let x = ilerp(parameter.x, min: min.x, max: max.x)
     let y = ilerp(parameter.y, min: min.y, max: max.y)
     return CGPoint(x: x, y: y)
+}
+
+/// All rectangles are standardized prior to calculating the union.
+/// If either of the rectangles is a null rectangle, it is ignored. If all rectangles are null, a null rectangle is returned
+/// Otherwise a rectangle that completely contains the source rectangles is returned.
+@inlinable
+public func union(_ rects: [CGRect]) -> CGRect
+{
+    var minx: CGFloat = .infinity
+    var miny: CGFloat = .infinity
+    var maxx: CGFloat = -.infinity
+    var maxy: CGFloat = -.infinity
+    
+    for rect in rects
+    {
+        let standardized = rect.standardized
+        
+        minx = min(minx, standardized.minX)
+        miny = min(miny, standardized.minY)
+        maxx = max(maxx, standardized.maxX)
+        maxy = max(maxy, standardized.maxY)
+    }
+    
+    let bounding_rect = CGRect(x: minx, y: miny, width: maxx - minx, height: maxy - miny)
+    
+    return bounding_rect
 }
