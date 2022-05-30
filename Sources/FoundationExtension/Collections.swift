@@ -125,3 +125,24 @@ extension Array: RawRepresentable where Element: Codable
         return result
     }
 }
+
+extension Array: BinaryRepresentableCollection where Element: BinaryRepresentable
+{
+    @inlinable
+    public var data: Data
+    {
+        var mutableArray = self
+        return Data(bytes: &mutableArray, count: mutableArray.count * MemoryLayout<Element>.stride)
+    }
+}
+
+//MARK: - Set
+extension Set: BinaryRepresentableCollection where Element: Hashable, Element: BinaryRepresentable
+{
+    @inlinable
+    public var data: Data
+    {
+        var mutableArray = Array(self)
+        return Data(bytes: &mutableArray, count: mutableArray.count * MemoryLayout<Element>.stride)
+    }
+}

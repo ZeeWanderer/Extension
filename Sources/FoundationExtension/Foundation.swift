@@ -7,7 +7,11 @@
 
 import Foundation
 
-// MARK: - Classes
+// MARK: - Structs -
+
+
+
+// MARK: - String
 public extension String
 {
     @inlinable
@@ -18,5 +22,186 @@ public extension String
         {
             !$0.isEmpty
         }.joined(separator: " ")
+    }
+}
+
+// MARK: - Bool
+extension Bool: BinaryRepresentable
+{
+    @inlinable
+    public var data: Data
+    {
+        var selfMutable = self
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.stride)
+    }
+}
+
+// MARK: - Int
+extension Int: BinaryRepresentable
+{
+    @inlinable
+    public var data: Data
+    {
+        var selfMutable = self
+        return Data(bytes: &selfMutable, count: selfMutable.bitWidth)
+    }
+}
+
+// MARK: - Int8
+extension Int8: BinaryRepresentable
+{
+    public var data: Data
+    {
+        var selfMutable = self
+        return Data(bytes: &selfMutable, count: selfMutable.bitWidth)
+    }
+}
+
+// MARK: - Int16
+extension Int16: BinaryRepresentable
+{
+    @inlinable
+    public var data: Data
+    {
+        var selfMutable = self
+        return Data(bytes: &selfMutable, count: selfMutable.bitWidth)
+    }
+}
+
+// MARK: - Int32
+extension Int32: BinaryRepresentable
+{
+    @inlinable
+    public var data: Data
+    {
+        var selfMutable = self
+        return Data(bytes: &selfMutable, count: selfMutable.bitWidth)
+    }
+}
+
+// MARK: - Int64
+extension Int64: BinaryRepresentable
+{
+    @inlinable
+    public var data: Data
+    {
+        var selfMutable = self
+        return Data(bytes: &selfMutable, count: selfMutable.bitWidth)
+    }
+}
+
+// MARK: - UInt
+extension UInt: BinaryRepresentable
+{
+    @inlinable
+    public var data: Data
+    {
+        var selfMutable = self
+        return Data(bytes: &selfMutable, count: selfMutable.bitWidth)
+    }
+}
+
+// MARK: - UInt8
+extension UInt8: BinaryRepresentable
+{
+    @inlinable
+    public var data: Data
+    {
+        var selfMutable = self
+        return Data(bytes: &selfMutable, count: selfMutable.bitWidth)
+    }
+}
+
+// MARK: - UInt16
+extension UInt16: BinaryRepresentable
+{
+    @inlinable
+    public var data: Data
+    {
+        var selfMutable = self
+        return Data(bytes: &selfMutable, count: selfMutable.bitWidth)
+    }
+}
+
+// MARK: - UInt32
+extension UInt32: BinaryRepresentable
+{
+    @inlinable
+    public var data: Data
+    {
+        var selfMutable = self
+        return Data(bytes: &selfMutable, count: selfMutable.bitWidth)
+    }
+}
+
+// MARK: - UInt64
+extension UInt64: BinaryRepresentable
+{
+    @inlinable
+    public var data: Data
+    {
+        var selfMutable = self
+        return Data(bytes: &selfMutable, count: selfMutable.bitWidth)
+    }
+}
+
+// MARK: - Float
+extension Float: BinaryRepresentable
+{
+    @inlinable
+    public var data: Data
+    {
+        var selfMutable = self
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.stride)
+    }
+}
+
+// MARK: - Double
+extension Double: BinaryRepresentable
+{
+    @inlinable
+    public var data: Data
+    {
+        var selfMutable = self
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.stride)
+    }
+}
+
+// MARK: - Data
+public extension Data
+{
+    
+    // MARK: - BinaryRepresentable load(s)
+    @inlinable
+    func load<T>(as type: T.Type) -> T where T: BinaryRepresentable
+    {
+        return self.withUnsafeBytes { (bytes: UnsafeRawBufferPointer) in
+            return bytes.load(as: type)
+        }
+    }
+    
+    @inlinable
+    func load<T>() -> T where T: BinaryRepresentable
+    {
+        return self.withUnsafeBytes { (bytes: UnsafeRawBufferPointer) in
+            return bytes.load(as: T.self)
+        }
+    }
+    
+    // MARK: - BinaryRepresentableCollection load(s)
+    @inlinable
+    func load<T>(as type: T.Type) -> T where T: BinaryRepresentableCollection
+    {
+        return self.withUnsafeBytes { (bytes: UnsafeRawBufferPointer) in
+            return T(bytes.bindMemory(to: type.Element.self))
+        }
+    }
+    
+    @inlinable
+    func load<T>() -> T where T: BinaryRepresentableCollection
+    {
+        return self.withUnsafeBytes { (bytes: UnsafeRawBufferPointer) in
+            return T(bytes.bindMemory(to: T.Element.self))
+        }
     }
 }
