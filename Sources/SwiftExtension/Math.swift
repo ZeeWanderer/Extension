@@ -5,6 +5,8 @@
 //  Created by Maksym Kulyk on 18.03.2022.
 //
 
+import RealModule
+
 /// Clamp `value` to `[min,max]`
 @inlinable
 @inline(__always)
@@ -29,7 +31,7 @@ public func clamp<T>(_ value: T, to limits: ClosedRange<T>) -> T where T: Compar
 /// `min + (parameter * (max - min))`
 @inlinable
 @inline(__always)
-public func lerp<T>(_ parameter: T, min: T, max: T) -> T where T: Numeric
+public func lerp<T>(_ parameter: T, min: T, max: T) -> T where T: Real
 {
     return min + (parameter * (max - min))
 }
@@ -42,7 +44,7 @@ public func lerp<T>(_ parameter: T, min: T, max: T) -> T where T: Numeric
 /// `(parameter - min) / (max - min)`
 @inlinable
 @inline(__always)
-public func ilerp<T>(_ parameter: T, min: T, max: T) -> T where T: FloatingPoint
+public func ilerp<T>(_ parameter: T, min: T, max: T) -> T where T: Real
 {
     return (parameter - min) / (max - min)
 }

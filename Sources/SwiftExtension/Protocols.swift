@@ -5,6 +5,8 @@
 //  Created by Maksym Kulyk on 04.05.2022.
 //
 
+import RealModule
+
 // MARK: - Math
 public extension Comparable
 {
@@ -27,7 +29,7 @@ public extension Comparable
     }
 }
 
-public extension Numeric
+public extension Real
 {
     /// Linear interpolate value in `[min,max]` with `self` for `parameter`.
     /// See: ``lerp(_:min:max:)``
@@ -37,10 +39,7 @@ public extension Numeric
     {
         return lerp(self, min: min, max: max)
     }
-}
-
-public extension FloatingPoint
-{
+    
     /// Inverse Linear interpolate value in `[min,max]` with `self` for `parameter`.
     /// See: ``ilerp(_:min:max:)``
     @inlinable
