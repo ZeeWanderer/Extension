@@ -10,98 +10,82 @@ import RealModule
 
 extension CGFloat: Real
 {
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func atan2(y: CGFloat, x: CGFloat) -> CGFloat {
         return CoreGraphics.atan2(y, x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func erf(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.erf(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func erfc(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.erfc(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func exp2(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.exp2(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func hypot(_ x: CGFloat, _ y: CGFloat) -> CGFloat {
         return CoreGraphics.hypot(x, y)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func gamma(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.tgamma(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func log2(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.log2(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func log10(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.log10(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func logGamma(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.lgamma(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func exp(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.exp(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func expMinusOne(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.expm1(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func cosh(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.cosh(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func sinh(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.sinh(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func tanh(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.tanh(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func cos(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.cos(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func sin(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.sin(x)
     }
@@ -112,62 +96,52 @@ extension CGFloat: Real
         return CoreGraphics.tan(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func log(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.log(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func log(onePlus x: CGFloat) -> CGFloat {
         return CoreGraphics.log1p(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func acosh(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.acosh(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func asinh(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.asinh(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func atanh(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.atanh(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func acos(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.acos(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func asin(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.asin(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func atan(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.atan(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func pow(_ x: CGFloat, _ y: CGFloat) -> CGFloat {
         return CoreGraphics.pow(x, y)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func pow(_ x: CGFloat, _ n: Int) -> CGFloat {
         if let y = CGFloat(exactly: n) { return CoreGraphics.pow(x, y) }
         
@@ -178,8 +152,7 @@ extension CGFloat: Real
         return CoreGraphics.pow(x, CGFloat(low)) * CoreGraphics.pow(x, CGFloat(high))
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func root(_ x: CGFloat, _ n: Int) -> CGFloat {
         guard x >= 0 || n % 2 != 0 else { return .nan }
         // Workaround the issue mentioned below for the specific case of n = 3
