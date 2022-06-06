@@ -90,8 +90,7 @@ extension CGFloat: Real
         return CoreGraphics.sin(x)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     public static func tan(_ x: CGFloat) -> CGFloat {
         return CoreGraphics.tan(x)
     }
