@@ -12,153 +12,141 @@ extension CGFloat: Real
 {
     @_transparent
     public static func atan2(y: CGFloat, x: CGFloat) -> CGFloat {
-        return CoreGraphics.atan2(y, x)
+        return CGFloat.NativeType.atan2(y: y, x: x)
     }
     
     @_transparent
     public static func erf(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.erf(x)
+        return CGFloat.NativeType.erf(x)
     }
     
     @_transparent
     public static func erfc(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.erfc(x)
+        return CGFloat.NativeType.erfc(x)
     }
     
     @_transparent
     public static func exp2(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.exp2(x)
+        return CGFloat.NativeType.exp2(x)
     }
     
     @_transparent
     public static func hypot(_ x: CGFloat, _ y: CGFloat) -> CGFloat {
-        return CoreGraphics.hypot(x, y)
+        return CGFloat.NativeType.hypot(x, y)
     }
     
     @_transparent
     public static func gamma(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.tgamma(x)
+        return CGFloat.NativeType.gamma(x)
     }
     
     @_transparent
     public static func log2(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.log2(x)
+        return CGFloat.NativeType.log2(x)
     }
     
     @_transparent
     public static func log10(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.log10(x)
+        return CGFloat.NativeType.log10(x)
     }
     
     @_transparent
     public static func logGamma(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.lgamma(x)
+        return CGFloat.NativeType.logGamma(x)
     }
     
     @_transparent
     public static func exp(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.exp(x)
+        return CGFloat.NativeType.exp(x)
     }
     
     @_transparent
     public static func expMinusOne(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.expm1(x)
+        return CGFloat.NativeType.expMinusOne(x)
     }
     
     @_transparent
     public static func cosh(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.cosh(x)
+        return CGFloat.NativeType.cosh(x)
     }
     
     @_transparent
     public static func sinh(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.sinh(x)
+        return CGFloat.NativeType.sinh(x)
     }
     
     @_transparent
     public static func tanh(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.tanh(x)
+        return CGFloat.NativeType.tanh(x)
     }
     
     @_transparent
     public static func cos(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.cos(x)
+        return CGFloat.NativeType.cos(x)
     }
     
     @_transparent
     public static func sin(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.sin(x)
+        return CGFloat.NativeType.sin(x)
     }
     
     @_transparent
     public static func tan(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.tan(x)
+        return CGFloat.NativeType.tan(x)
     }
     
     @_transparent
     public static func log(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.log(x)
+        return CGFloat.NativeType.log(x)
     }
     
     @_transparent
     public static func log(onePlus x: CGFloat) -> CGFloat {
-        return CoreGraphics.log1p(x)
+        return CGFloat.NativeType.log(onePlus: x)
     }
     
     @_transparent
     public static func acosh(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.acosh(x)
+        return CGFloat.NativeType.acosh(x)
     }
     
     @_transparent
     public static func asinh(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.asinh(x)
+        return CGFloat.NativeType.asinh(x)
     }
     
     @_transparent
     public static func atanh(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.atanh(x)
+        return CGFloat.NativeType.atanh(x)
     }
     
     @_transparent
     public static func acos(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.acos(x)
+        return CGFloat.NativeType.acos(x)
     }
     
     @_transparent
     public static func asin(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.asin(x)
+        return CGFloat.NativeType.asin(x)
     }
     
     @_transparent
     public static func atan(_ x: CGFloat) -> CGFloat {
-        return CoreGraphics.atan(x)
+        return CGFloat.NativeType.atan(x)
     }
     
     @_transparent
     public static func pow(_ x: CGFloat, _ y: CGFloat) -> CGFloat {
-        return CoreGraphics.pow(x, y)
+        return CGFloat.NativeType.pow(x, y)
     }
     
     @_transparent
     public static func pow(_ x: CGFloat, _ n: Int) -> CGFloat {
-        if let y = CGFloat(exactly: n) { return CoreGraphics.pow(x, y) }
-        
-        let mask = Int(truncatingIfNeeded: UInt32.max)
-        let round = n < 0 ? mask : 0
-        let high = (n &+ round) & ~mask
-        let low = n &- high
-        return CoreGraphics.pow(x, CGFloat(low)) * CoreGraphics.pow(x, CGFloat(high))
+        return CGFloat.NativeType.pow(x, n)
     }
     
     @_transparent
     public static func root(_ x: CGFloat, _ n: Int) -> CGFloat {
-        guard x >= 0 || n % 2 != 0 else { return .nan }
-        // Workaround the issue mentioned below for the specific case of n = 3
-        // where we can fallback on cbrt.
-        if n == 3 { return CoreGraphics.cbrt(x) }
-        // TODO: this implementation is not quite correct, because either n or
-        // 1/n may be not be representable as Double.
-        return CGFloat(signOf: x, magnitudeOf: CoreGraphics.pow(x.magnitude, 1/CGFloat(n)))
+        return CGFloat.NativeType.root(x, n)
     }
 }
