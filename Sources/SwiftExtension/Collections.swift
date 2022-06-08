@@ -18,7 +18,7 @@ public extension Collection
 }
 
 //MARK: - Dictionary
-public extension Dictionary where Key: Equatable, Value: Equatable
+public extension Dictionary where Value: Equatable
 {
     @inlinable
     func minus(dict: [Key:Value]) -> [Key:Value]
