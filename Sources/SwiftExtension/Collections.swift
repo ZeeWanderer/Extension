@@ -24,10 +24,9 @@ public extension Dictionary where Value: Equatable
     func minus(dict: [Key:Value]) -> [Key:Value]
     {
         let entriesInSelfAndNotInDict = filter { dict[$0.0] != self[$0.0] }
-        return entriesInSelfAndNotInDict.reduce([Key:Value]()) { (res, entry) -> [Key:Value] in
-            var res = res
-            res[entry.0] = entry.1
-            return res
+        return entriesInSelfAndNotInDict.reduce(into: [:]) { (res, entry) in
+            let (key, val) = entry
+            res[key] = val
         }
     }
 }
