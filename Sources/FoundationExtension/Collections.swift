@@ -137,6 +137,31 @@ extension Array: BinaryRepresentableCollection where Element: BinaryRepresentabl
 }
 
 //MARK: - Set
+extension Set: RawRepresentable where Element: Codable
+{
+    @inlinable
+    public init?(rawValue: String)
+    {
+        guard let data = rawValue.data(using: .utf8),
+              let result = try? JSONDecoder().decode([Element].self, from: data)
+        else {
+            return nil
+        }
+        self = Set(result)
+    }
+    
+    @inlinable
+    public var rawValue: String
+    {
+        guard let data = try? JSONEncoder().encode(Array(self)),
+              let result = String(data: data, encoding: .utf8)
+        else {
+            return "[]"
+        }
+        return result
+    }
+}
+
 extension Set: BinaryRepresentableCollection where Element: Hashable, Element: BinaryRepresentable
 {
     @inlinable
