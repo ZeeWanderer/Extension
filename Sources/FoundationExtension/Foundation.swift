@@ -32,7 +32,7 @@ extension Bool: BinaryRepresentable
     public var data: Data
     {
         var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.stride)
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
     }
 }
 
@@ -43,7 +43,7 @@ extension Int: BinaryRepresentable
     public var data: Data
     {
         var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.stride)
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
     }
 }
 
@@ -53,7 +53,7 @@ extension Int8: BinaryRepresentable
     public var data: Data
     {
         var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.stride)
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
     }
 }
 
@@ -64,7 +64,7 @@ extension Int16: BinaryRepresentable
     public var data: Data
     {
         var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.stride)
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
     }
 }
 
@@ -75,7 +75,7 @@ extension Int32: BinaryRepresentable
     public var data: Data
     {
         var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.stride)
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
     }
 }
 
@@ -86,7 +86,7 @@ extension Int64: BinaryRepresentable
     public var data: Data
     {
         var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.stride)
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
     }
 }
 
@@ -97,7 +97,7 @@ extension UInt: BinaryRepresentable
     public var data: Data
     {
         var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.stride)
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
     }
 }
 
@@ -108,7 +108,7 @@ extension UInt8: BinaryRepresentable
     public var data: Data
     {
         var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.stride)
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
     }
 }
 
@@ -119,7 +119,7 @@ extension UInt16: BinaryRepresentable
     public var data: Data
     {
         var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.stride)
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
     }
 }
 
@@ -130,7 +130,7 @@ extension UInt32: BinaryRepresentable
     public var data: Data
     {
         var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.stride)
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
     }
 }
 
@@ -141,7 +141,7 @@ extension UInt64: BinaryRepresentable
     public var data: Data
     {
         var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.stride)
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
     }
 }
 
@@ -152,7 +152,7 @@ extension Float: BinaryRepresentable
     public var data: Data
     {
         var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.stride)
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
     }
 }
 
@@ -163,7 +163,7 @@ extension Double: BinaryRepresentable
     public var data: Data
     {
         var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.stride)
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
     }
 }
 
