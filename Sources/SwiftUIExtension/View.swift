@@ -184,6 +184,20 @@ public extension View
         }
     }
     
+    /// Flips view across the specified axis.
+    /// - Note: Uses `rotation3DEffect`
+    @inlinable
+    func fliped(_ axis: Axis) -> some View
+    {
+        switch axis
+        {
+        case .horizontal:
+            return self.rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0))
+        case .vertical:
+            return self.rotation3DEffect(.degrees(180), axis: (x: 1, y: 0, z: 0))
+        }
+    }
+    
     // MARK: Navigation
     /// Navigate to `destination` using a `binding`. Destination is instantiated imideately and repeatedly on any state changes.
     @inlinable
