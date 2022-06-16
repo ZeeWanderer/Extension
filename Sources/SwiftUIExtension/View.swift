@@ -187,7 +187,7 @@ public extension View
     /// Flips view across the specified axis.
     /// - Note: Uses `rotation3DEffect`
     @inlinable
-    func fliped(_ axis: Axis) -> some View
+    func flipped(_ axis: Axis) -> some View
     {
         switch axis
         {
