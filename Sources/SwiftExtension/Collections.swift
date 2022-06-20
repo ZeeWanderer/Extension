@@ -46,7 +46,7 @@ public extension Array
     @inlinable
     subscript(safe range: CountableRange<Index>) -> ArraySlice<Element>
     {
-        let start = Swift.max(range.lowerBound, 0)
+        let start = Swift.max(range.lowerBound, startIndex)
         let end = Swift.min(range.upperBound, endIndex)
         if end <= start  { return [] }
         return self[start..<end]
@@ -55,7 +55,7 @@ public extension Array
     @inlinable
     subscript(safe range: CountableClosedRange<Index>) -> ArraySlice<Element>
     {
-        let start = Swift.max(range.lowerBound, 0)
+        let start = Swift.max(range.lowerBound, startIndex)
         let end = Swift.min(range.upperBound, endIndex - 1)
         if end < start { return [] }
         return self[start...end]
