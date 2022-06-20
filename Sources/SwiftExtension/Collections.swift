@@ -44,54 +44,45 @@ public extension Array
     }
     
     @inlinable
-    subscript(safe range: Range<Index>) -> ArraySlice<Element>
+    subscript(safe range: CountableRange<Index>) -> ArraySlice<Element>
     {
-        let lowerBound = range.lowerBound
-        if lowerBound < self.endIndex
-        {
-            return self[lowerBound..<Swift.min(range.endIndex, self.endIndex)]
-        }
-        else
-        {
-            return []
-        }
+        let start = Swift.max(range.lowerBound, 0)
+        let end = Swift.min(range.upperBound, endIndex)
+        if end <= start  { return [] }
+        return self[start..<end]
     }
     
     @inlinable
-    subscript(safe range: ClosedRange<Index>) -> ArraySlice<Element>
+    subscript(safe range: CountableClosedRange<Index>) -> ArraySlice<Element>
     {
-        let lowerBound = range.lowerBound
-        if lowerBound < self.endIndex
-        {
-            return self[lowerBound...Swift.min(range.upperBound, self.endIndex - 1)]
-        }
-        else
-        {
-            return []
-        }
+        let start = Swift.max(range.lowerBound, 0)
+        let end = Swift.min(range.upperBound, endIndex - 1)
+        if end < start { return [] }
+        return self[start...end]
     }
 }
 
-//MARK: - Stackable
-public protocol Stackable
+//MARK: - StackProtocol
+public protocol StackProtocol
 {
     associatedtype Element
     func peek() -> Element?
     mutating func push(_ element: Element)
-    @discardableResult mutating func pop() -> Element?
+    mutating func pop() -> Element?
 }
 
-public extension Stackable
+public extension StackProtocol
 {
     @inlinable
     var isEmpty: Bool { peek() == nil }
 }
 
-public struct Stack<Element>: Stackable where Element: Equatable
+public struct Stack<Element>: StackProtocol where Element: Equatable
 {
     @usableFromInline internal var storage = [Element]()
     @inlinable public func peek() -> Element? { storage.last }
     @inlinable public mutating func push(_ element: Element) { storage.append(element)  }
+    @discardableResult
     @inlinable public mutating func pop() -> Element? { storage.popLast() }
 }
 
