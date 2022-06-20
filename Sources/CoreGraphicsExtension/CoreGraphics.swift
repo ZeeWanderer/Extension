@@ -6,8 +6,10 @@
 //  Copyright © 2020 max. All rights reserved.
 //
 
-import SwiftExtension
+import Foundation
 import CoreGraphics
+import SwiftExtension
+import FoundationExtension
 
 // MARK: - CGFloat
 public extension CGFloat
@@ -31,9 +33,94 @@ public extension CGFloat
     }
 }
 
+extension CGFloat: BinaryRepresentable
+{
+    @inlinable
+    public var data: Data
+    {
+        var selfMutable = self
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
+    }
+}
+
+// MARK: - CGVector
+public extension CGVector
+{
+    @inlinable
+    init(_ point: CGPoint)
+    {
+        self.init(dx: point.x, dy: point.y)
+    }
+    
+    @inlinable
+    @inline(__always)
+    static func * (_ lhs: CGVector, _ rhs: CGFloat) -> CGVector
+    {
+        return CGVector(dx: lhs.dx * rhs, dy: lhs.dy * rhs)
+    }
+    
+    @inlinable
+    @inline(__always)
+    static func * (_ lhs: CGVector, _ rhs: CGVector) -> CGFloat
+    {
+        return lhs.dx * rhs.dx + lhs.dy * rhs.dy
+    }
+    
+    @inlinable
+    @inline(__always)
+    static func / (_ lhs: CGVector, _ rhs: CGFloat) -> CGVector
+    {
+        return CGVector(dx: lhs.dx / rhs, dy: lhs.dy / rhs)
+    }
+    
+    @inlinable
+    @inline(__always)
+    static func + (lhs:CGVector, rhs: CGFloat) -> CGVector
+    {
+        return CGVector(dx: lhs.dx + rhs, dy: lhs.dy + rhs)
+    }
+    
+    @inlinable
+    @inline(__always)
+    static func - (lhs:CGVector, rhs: CGFloat) -> CGVector
+    {
+        return CGVector(dx: lhs.dx - rhs, dy: lhs.dy - rhs)
+    }
+    
+    @inlinable
+    @inline(__always)
+    static func + (lhs:CGVector, rhs: CGVector) -> CGVector
+    {
+        return CGVector(dx: lhs.dx + rhs.dx, dy: lhs.dy + rhs.dy)
+    }
+    
+    @inlinable
+    @inline(__always)
+    static func - (lhs:CGVector, rhs: CGVector) -> CGVector
+    {
+        return CGVector(dx: lhs.dx - rhs.dx, dy: lhs.dy - rhs.dy)
+    }
+}
+
+extension CGVector: BinaryRepresentable
+{
+    @inlinable
+    public var data: Data
+    {
+        var selfMutable = self
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
+    }
+}
+
 // MARK: - CGPoint
 public extension CGPoint
 {
+    @inlinable
+    init(_ vector: CGVector)
+    {
+        self.init(x: vector.dx, y: vector.dy)
+    }
+    
     /// Translate CGPoint by a given ammount
     @inlinable
     @inline(__always)
@@ -63,6 +150,13 @@ public extension CGPoint
     static func * (_ lhs: CGPoint, _ rhs: CGFloat) -> CGPoint
     {
         return CGPoint(x: lhs.x * rhs, y: lhs.y * rhs)
+    }
+    
+    @inlinable
+    @inline(__always)
+    static func * (_ lhs: CGPoint, _ rhs: CGPoint) -> CGFloat
+    {
+        return lhs.x * rhs.x + lhs.y * rhs.y
     }
     
     @inlinable
@@ -155,6 +249,16 @@ public extension CGPoint
     }
 }
 
+extension CGPoint: BinaryRepresentable
+{
+    @inlinable
+    public var data: Data
+    {
+        var selfMutable = self
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
+    }
+}
+
 // MARK: - CGSize
 public extension CGSize
 {
@@ -185,6 +289,16 @@ public extension CGSize
     var center: CGPoint
     {
         return CGPoint(x: self.width/2.0, y: self.width/2.0)
+    }
+}
+
+extension CGSize: BinaryRepresentable
+{
+    @inlinable
+    public var data: Data
+    {
+        var selfMutable = self
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
     }
 }
 
@@ -248,5 +362,15 @@ public extension CGRect
     func union(_ rects: [CGRect]) -> CGRect
     {
         return CoreGraphicsExtension.union([self]+rects)
+    }
+}
+
+extension CGRect: BinaryRepresentable
+{
+    @inlinable
+    public var data: Data
+    {
+        var selfMutable = self
+        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
     }
 }

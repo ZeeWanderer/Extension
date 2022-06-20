@@ -35,7 +35,7 @@ let package = Package(
             dependencies: ["SwiftExtension"]),
         .target(
             name: "CoreGraphicsExtension",
-            dependencies: ["SwiftExtension"]),
+            dependencies: ["SwiftExtension", "FoundationExtension"]),
         .target(
             name: "UIKitExtension",
             dependencies: ["SwiftExtension"]),
