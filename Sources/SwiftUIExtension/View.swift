@@ -198,6 +198,20 @@ public extension View
         }
     }
     
+    /// Positions this view within an invisible frame with the specified size.
+    @inlinable
+    func frame(size: CGSize? = nil, alignment: Alignment = .center) -> some View
+    {
+        self.frame(width: size?.width, height: size?.width, alignment: alignment)
+    }
+    
+    /// Positions this view within an invisible frame having the specified size constraints.
+    @inlinable
+    func frame(minSize: CGSize? = nil, idealSize: CGSize? = nil, maxSize: CGSize? = nil, alignment: Alignment = .center) -> some View
+    {
+        self.frame(minWidth: minSize?.width, idealWidth: idealSize?.width, maxWidth: maxSize?.width, minHeight: minSize?.height, idealHeight: idealSize?.height, maxHeight: maxSize?.height, alignment: alignment)
+    }
+    
     // MARK: Navigation
     /// Navigate to `destination` using a `binding`. Destination is instantiated imideately and repeatedly on any state changes.
     @inlinable
