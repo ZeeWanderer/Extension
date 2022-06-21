@@ -202,7 +202,7 @@ public extension View
     @inlinable
     func frame(size: CGSize? = nil, alignment: Alignment = .center) -> some View
     {
-        self.frame(width: size?.width, height: size?.width, alignment: alignment)
+        self.frame(width: size?.width, height: size?.height, alignment: alignment)
     }
     
     /// Positions this view within an invisible frame having the specified size constraints.
