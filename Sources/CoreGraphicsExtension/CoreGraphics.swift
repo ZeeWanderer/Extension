@@ -288,7 +288,7 @@ public extension CGSize
     @inline(__always)
     var center: CGPoint
     {
-        return CGPoint(x: self.width/2.0, y: self.width/2.0)
+        return CGPoint(x: self.width/2.0, y: self.height/2.0)
     }
 }
 
