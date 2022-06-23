@@ -51,7 +51,7 @@ public func ilerp<T>(_ parameter: T, min: T, max: T) -> T where T: Real
 
 @inlinable
 @inline(__always)
-func greatestCommonFactor<T>(_ m: T, _ n: T) -> T where T: BinaryInteger
+public func greatestCommonFactor<T>(_ m: T, _ n: T) -> T where T: BinaryInteger
 {
     var b = max(m, n)
     var r = min(m, n)
@@ -67,7 +67,7 @@ func greatestCommonFactor<T>(_ m: T, _ n: T) -> T where T: BinaryInteger
 
 @inlinable
 @inline(__always)
-func greatestCommonFactor<T>(_ arr: [T]) -> T where T: BinaryInteger
+public func greatestCommonFactor<T>(_ arr: [T]) -> T where T: BinaryInteger
 {
     let result = arr.reduce(0) {greatestCommonFactor($0,$1)}
     return result
@@ -75,14 +75,14 @@ func greatestCommonFactor<T>(_ arr: [T]) -> T where T: BinaryInteger
 
 @inlinable
 @inline(__always)
-func leastCommonMultiple<T>(_ m: T, _ n: T) -> T where T: BinaryInteger
+public func leastCommonMultiple<T>(_ m: T, _ n: T) -> T where T: BinaryInteger
 {
     return m * n / greatestCommonFactor(m, n)
 }
 
 @inlinable
 @inline(__always)
-func lowestTerms<T>(numerator: T, denominator: T) -> (T, T) where T: BinaryInteger
+public func lowestTerms<T>(numerator: T, denominator: T) -> (T, T) where T: BinaryInteger
 {
     let gcf = greatestCommonFactor(numerator, denominator)
     return (numerator / gcf, denominator / gcf)
