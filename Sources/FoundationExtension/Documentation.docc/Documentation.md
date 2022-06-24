@@ -4,7 +4,7 @@ Extension of Foundation
 
 ## Overview
 
-<!--@START_MENU_TOKEN@-->Text<!--@END_MENU_TOKEN@-->
+This module provides usefull extensions for Foundation framework.
 
 ## Topics
 

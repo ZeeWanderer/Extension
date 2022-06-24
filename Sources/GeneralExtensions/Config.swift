@@ -11,8 +11,11 @@ public struct Config
 {
     public enum AppConfiguration
     {
+        /// Determined by using DEBUG preprocessor flag
         case Debug
+        /// Detected by cheking `Bundle.main.appStoreReceiptURL` for "sandboxReceipt" at runtime.
         case TestFlight
+        /// Returned when not ``Debug`` and not ``TestFlight``.
         case AppStore
     }
     

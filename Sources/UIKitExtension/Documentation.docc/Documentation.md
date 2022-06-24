@@ -4,7 +4,7 @@ Extension of UIKit
 
 ## Overview
 
-<!--@START_MENU_TOKEN@-->Text<!--@END_MENU_TOKEN@-->
+This module provides usefull extensions for UIKit framework.
 
 ## Topics
 

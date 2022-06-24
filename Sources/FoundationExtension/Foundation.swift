@@ -17,10 +17,10 @@ public extension String
     @inlinable
     func condenseWhitespace() -> String
     {
-        let components = self.components(separatedBy: .whitespacesAndNewlines)
+        let components = self.components(separatedBy: .whitespaces)
         return components.filter
-        {
-            !$0.isEmpty
+        { substr in
+            !substr.isEmpty
         }.joined(separator: " ")
     }
 }

@@ -4,7 +4,7 @@ Extension of SwiftUI
 
 ## Overview
 
-<!--@START_MENU_TOKEN@-->Text<!--@END_MENU_TOKEN@-->
+This module provides usefull extensions for SwiftUI framework.
 
 ## Topics
 
