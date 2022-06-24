@@ -4,7 +4,7 @@ Extension of Swift Standard Library
 
 ## Overview
 
-<!--@START_MENU_TOKEN@-->Text<!--@END_MENU_TOKEN@-->
+This module provides useful commonly used extensions for Swift STL. 
 
 ## Topics
 
@@ -19,3 +19,7 @@ Extension of Swift Standard Library
 - ``clamp(_:min:max:)``
 - ``lerp(_:min:max:)``
 - ``ilerp(_:min:max:)``
+- ``greatestCommonDivisor(_:_:)``
+- ``greatestCommonDivisor(_:)``
+- ``leastCommonMultiple(_:_:)``
+- ``lowestTerms(numerator:denominator:)``
