@@ -15,6 +15,12 @@ public extension Collection
     {
         return indices.contains(index) ? self[index] : nil
     }
+    
+    @inlinable
+    func count(where condition: (Element) throws -> Bool) rethrows -> Int
+    {
+        return try self.filter(condition).count
+    }
 }
 
 //MARK: - Dictionary
