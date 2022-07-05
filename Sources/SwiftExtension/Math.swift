@@ -67,6 +67,7 @@ public func greatestCommonDivisor<T>(_ m: T, _ n: T) -> T where T: BinaryInteger
 }
 
 /// Greatest Common Divisor of an array of integers (GCD also known as Greatest Common Factor or GCF).
+/// - Precondition: 2 or more elements in array.
 @inlinable
 @inline(__always)
 public func greatestCommonDivisor<T>(_ arr: [T]) -> T where T: BinaryInteger
@@ -108,6 +109,7 @@ public func greatestCommonFactor<T>(_ m: T, _ n: T) -> T where T: BinaryInteger
 }
 
 /// Greatest Common Factor of an array of integers (GCF also known as Greatest Common Divisor or GCD)
+/// - Precondition: 2 or more elements in array.
 @inlinable
 @inline(__always)
 @available(*, unavailable, renamed: "greatestCommonDivisor(_:)")
