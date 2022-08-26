@@ -285,4 +285,20 @@ public extension View
             self.background(content(), alignment: alignment)
         }
     }
+    
+    /// Backwards compatible `mask` call.
+    /// - Note: `alignment` parameter is not used pre iOS 15.
+    @inlinable
+    @ViewBuilder // use `some` when XCode 14 comes out
+    func compat_mask<Mask>(alignment: Alignment = .center, @ViewBuilder _ mask: () -> Mask) -> some View where Mask : View
+    {
+        if #available(iOS 15, *)
+        {
+            self.mask(alignment: alignment, mask)
+        }
+        else
+        {
+            self.mask(mask())
+        }
+    }
 }
