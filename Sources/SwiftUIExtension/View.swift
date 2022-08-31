@@ -132,7 +132,7 @@ public extension View
     /// Conditionaly executes closure.
     /// - Note: Beware, this modifies view in a way that changes it's identifier.
     @inlinable
-    @ViewBuilder func `if`<Content>(_ condition: Bool, transform: (Self) -> Content) -> some View where Content : View
+    @ViewBuilder func `if`<Content>(_ condition: Bool, @ViewBuilder transform: (Self) -> Content) -> some View where Content : View
     {
         if condition
         {
@@ -148,7 +148,7 @@ public extension View
     /// Intended for use after `if` with the same condition to promote readibility. Equivalent to `if(!condition)`.
     /// - Note: Beware, this modifies view in a way that changes it's identifier.
     @inlinable
-    @ViewBuilder func `else`<Content>(_ condition: Bool, transform: (Self) -> Content) -> some View where Content : View
+    @ViewBuilder func `else`<Content>(_ condition: Bool, @ViewBuilder transform: (Self) -> Content) -> some View where Content : View
     {
         self.if(!condition, transform: transform)
     }
