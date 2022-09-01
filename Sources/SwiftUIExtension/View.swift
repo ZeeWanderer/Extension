@@ -212,6 +212,14 @@ public extension View
         self.frame(minWidth: minSize?.width, idealWidth: idealSize?.width, maxWidth: maxSize?.width, minHeight: minSize?.height, idealHeight: idealSize?.height, maxHeight: maxSize?.height, alignment: alignment)
     }
     
+    /// Applies shadow with given data.
+    @inlinable
+    func shadow(_ data: Shadow) -> some View
+    {
+        self
+            .shadow(color: data.color, radius: data.radius, x: data.x, y: data.y)
+    }
+    
     // MARK: Navigation
     /// Navigate to `destination` using a `binding`. Destination is instantiated imideately and repeatedly on any state changes.
     @inlinable
