@@ -353,7 +353,7 @@ public extension CGRect
     @inline(__always)
     var center: CGPoint
     {
-        return self.origin.translatedBy(dx: self.width/2.0, dy: self.height/2.0)
+        return .init(x: self.midX, y: self.midY)
     }
     
     /// Computes CGRect that acts as a Bounding Box for current and provided rectangles.
