@@ -17,7 +17,7 @@ public func lerp(_ parameter: CGFloat, min: CGPoint, max: CGPoint) -> CGPoint
 {
     let x = lerp(parameter, min: min.x, max: max.x)
     let y = lerp(parameter, min: min.y, max: max.y)
-    return CGPoint(x: x, y: y)
+    return .init(x: x, y: y)
 }
 
 /// Linear interpolate value in `[min,max]` for `parameter`.
@@ -28,7 +28,7 @@ public func lerp(_ parameter: CGPoint, min: CGPoint, max: CGPoint) -> CGPoint
 {
     let x = lerp(parameter.x, min: min.x, max: max.x)
     let y = lerp(parameter.y, min: min.y, max: max.y)
-    return CGPoint(x: x, y: y)
+    return .init(x: x, y: y)
 }
 
 /// Inverse Linear interpolate value in `[min,max]` for `parameter`.
@@ -39,7 +39,7 @@ public func ilerp(_ parameter: CGFloat, min: CGPoint, max: CGPoint) -> CGPoint
 {
     let x = ilerp(parameter, min: min.x, max: max.x)
     let y = ilerp(parameter, min: min.y, max: max.y)
-    return CGPoint(x: x, y: y)
+    return .init(x: x, y: y)
 }
 
 /// Inverse Linear interpolate value in `[min,max]` for `parameter`.
@@ -50,7 +50,7 @@ public func ilerp(_ parameter: CGPoint, min: CGPoint, max: CGPoint) -> CGPoint
 {
     let x = ilerp(parameter.x, min: min.x, max: max.x)
     let y = ilerp(parameter.y, min: min.y, max: max.y)
-    return CGPoint(x: x, y: y)
+    return .init(x: x, y: y)
 }
 
 /// All rectangles are standardized prior to calculating the union.
