@@ -5,21 +5,25 @@
 //  Created by Maksym Kulyk on 04.05.2022.
 //
 
+//MARK: - Collection
+public extension Sequence
+{
+    /// - Warning: Will be removed when problems with [SE-0220](https://github.com/apple/swift-evolution/blob/main/proposals/0220-count-where.md) are resolved.
+    @inlinable
+    func count(where condition: (Self.Element) throws -> Bool) rethrows -> Int
+    {
+        return try self.lazy.filter(condition).count
+    }
+}
 
 //MARK: - Collection
 public extension Collection
 {
     /// Returns the element at the specified index if it is within bounds, otherwise nil.
     @inlinable
-    subscript (safe index: Index) -> Element?
+    subscript (safe index: Self.Index) -> Self.Element?
     {
         return indices.contains(index) ? self[index] : nil
-    }
-    
-    @inlinable
-    func count(where condition: (Element) throws -> Bool) rethrows -> Int
-    {
-        return try self.filter(condition).count
     }
 }
 
