@@ -44,7 +44,7 @@ let package = Package(
             dependencies: ["UIKitExtension"]),
         .target(
             name: "SwiftUIExtension",
-            dependencies: ["UIKitExtension"]),
+            dependencies: ["UIKitExtension", "CoreGraphicsExtension"]),
         .target(
             name: "GeneralExtensions",
             dependencies: []),

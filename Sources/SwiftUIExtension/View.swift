@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreGraphicsExtension
 
 // MARK: - UIViewRepresentables
 /// A hack to get access to `UIView.backgroundColor` of modal superview. Remove when this functionality beomes available in SwiftUI.
@@ -210,6 +211,16 @@ public extension View
     func frame(minSize: CGSize? = nil, idealSize: CGSize? = nil, maxSize: CGSize? = nil, alignment: Alignment = .center) -> some View
     {
         self.frame(minWidth: minSize?.width, idealWidth: idealSize?.width, maxWidth: maxSize?.width, minHeight: minSize?.height, idealHeight: idealSize?.height, maxHeight: maxSize?.height, alignment: alignment)
+    }
+    
+    /// Frames and postions view in a geven rect.
+    /// - Parameter rect: A rectangle to position View in. Must be specified in View's parent coordinate system.
+    @inlinable
+    func position(in rect: CGRect) -> some View
+    {
+        self
+            .frame(size: rect.size)
+            .position(rect.center)
     }
     
     /// Applies shadow with given data.
