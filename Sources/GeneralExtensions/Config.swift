@@ -19,8 +19,7 @@ public struct Config
         case AppStore
     }
     
-    @usableFromInline
-    internal static let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+    public static let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
     
     @inlinable
     public static var isDebug: Bool
@@ -30,6 +29,12 @@ public struct Config
 #else
         return false
 #endif
+    }
+    
+    @inlinable
+    public static var isTestFlightOrDebug: Bool
+    {
+        return isDebug || isTestFlight
     }
     
     @inlinable
