@@ -84,7 +84,7 @@ public extension View
         onReceive(NotificationCenter.default.publisher(for: notificationName), perform: action)
     }
     
-    @inlinable
+    @MainActor @inlinable
     func onDidEnterBackgroundNotification(perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
     {
         onNotification (
@@ -93,7 +93,7 @@ public extension View
         )
     }
     
-    @inlinable
+    @MainActor @inlinable
     func onWillEnterForegroundNotification(perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
     {
         onNotification (
@@ -102,7 +102,7 @@ public extension View
         )
     }
     
-    @inlinable
+    @MainActor @inlinable
     func onDidReceiveMemoryWarningNotification(perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
     {
         onNotification (
@@ -111,7 +111,7 @@ public extension View
         )
     }
     
-    @inlinable
+    @MainActor @inlinable
     func onDidFinishLaunchingNotification(perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
     {
         onNotification (
@@ -120,7 +120,7 @@ public extension View
         )
     }
     
-    @inlinable
+    @MainActor @inlinable
     func onWillTerminateNotification(perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
     {
         onNotification (
@@ -259,7 +259,7 @@ public extension View
     // MARK: Compatibility
     /// Backwards compatible `task` call.
     @inlinable
-    @ViewBuilder func compat_task(_ action: @escaping () async -> Void) -> some View
+    @ViewBuilder func compat_task(_ action: @Sendable @escaping () async -> Void) -> some View
     {
         if #available(iOS 15, *)
         {

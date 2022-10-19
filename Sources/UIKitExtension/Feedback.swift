@@ -8,6 +8,7 @@
 import UIKit
 import AVFoundation
 
+@MainActor
 public final class FeedbackHelper
 {
     // MARK: - Internal
