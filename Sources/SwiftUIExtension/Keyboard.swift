@@ -9,12 +9,14 @@ import SwiftUI
 
 /// Helper class that listens to keyboard notifications and provides observable keyboard height and a number of helper functions
 /// - Note: Does not use `withAnimation`, so animation needs to be set by end user via `animation`.
-public final class KeyboardHeightHelper: ObservableObject
+@MainActor public final class KeyboardHeightHelper: ObservableObject
 {
-    @Published public var keyboardHeight: CGFloat = 0
+    @MainActor @Published public var keyboardHeight: CGFloat = 0
     
     @usableFromInline internal var duration: CGFloat = 0.25
     @usableFromInline internal var curve: UIView.AnimationCurve = .easeOut
+    @usableFromInline internal var keyboardWillShowNotificationTask: Task<Void,Never>? = nil
+    @usableFromInline internal var keyboardWillHideNotificationTask: Task<Void,Never>? = nil
     
     @inlinable
     public var isKeyboardActive: Bool
@@ -29,11 +31,11 @@ public final class KeyboardHeightHelper: ObservableObject
     {
         if isKeyboardActive
         {
-            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
-                                            to: nil, from: nil, for: nil)
+            return UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                                   to: nil, from: nil, for: nil)
         }
         
-        return isKeyboardActive
+        return false
     }
     
     /// Provides `Animation` value to match keyboard animation
@@ -55,53 +57,68 @@ public final class KeyboardHeightHelper: ObservableObject
         }
     }
     
+    @usableFromInline @MainActor
+    internal func set_keyboardHeight(_ value: CGFloat) async
+    {
+        self.keyboardHeight = value
+    }
+    
+    @usableFromInline
     internal func listenForKeyboardNotifications()
     {
-        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboard_appear(_:)), name: UIWindow.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboard_hide(_:)), name: UIWindow.keyboardWillHideNotification, object: nil)
-    }
-    
-    @objc internal func keyboard_appear(_ notification: Notification)
-    {
-        guard let userInfo = notification.userInfo,
-              let keyboardRect = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
-              let duration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber,
-              let curve_raw = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? NSNumber,
-              let curve = UIView.AnimationCurve(rawValue: Int(truncating: curve_raw))
-        else
+        keyboardWillShowNotificationTask = Task
         {
-            return
+            [weak self] in
+            for await notification in NotificationCenter.default.notifications(named: UIResponder.keyboardWillShowNotification)
+            {
+                guard let userInfo = notification.userInfo,
+                      let keyboardRect = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
+                      let duration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber,
+                      let curve_raw = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? NSNumber,
+                      let curve = UIView.AnimationCurve(rawValue: Int(truncating: curve_raw))
+                else
+                {
+                    return
+                }
+                
+                self?.curve = curve
+                self?.duration = CGFloat(truncating: duration)
+                
+                await self?.set_keyboardHeight(keyboardRect.height)
+            }
         }
         
-        self.curve = curve
-        self.duration = CGFloat(truncating: duration)
-        
-        self.keyboardHeight = keyboardRect.height
+        keyboardWillHideNotificationTask = Task
+        {
+            [weak self] in
+            for await _ in NotificationCenter.default.notifications(named: UIResponder.keyboardWillHideNotification)
+            {
+                await self?.set_keyboardHeight(0)
+            }
+        }
     }
     
-    @objc internal func keyboard_hide(_ notification: Notification)
-    {
-        self.keyboardHeight = 0
-    }
-    
+    @inlinable
     public init()
     {
         self.listenForKeyboardNotifications()
     }
     
+    @inlinable
     deinit
     {
-        NotificationCenter.default.removeObserver(self)
+        self.keyboardWillShowNotificationTask?.cancel()
+        self.keyboardWillHideNotificationTask?.cancel()
     }
 }
 
 // MARK: - View
 public extension View
 {
-    @inlinable
-    func endTextEditing()
+    @MainActor @inlinable
+    @discardableResult func endTextEditing() -> Bool
     {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
-                                        to: nil, from: nil, for: nil)
+        return UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                               to: nil, from: nil, for: nil)
     }
 }

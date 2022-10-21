@@ -6,8 +6,8 @@ import PackageDescription
 let package = Package(
     name: "Extension",
     platforms: [
-        .iOS(.v13),
-        .macCatalyst(.v13)
+        .iOS(.v15),
+        .macCatalyst(.v15)
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
@@ -32,25 +32,32 @@ let package = Package(
             ]),
         .target(
             name: "FoundationExtension",
-            dependencies: ["SwiftExtension"]),
+            dependencies: ["SwiftExtension"],
+            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"])]),
         .target(
             name: "CoreGraphicsExtension",
-            dependencies: ["SwiftExtension", "FoundationExtension"]),
+            dependencies: ["SwiftExtension", "FoundationExtension"],
+            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"])]),
         .target(
             name: "UIKitExtension",
-            dependencies: ["SwiftExtension"]),
+            dependencies: ["SwiftExtension"],
+            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"])]),
         .target(
             name: "SpriteKitExtension",
-            dependencies: ["UIKitExtension"]),
+            dependencies: ["UIKitExtension"],
+            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"])]),
         .target(
             name: "SwiftUIExtension",
-            dependencies: ["UIKitExtension", "CoreGraphicsExtension"]),
+            dependencies: ["UIKitExtension", "CoreGraphicsExtension"],
+            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"])]),
         .target(
             name: "GeneralExtensions",
-            dependencies: []),
+            dependencies: [],
+            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"])]),
         .target(
             name: "Extension",
-            dependencies: ["SwiftExtension", "FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions"]),
+            dependencies: ["SwiftExtension", "FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions"],
+            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"])]),
         .testTarget(
             name: "ExtensionTests",
             dependencies: ["SwiftExtension", "FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions"]),
