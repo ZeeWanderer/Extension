@@ -8,8 +8,7 @@
 import UIKit
 import AVFoundation
 
-@MainActor
-public final class FeedbackHelper
+@MainActor public final class FeedbackHelper
 {
     // MARK: - Internal
     //TODO: AudioServicesPlaySystemSound(SystemSoundID(1104))
@@ -24,7 +23,7 @@ public final class FeedbackHelper
     
     @usableFromInline internal static let selection_generator = UISelectionFeedbackGenerator()
     //SystemSoundID(1306)
-    @usableFromInline internal static let sounds_key_pressed:SystemSoundID = SystemSoundID(1104)// [SystemSoundID(1104), SystemSoundID(1105)]
+    @usableFromInline nonisolated internal static let sounds_key_pressed:SystemSoundID = SystemSoundID(1104)// [SystemSoundID(1104), SystemSoundID(1105)]
     
     @usableFromInline internal static var bShouldUseVibrationDyn: (()->Bool)? = nil
     @usableFromInline internal static var bShouldUseGeneralSoundEffectsDyn: (()->Bool)? = nil
@@ -94,7 +93,7 @@ public final class FeedbackHelper
     }
     
     @inlinable
-    public static func prepare_selection_generator()
+    public static func prepare_selection_generator() async
     {
         if !should_use_vibration()
         {
@@ -105,7 +104,16 @@ public final class FeedbackHelper
     }
     
     @inlinable
-    public static func prepare_notification_generator()
+    nonisolated public static func prepare_selection_generator()
+    {
+        Task
+        {
+            await prepare_selection_generator()
+        }
+    }
+    
+    @inlinable
+    public static func prepare_notification_generator() async
     {
         if !should_use_vibration()
         {
@@ -116,7 +124,16 @@ public final class FeedbackHelper
     }
     
     @inlinable
-    public static func prepare_impact_generator(_ fs: UIImpactFeedbackGenerator.FeedbackStyle)
+    nonisolated public static func prepare_notification_generator()
+    {
+        Task
+        {
+            await prepare_notification_generator()
+        }
+    }
+    
+    @inlinable
+    public static func prepare_impact_generator(_ fs: UIImpactFeedbackGenerator.FeedbackStyle) async
     {
         if !should_use_vibration()
         {
@@ -141,7 +158,16 @@ public final class FeedbackHelper
     }
     
     @inlinable
-    public static func prepare_impact_generators()
+    nonisolated public static func prepare_impact_generator(_ fs: UIImpactFeedbackGenerator.FeedbackStyle)
+    {
+        Task
+        {
+            await prepare_impact_generator(fs)
+        }
+    }
+    
+    @inlinable
+    public static func prepare_impact_generators() async
     {
         if !should_use_vibration()
         {
@@ -156,7 +182,16 @@ public final class FeedbackHelper
     }
     
     @inlinable
-    public static func play_button_sound()
+    nonisolated public static func prepare_impact_generators()
+    {
+        Task
+        {
+            await prepare_impact_generators()
+        }
+    }
+    
+    @inlinable
+    public static func play_button_sound() async
     {
         if !should_use_sound()
         {
@@ -168,7 +203,16 @@ public final class FeedbackHelper
     }
     
     @inlinable
-    public static func selectionChanged()
+    nonisolated public static func play_button_sound()
+    {
+        Task
+        {
+            await play_button_sound()
+        }
+    }
+    
+    @inlinable
+    public static func selectionChanged() async
     {
         if !should_use_vibration()
         {
@@ -178,7 +222,16 @@ public final class FeedbackHelper
     }
     
     @inlinable
-    public static func notificationOccurred(_ ft: UINotificationFeedbackGenerator.FeedbackType)
+    nonisolated public static func selectionChanged()
+    {
+        Task
+        {
+            await selectionChanged()
+        }
+    }
+    
+    @inlinable
+    public static func notificationOccurred(_ ft: UINotificationFeedbackGenerator.FeedbackType) async
     {
         if !should_use_vibration()
         {
@@ -189,7 +242,16 @@ public final class FeedbackHelper
     }
     
     @inlinable
-    public static func impactOccurred(_ fs: UIImpactFeedbackGenerator.FeedbackStyle)
+    nonisolated public static func notificationOccurred(_ ft: UINotificationFeedbackGenerator.FeedbackType)
+    {
+        Task
+        {
+            await notificationOccurred(ft)
+        }
+    }
+    
+    @inlinable
+    public static func impactOccurred(_ fs: UIImpactFeedbackGenerator.FeedbackStyle) async
     {
         if !should_use_vibration()
         {
@@ -214,7 +276,16 @@ public final class FeedbackHelper
     }
     
     @inlinable
-    public static func impactOccurred(_ fs: UIImpactFeedbackGenerator.FeedbackStyle, intensity: CGFloat)
+    nonisolated public static func impactOccurred(_ fs: UIImpactFeedbackGenerator.FeedbackStyle)
+    {
+        Task
+        {
+            await impactOccurred(fs)
+        }
+    }
+    
+    @inlinable
+    public static func impactOccurred(_ fs: UIImpactFeedbackGenerator.FeedbackStyle, intensity: CGFloat) async
     {
         if !should_use_vibration()
         {
@@ -235,6 +306,15 @@ public final class FeedbackHelper
             impact_generator_rigid.impactOccurred(intensity: intensity)
         @unknown default:
             impact_generator_medium.impactOccurred(intensity: intensity)
+        }
+    }
+    
+    @inlinable
+    nonisolated public static func impactOccurred(_ fs: UIImpactFeedbackGenerator.FeedbackStyle, intensity: CGFloat)
+    {
+        Task
+        {
+            await impactOccurred(fs, intensity: intensity)
         }
     }
 }
