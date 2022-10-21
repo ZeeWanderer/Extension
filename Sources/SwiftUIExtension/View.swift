@@ -256,7 +256,7 @@ public extension View
         }
     }
     
-    // MARK: Compatibility
+    // MARK: Compatibility - DEPRECATED
     /// Backwards compatible `task` call.
     @available(*, deprecated, renamed: "task(_:)")
     @inlinable
