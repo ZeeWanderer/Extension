@@ -236,7 +236,7 @@ public extension View
     @inlinable
     func navigate<Destination>(using binding: Binding<Bool>, @ViewBuilder destination: () -> Destination, isDetailLink: Bool = true) -> some View where Destination : View
     {
-        self.compat_background
+        self.background
         {
             NavigationLink(destination: destination(), isActive: binding, label: EmptyView.init)
                 .isDetailLink(isDetailLink)
@@ -248,7 +248,7 @@ public extension View
     @inlinable
     func lazyNavigate<Destination>(using binding: Binding<Bool>, @ViewBuilder destination: @escaping () -> Destination, isDetailLink: Bool = true) -> some View where Destination : View
     {
-        self.compat_background
+        self.background
         {
             NavigationLink(destination: LazyView(destination), isActive: binding, label: EmptyView.init)
                 .isDetailLink(isDetailLink)
@@ -258,6 +258,7 @@ public extension View
     
     // MARK: Compatibility
     /// Backwards compatible `task` call.
+    @available(*, deprecated, renamed: "task(_:)")
     @inlinable
     @ViewBuilder func compat_task(_ action: @Sendable @escaping () async -> Void) -> some View
     {
@@ -278,6 +279,7 @@ public extension View
     }
     
     /// Backwards compatible `overlay` call.
+    @available(*, deprecated, renamed: "overlay(alignment:content:)")
     @inlinable
     @ViewBuilder func compat_overlay<V>(alignment: Alignment = .center, @ViewBuilder content: () -> V) -> some View where V: View
     {
@@ -292,6 +294,7 @@ public extension View
     }
     
     /// Backwards compatible `background` call.
+    @available(*, deprecated, renamed: "background(alignment:content:)")
     @inlinable
     @ViewBuilder func compat_background<V>(alignment: Alignment = .center, @ViewBuilder content: () -> V) -> some View where V: View
     {
@@ -307,6 +310,7 @@ public extension View
     
     /// Backwards compatible `mask` call.
     /// - Note: `alignment` parameter is not used pre iOS 15.
+    @available(*, deprecated, renamed: "background(alignment:_:)")
     @inlinable
     @ViewBuilder // use `some` when XCode 14 comes out
     func compat_mask<Mask>(alignment: Alignment = .center, @ViewBuilder _ mask: () -> Mask) -> some View where Mask : View
