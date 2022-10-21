@@ -310,7 +310,7 @@ public extension View
     
     /// Backwards compatible `mask` call.
     /// - Note: `alignment` parameter is not used pre iOS 15.
-    @available(*, deprecated, renamed: "background(alignment:_:)")
+    @available(*, deprecated, renamed: "mask(alignment:_:)")
     @inlinable
     @ViewBuilder // use `some` when XCode 14 comes out
     func compat_mask<Mask>(alignment: Alignment = .center, @ViewBuilder _ mask: () -> Mask) -> some View where Mask : View
