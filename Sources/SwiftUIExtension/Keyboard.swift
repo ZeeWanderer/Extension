@@ -98,7 +98,6 @@ import SwiftUI
         }
     }
     
-    @inlinable
     public init()
     {
         self.listenForKeyboardNotifications()
