@@ -29,36 +29,52 @@ let package = Package(
             name: "SwiftExtension",
             dependencies: [
                 .product(name: "Numerics", package: "swift-numerics") // SE-0246 Accepted but not Implemented into Swift STD due to compiler issues
-            ],
-            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]),
+            ]
+            //            ,
+            //            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]
+        ),
         .target(
             name: "FoundationExtension",
-            dependencies: ["SwiftExtension"],
-            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]),
+            dependencies: ["SwiftExtension"]
+            //            ,
+            //            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]
+        ),
         .target(
             name: "CoreGraphicsExtension",
-            dependencies: ["SwiftExtension", "FoundationExtension"],
-            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]),
+            dependencies: ["SwiftExtension", "FoundationExtension"]
+            //            ,
+            //            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]
+        ),
         .target(
             name: "UIKitExtension",
-            dependencies: ["SwiftExtension"],
-            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]),
+            dependencies: ["SwiftExtension"]
+            //            ,
+            //            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]
+        ),
         .target(
             name: "SpriteKitExtension",
-            dependencies: ["UIKitExtension"],
-            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]),
+            dependencies: ["UIKitExtension"]
+            //            ,
+            //            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]
+        ),
         .target(
             name: "SwiftUIExtension",
-            dependencies: ["UIKitExtension", "CoreGraphicsExtension"],
-            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]),
+            dependencies: ["UIKitExtension", "CoreGraphicsExtension"]
+            //            ,
+            //            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]
+        ),
         .target(
             name: "GeneralExtensions",
-            dependencies: [],
-            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]),
+            dependencies: []
+            //            ,
+            //            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]
+        ),
         .target(
             name: "Extension",
-            dependencies: ["SwiftExtension", "FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions"],
-            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]),
+            dependencies: ["SwiftExtension", "FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions"]
+            //            ,
+            //            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]
+        ),
         .testTarget(
             name: "ExtensionTests",
             dependencies: ["SwiftExtension", "FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions"]),
