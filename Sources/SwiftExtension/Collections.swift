@@ -134,6 +134,9 @@ public class LinkedList<T>
     @usableFromInline internal var tail: Node<T>?
     
     @inlinable
+    public init() {}
+    
+    @inlinable
     public var isEmpty: Bool
     {
         return head == nil
@@ -244,6 +247,9 @@ public struct Queue<T>
     @usableFromInline internal var list = LinkedList<T>()
     
     @inlinable
+    public init() {}
+    
+    @inlinable
     public var isEmpty: Bool
     {
         return list.isEmpty
@@ -287,6 +293,9 @@ public struct FastQueue<T>
 {
     @usableFromInline internal var array = [T?]()
     @usableFromInline internal var head = 0
+    
+    @inlinable
+    public init() {}
     
     @inlinable
     public var isEmpty: Bool
