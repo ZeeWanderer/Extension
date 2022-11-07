@@ -269,6 +269,12 @@ public extension CGSize
     }
     
     @inlinable
+    init(side: CGFloat)
+    {
+        self.init(width: side, height: side)
+    }
+    
+    @inlinable
     @inline(__always)
     static func * (lhs: CGSize, rhs: CGFloat) -> CGSize
     {
