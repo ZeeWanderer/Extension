@@ -205,3 +205,19 @@ public extension Data
         }
     }
 }
+
+// MARK: - UserDefaults
+public extension UserDefaults
+{
+    @inlinable
+    func object(forKey defaultName: some RawRepresentable<String>) -> Any?
+    {
+        self.object(forKey: defaultName.rawValue)
+    }
+    
+    @inlinable
+    func set(_ value: Any?, forKey defaultName: some RawRepresentable<String>)
+    {
+        self.set(value, forKey: defaultName.rawValue)
+    }
+}
