@@ -133,7 +133,7 @@ public extension View
     /// Conditionaly executes closure.
     /// - Note: Beware, this modifies view in a way that changes it's identifier.
     @inlinable
-    @ViewBuilder func `if`<Content>(_ condition: Bool, @ViewBuilder transform: (Self) -> Content) -> some View where Content : View
+    @ViewBuilder func `if`(_ condition: Bool, @ViewBuilder transform: (Self) -> some View) -> some View
     {
         if condition
         {
@@ -149,7 +149,7 @@ public extension View
     /// Intended for use after `if` with the same condition to promote readibility. Equivalent to `if(!condition)`.
     /// - Note: Beware, this modifies view in a way that changes it's identifier.
     @inlinable
-    @ViewBuilder func `else`<Content>(_ condition: Bool, @ViewBuilder transform: (Self) -> Content) -> some View where Content : View
+    @ViewBuilder func `else`(_ condition: Bool, @ViewBuilder transform: (Self) -> some View) -> some View
     {
         self.if(!condition, transform: transform)
     }
@@ -246,7 +246,7 @@ public extension View
     
     /// Navigate to `destination` using a `binding`. Destination is warapped into ``LazyView`` to avoid unnececery initis.
     @inlinable
-    func lazyNavigate<Destination>(using binding: Binding<Bool>, @ViewBuilder destination: @escaping () -> Destination, isDetailLink: Bool = true) -> some View where Destination : View
+    func lazyNavigate(using binding: Binding<Bool>, @ViewBuilder destination: @escaping () -> some View, isDetailLink: Bool = true) -> some View
     {
         self.background
         {
@@ -281,7 +281,7 @@ public extension View
     /// Backwards compatible `overlay` call.
     @available(*, deprecated, renamed: "overlay(alignment:content:)")
     @inlinable
-    @ViewBuilder func compat_overlay<V>(alignment: Alignment = .center, @ViewBuilder content: () -> V) -> some View where V: View
+    @ViewBuilder func compat_overlay(alignment: Alignment = .center, @ViewBuilder content: () -> some View) -> some View
     {
         if #available(iOS 15, *)
         {
@@ -296,7 +296,7 @@ public extension View
     /// Backwards compatible `background` call.
     @available(*, deprecated, renamed: "background(alignment:content:)")
     @inlinable
-    @ViewBuilder func compat_background<V>(alignment: Alignment = .center, @ViewBuilder content: () -> V) -> some View where V: View
+    @ViewBuilder func compat_background(alignment: Alignment = .center, @ViewBuilder content: () -> some View) -> some View
     {
         if #available(iOS 15, *)
         {
@@ -313,7 +313,7 @@ public extension View
     @available(*, deprecated, renamed: "mask(alignment:_:)")
     @inlinable
     @ViewBuilder // use `some` when XCode 14 comes out
-    func compat_mask<Mask>(alignment: Alignment = .center, @ViewBuilder _ mask: () -> Mask) -> some View where Mask : View
+    func compat_mask<Mask>(alignment: Alignment = .center, @ViewBuilder _ mask: () -> some View) -> some View
     {
         if #available(iOS 15, *)
         {

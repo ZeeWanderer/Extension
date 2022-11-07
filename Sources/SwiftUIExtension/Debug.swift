@@ -29,7 +29,7 @@ public extension View
     
     // MARK: Modifiers
     @inlinable
-    func debugModifier<T: View>(_ modifier: (Self) -> T) -> some View
+    func debugModifier(_ modifier: (Self) -> some View) -> some View
     {
 #if DEBUG
         return modifier(self)
