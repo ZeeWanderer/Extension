@@ -62,6 +62,23 @@ public extension Color
     }
 }
 
+// MARK: - Animation
+public extension Animation
+{
+    @inlinable
+    func `repeat`(while expression: Bool, autoreverses: Bool = true) -> Animation
+    {
+        if expression
+        {
+            return self.repeatForever(autoreverses: autoreverses)
+        }
+        else
+        {
+            return self
+        }
+    }
+}
+
 // MARK: - Structs -
 
 
