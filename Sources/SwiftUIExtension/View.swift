@@ -216,16 +216,16 @@ public extension View
     /// Frames and postions view in a geven rect.
     /// - Parameter rect: A rectangle to position View in. Must be specified in View's parent coordinate system.
     @inlinable
-    func position(in rect: CGRect) -> some View
+    func position(in rect: CGRect, alignment: Alignment = .center) -> some View
     {
         self
-            .frame(size: rect.size)
+            .frame(size: rect.size, alignment: alignment)
             .position(rect.center)
     }
     
-    /// Applies shadow with given data.
+    /// Applies shadow with given Shadow data.
     @inlinable
-    func shadow(_ data: Shadow) -> some View
+    func shadow(data: Shadow) -> some View
     {
         self
             .shadow(color: data.color, radius: data.radius, x: data.x, y: data.y)
