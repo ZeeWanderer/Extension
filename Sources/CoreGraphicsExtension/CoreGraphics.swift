@@ -116,6 +116,7 @@ extension CGVector: BinaryRepresentable
 public extension CGPoint
 {
     @inlinable
+    @inline(__always)
     init(_ vector: CGVector)
     {
         self.init(x: vector.dx, y: vector.dy)
@@ -263,12 +264,14 @@ extension CGPoint: BinaryRepresentable
 public extension CGSize
 {
     @inlinable
+    @inline(__always)
     init(_ point: CGPoint)
     {
         self.init(width: point.x, height: point.y)
     }
     
     @inlinable
+    @inline(__always)
     init(side: CGFloat)
     {
         self.init(width: side, height: side)
@@ -311,6 +314,13 @@ extension CGSize: BinaryRepresentable
 // MARK: - CGSize
 public extension CGRect
 {
+    @inlinable
+    @inline(__always)
+    init(x: CGFloat, y: CGFloat, side: CGFloat)
+    {
+        self.init(x: x, y: y, width: side, height: side)
+    }
+    
     /// Translate CGRect by a given ammount
     @inlinable
     @inline(__always)
