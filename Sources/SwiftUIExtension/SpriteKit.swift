@@ -93,7 +93,7 @@ public struct SpriteViewBuilder: View
     @usableFromInline internal let scene: SKSceneSwiftUI
     
     @inlinable
-    init(scene: SKSceneSwiftUI)
+    public init(scene: SKSceneSwiftUI)
     {
         self.scene = scene
     }
