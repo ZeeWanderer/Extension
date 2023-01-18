@@ -20,6 +20,12 @@ public extension UIEdgeInsets
 // MARK: - EdgeInsets
 public extension EdgeInsets
 {
+    @inlinable
+    static var zero: EdgeInsets
+    {
+        .init(top: 0, leading: 0, bottom: 0, trailing: 0)
+    }
+    
     /// Returns default padding if inset is 0
     @inlinable
     var trailingDefaultPadding: CGFloat?
