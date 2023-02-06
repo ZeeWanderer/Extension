@@ -9,5 +9,6 @@
 @_exported import FoundationExtension
 @_exported import CoreGraphicsExtension
 @_exported import UIKitExtension
+@_exported import SpriteKitExtension
 @_exported import SwiftUIExtension
 @_exported import GeneralExtensions
