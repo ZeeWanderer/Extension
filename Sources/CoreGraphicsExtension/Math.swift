@@ -65,3 +65,102 @@ public func union(_ rects: [CGRect]) -> CGRect
     
     return bounding_rect
 }
+
+// MARK: - CGVector
+/// Clamps `dx` to provided range
+@inlinable
+@inline(__always)
+public func clamp(_ value: CGVector, dx range: ClosedRange<CGFloat>) -> CGVector
+{
+    return .init(dx: value.dx.clamped(to: range), dy: value.dy)
+}
+
+/// Clamps `dy` to provided range
+@inlinable
+@inline(__always)
+public func clamp(_ value: CGVector, dy range: ClosedRange<CGFloat>) -> CGVector
+{
+    return .init(dx: value.dx, dy: value.dy.clamped(to: range))
+}
+
+/// Clamps `dx` and `dy` to provided ranges
+@inlinable
+@inline(__always)
+public func clamp(_ value: CGVector, dx rangeDx: ClosedRange<CGFloat>, dy rangeDy: ClosedRange<CGFloat>) -> CGVector
+{
+    return .init(dx: value.dx.clamped(to: rangeDx), dy: value.dy.clamped(to: rangeDy))
+}
+
+/// Clamps `dx` and `dy` to provided range
+@inlinable
+@inline(__always)
+public func clamp(_ value: CGVector, to range: ClosedRange<CGFloat>) -> CGVector
+{
+    return .init(dx: value.dx.clamped(to: range), dy: value.dy.clamped(to: range))
+}
+
+// MARK: - CGPoint
+/// Clamps `x` to provided range
+@inlinable
+@inline(__always)
+public func clamp(_ value: CGPoint, x range: ClosedRange<CGFloat>) -> CGPoint
+{
+    return .init(x: value.x.clamped(to: range), y: value.y)
+}
+
+/// Clamps `y` to provided range
+@inlinable
+@inline(__always)
+public func clamp(_ value: CGPoint, y range: ClosedRange<CGFloat>) -> CGPoint
+{
+    return .init(x: value.x, y: value.y.clamped(to: range))
+}
+
+/// Clamps `x` and `y` to provided ranges
+@inlinable
+@inline(__always)
+public func clamp(_ value: CGPoint, x rangeX: ClosedRange<CGFloat>, y rangeY: ClosedRange<CGFloat>) -> CGPoint
+{
+    return .init(x: value.x.clamped(to: rangeX), y: value.y.clamped(to: rangeY))
+}
+
+/// Clamps `x` and `y` to provided range
+@inlinable
+@inline(__always)
+public func clamp(_ value: CGPoint, to range: ClosedRange<CGFloat>) -> CGPoint
+{
+    return .init(x: value.x.clamped(to: range), y: value.y.clamped(to: range))
+}
+
+// MARK: - CGSize
+/// Clamps `width` to provided range
+@inlinable
+@inline(__always)
+public func clamp(_ value: CGSize, width range: ClosedRange<CGFloat>) -> CGSize
+{
+    return .init(width: value.width.clamped(to: range), height: value.height)
+}
+
+/// Clamps `height` to provided range
+@inlinable
+@inline(__always)
+public func clamp(_ value: CGSize, height range: ClosedRange<CGFloat>) -> CGSize
+{
+    return .init(width: value.width, height: value.height.clamped(to: range))
+}
+
+/// Clamps `width` and `height` to provided ranges
+@inlinable
+@inline(__always)
+public func clamp(_ value: CGSize, width rangeWidth: ClosedRange<CGFloat>, height rangeHeight: ClosedRange<CGFloat>) -> CGSize
+{
+    return .init(width: value.width.clamped(to: rangeWidth), height: value.height.clamped(to: rangeHeight))
+}
+
+/// Clamps `width` and `height` to provided range
+@inlinable
+@inline(__always)
+public func clamp(_ value: CGSize, to range: ClosedRange<CGFloat>) -> CGSize
+{
+    return .init(width: value.width.clamped(to: range), height: value.height.clamped(to: range))
+}

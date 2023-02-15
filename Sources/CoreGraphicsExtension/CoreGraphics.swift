@@ -54,6 +54,13 @@ public extension CGVector
     
     @inlinable
     @inline(__always)
+    init(_ size: CGSize)
+    {
+        self.init(dx: size.width, dy: size.height)
+    }
+    
+    @inlinable
+    @inline(__always)
     static func * (_ lhs: CGVector, _ rhs: CGFloat) -> CGVector
     {
         return .init(dx: lhs.dx * rhs, dy: lhs.dy * rhs)
@@ -100,6 +107,38 @@ public extension CGVector
     {
         return .init(dx: lhs.dx - rhs.dx, dy: lhs.dy - rhs.dy)
     }
+    
+    /// See ``clamp(_:dx:)``
+    @inlinable
+    @inline(__always)
+    func clamped(dx range: ClosedRange<CGFloat>) -> CGVector
+    {
+        return clamp(self, dx: range)
+    }
+    
+    /// See ``clamp(_:dy:)``
+    @inlinable
+    @inline(__always)
+    func clamped(dy range: ClosedRange<CGFloat>) -> CGVector
+    {
+        return clamp(self, dy: range)
+    }
+    
+    /// See ``clamp(_:dx:dy:)``
+    @inlinable
+    @inline(__always)
+    func clamped(dx rangeDx: ClosedRange<CGFloat>, dy rangeDy: ClosedRange<CGFloat>) -> CGVector
+    {
+        return clamp(self, dx: rangeDx, dy: rangeDy)
+    }
+    
+    /// See  ``clamp(_:to:)``
+    @inlinable
+    @inline(__always)
+    func clamped(to range: ClosedRange<CGFloat>) -> CGVector
+    {
+        return clamp(self, to: range)
+    }
 }
 
 extension CGVector: BinaryRepresentable
@@ -120,6 +159,13 @@ public extension CGPoint
     init(_ vector: CGVector)
     {
         self.init(x: vector.dx, y: vector.dy)
+    }
+    
+    @inlinable
+    @inline(__always)
+    init(_ size: CGSize)
+    {
+        self.init(x: size.width, y: size.height)
     }
     
     /// Translate CGPoint by a given ammount
@@ -248,6 +294,38 @@ public extension CGPoint
     {
         return ilerp(parameter, min: min, max: self)
     }
+    
+    /// See ``clamp(_:x:)``
+    @inlinable
+    @inline(__always)
+    func clamped(x range: ClosedRange<CGFloat>) -> CGPoint
+    {
+        return clamp(self, x: range)
+    }
+    
+    /// See ``clamp(_:y:)``
+    @inlinable
+    @inline(__always)
+    func clamped(y range: ClosedRange<CGFloat>) -> CGPoint
+    {
+        return clamp(self, y: range)
+    }
+    
+    /// See ``clamp(_:x:y:)``
+    @inlinable
+    @inline(__always)
+    func clamped(x rangeX: ClosedRange<CGFloat>, y rangeY: ClosedRange<CGFloat>) -> CGPoint
+    {
+        return clamp(self, x: rangeX, y: rangeY)
+    }
+    
+    /// See  ``clamp(_:to:)``
+    @inlinable
+    @inline(__always)
+    func clamped(to range: ClosedRange<CGFloat>) -> CGPoint
+    {
+        return clamp(self, to: range)
+    }
 }
 
 extension CGPoint: BinaryRepresentable
@@ -299,6 +377,38 @@ public extension CGSize
     {
         return .init(x: self.width/2.0, y: self.height/2.0)
     }
+    
+    /// See ``clamp(_:width:)``
+    @inlinable
+    @inline(__always)
+    func clamped(width range: ClosedRange<CGFloat>) -> CGSize
+    {
+        return clamp(self, width: range)
+    }
+    
+    /// See ``clamp(_:height:)``
+    @inlinable
+    @inline(__always)
+    func clamped(height range: ClosedRange<CGFloat>) -> CGSize
+    {
+        return clamp(self, height: range)
+    }
+    
+    /// See ``clamp(_:width:height:)``
+    @inlinable
+    @inline(__always)
+    func clamped(width rangeWidth: ClosedRange<CGFloat>, height rangeHeight: ClosedRange<CGFloat>) -> CGSize
+    {
+        return clamp(self, width: rangeWidth, height: rangeHeight)
+    }
+    
+    /// See  ``clamp(_:to:)``
+    @inlinable
+    @inline(__always)
+    func clamped(to range: ClosedRange<CGFloat>) -> CGSize
+    {
+        return clamp(self, to: range)
+    }
 }
 
 extension CGSize: BinaryRepresentable
@@ -311,9 +421,16 @@ extension CGSize: BinaryRepresentable
     }
 }
 
-// MARK: - CGSize
+// MARK: - CGRect
 public extension CGRect
 {
+    @inlinable
+    @inline(__always)
+    init(origin: CGPoint, side: CGFloat)
+    {
+        self.init(origin: origin, size: .init(side: side))
+    }
+    
     @inlinable
     @inline(__always)
     init(x: CGFloat, y: CGFloat, side: CGFloat)
