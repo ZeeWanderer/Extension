@@ -232,8 +232,8 @@ public extension View
     }
     
     /// Applies `defersSystemGestures` on given `edges` if `iOS >= 16.0`
-    @ViewBuilder
-    func defersSystemGesturesIfAvailable(on edges: Edge.Set = .all) -> some View
+    @inlinable
+    @ViewBuilder func defersSystemGesturesIfAvailable(on edges: Edge.Set = .all) -> some View
     {
         if #available(iOS 16.0, *)
         {
