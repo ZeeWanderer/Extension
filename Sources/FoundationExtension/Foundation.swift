@@ -26,146 +26,43 @@ public extension String
 }
 
 // MARK: - Bool
-extension Bool: BinaryRepresentable
-{
-    @inlinable
-    public var data: Data
-    {
-        var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
-    }
-}
+extension Bool: BinaryRepresentable {}
 
 // MARK: - Int
-extension Int: BinaryRepresentable
-{
-    @inlinable
-    public var data: Data
-    {
-        var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
-    }
-}
+extension Int: BinaryRepresentable {}
 
 // MARK: - Int8
-extension Int8: BinaryRepresentable
-{
-    public var data: Data
-    {
-        var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
-    }
-}
+extension Int8: BinaryRepresentable {}
 
 // MARK: - Int16
-extension Int16: BinaryRepresentable
-{
-    @inlinable
-    public var data: Data
-    {
-        var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
-    }
-}
+extension Int16: BinaryRepresentable {}
 
 // MARK: - Int32
-extension Int32: BinaryRepresentable
-{
-    @inlinable
-    public var data: Data
-    {
-        var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
-    }
-}
+extension Int32: BinaryRepresentable {}
 
 // MARK: - Int64
-extension Int64: BinaryRepresentable
-{
-    @inlinable
-    public var data: Data
-    {
-        var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
-    }
-}
+extension Int64: BinaryRepresentable {}
 
 // MARK: - UInt
-extension UInt: BinaryRepresentable
-{
-    @inlinable
-    public var data: Data
-    {
-        var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
-    }
-}
+extension UInt: BinaryRepresentable {}
 
 // MARK: - UInt8
-extension UInt8: BinaryRepresentable
-{
-    @inlinable
-    public var data: Data
-    {
-        var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
-    }
-}
+extension UInt8: BinaryRepresentable {}
 
 // MARK: - UInt16
-extension UInt16: BinaryRepresentable
-{
-    @inlinable
-    public var data: Data
-    {
-        var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
-    }
-}
+extension UInt16: BinaryRepresentable {}
 
 // MARK: - UInt32
-extension UInt32: BinaryRepresentable
-{
-    @inlinable
-    public var data: Data
-    {
-        var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
-    }
-}
+extension UInt32: BinaryRepresentable {}
 
 // MARK: - UInt64
-extension UInt64: BinaryRepresentable
-{
-    @inlinable
-    public var data: Data
-    {
-        var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
-    }
-}
+extension UInt64: BinaryRepresentable {}
 
 // MARK: - Float
-extension Float: BinaryRepresentable
-{
-    @inlinable
-    public var data: Data
-    {
-        var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
-    }
-}
+extension Float: BinaryRepresentable {}
 
 // MARK: - Double
-extension Double: BinaryRepresentable
-{
-    @inlinable
-    public var data: Data
-    {
-        var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
-    }
-}
+extension Double: BinaryRepresentable {}
 
 // MARK: - Data
 public extension Data

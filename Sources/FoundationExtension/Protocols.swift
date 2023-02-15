@@ -12,8 +12,20 @@ import Foundation
 /// Streamlines transformation to and from Data for conforming types.
 public protocol BinaryRepresentable
 {
+    associatedtype BinaryRepresentableType = Self
+    
     /// Generates Data representation
     var data: Data { get }
+}
+
+public extension BinaryRepresentable
+{
+    @inlinable
+    var data: Data
+    {
+        var selfMutable = self
+        return .init(bytes: &selfMutable, count: MemoryLayout<BinaryRepresentableType>.size)
+    }
 }
 
 // MARK: - BinaryRepresentable
@@ -25,4 +37,14 @@ public protocol BinaryRepresentableCollection: Collection where Element: BinaryR
     
     /// Generates Data representation
     var data: Data { get }
+}
+
+public extension BinaryRepresentableCollection
+{
+    @inlinable
+    var data: Data
+    {
+        var mutableArray = Array(self)
+        return .init(bytes: &mutableArray, count: mutableArray.count * MemoryLayout<Element>.stride)
+    }
 }

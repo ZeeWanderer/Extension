@@ -33,15 +33,7 @@ public extension CGFloat
     }
 }
 
-extension CGFloat: BinaryRepresentable
-{
-    @inlinable
-    public var data: Data
-    {
-        var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
-    }
-}
+extension CGFloat: BinaryRepresentable {}
 
 // MARK: - CGVector
 public extension CGVector
@@ -141,15 +133,7 @@ public extension CGVector
     }
 }
 
-extension CGVector: BinaryRepresentable
-{
-    @inlinable
-    public var data: Data
-    {
-        var selfMutable = self
-        return .init(bytes: &selfMutable, count: MemoryLayout<Self>.size)
-    }
-}
+extension CGVector: BinaryRepresentable {}
 
 // MARK: - CGPoint
 public extension CGPoint
@@ -328,15 +312,7 @@ public extension CGPoint
     }
 }
 
-extension CGPoint: BinaryRepresentable
-{
-    @inlinable
-    public var data: Data
-    {
-        var selfMutable = self
-        return .init(bytes: &selfMutable, count: MemoryLayout<Self>.size)
-    }
-}
+extension CGPoint: BinaryRepresentable {}
 
 // MARK: - CGSize
 public extension CGSize
@@ -411,15 +387,7 @@ public extension CGSize
     }
 }
 
-extension CGSize: BinaryRepresentable
-{
-    @inlinable
-    public var data: Data
-    {
-        var selfMutable = self
-        return .init(bytes: &selfMutable, count: MemoryLayout<Self>.size)
-    }
-}
+extension CGSize: BinaryRepresentable {}
 
 // MARK: - CGRect
 public extension CGRect
@@ -498,12 +466,4 @@ public extension CGRect
     }
 }
 
-extension CGRect: BinaryRepresentable
-{
-    @inlinable
-    public var data: Data
-    {
-        var selfMutable = self
-        return Data(bytes: &selfMutable, count: MemoryLayout<Self>.size)
-    }
-}
+extension CGRect: BinaryRepresentable {}

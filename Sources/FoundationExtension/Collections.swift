@@ -126,15 +126,7 @@ extension Array: RawRepresentable where Element: Codable
     }
 }
 
-extension Array: BinaryRepresentableCollection where Element: BinaryRepresentable
-{
-    @inlinable
-    public var data: Data
-    {
-        var mutableArray = self
-        return Data(bytes: &mutableArray, count: mutableArray.count * MemoryLayout<Element>.stride)
-    }
-}
+extension Array: BinaryRepresentableCollection where Element: BinaryRepresentable {}
 
 //MARK: - Set
 extension Set: RawRepresentable where Element: Codable
@@ -162,12 +154,4 @@ extension Set: RawRepresentable where Element: Codable
     }
 }
 
-extension Set: BinaryRepresentableCollection where Element: Hashable, Element: BinaryRepresentable
-{
-    @inlinable
-    public var data: Data
-    {
-        var mutableArray = Array(self)
-        return Data(bytes: &mutableArray, count: mutableArray.count * MemoryLayout<Element>.stride)
-    }
-}
+extension Set: BinaryRepresentableCollection where Element: Hashable, Element: BinaryRepresentable {}
