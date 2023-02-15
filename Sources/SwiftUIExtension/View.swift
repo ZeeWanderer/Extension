@@ -231,6 +231,21 @@ public extension View
             .shadow(color: data.color, radius: data.radius, x: data.x, y: data.y)
     }
     
+    /// Applies `defersSystemGestures` on given `edges` if `iOS >= 16.0`
+    @ViewBuilder
+    func defersSystemGesturesIfAvailable(on edges: Edge.Set = .all) -> some View
+    {
+        if #available(iOS 16.0, *)
+        {
+            self
+                .defersSystemGestures(on: edges)
+        }
+        else
+        {
+            self
+        }
+    }
+    
     // MARK: Navigation
     /// Navigate to `destination` using a `binding`. Destination is instantiated imideately and repeatedly on any state changes.
     @inlinable
