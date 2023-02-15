@@ -90,7 +90,7 @@ public extension SpriteView
 
 public struct SpriteViewBuilder: View
 {
-    @usableFromInline internal let scene: SKSceneSwiftUI
+    public let scene: SKSceneSwiftUI
     
     @inlinable
     public init(scene: SKSceneSwiftUI)
