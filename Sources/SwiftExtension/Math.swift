@@ -93,8 +93,8 @@ public func leastCommonMultiple<T>(_ m: T, _ n: T) -> T where T: BinaryInteger
 @inline(__always)
 public func lowestTerms<T>(numerator: T, denominator: T) -> (T, T) where T: BinaryInteger
 {
-    let gcf = greatestCommonDivisor(numerator, denominator)
-    return (numerator / gcf, denominator / gcf)
+    let gcd = greatestCommonDivisor(numerator, denominator)
+    return (numerator / gcd, denominator / gcd)
 }
 
 // MARK: - DEPRECATED
