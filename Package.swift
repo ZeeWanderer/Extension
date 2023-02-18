@@ -28,7 +28,7 @@ let package = Package(
         .target(
             name: "SwiftExtension",
             dependencies: [
-                .product(name: "Numerics", package: "swift-numerics") // SE-0246 Accepted but not Implemented into Swift STD due to compiler issues
+                .product(name: "RealModule", package: "swift-numerics") // SE-0246 Accepted but not Implemented into Swift STD due to compiler issues
             ],
             swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]
         ),
