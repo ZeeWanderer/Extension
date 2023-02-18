@@ -78,7 +78,7 @@ public extension View
 {
     
     // MARK: Notifications
-    @inlinable
+    @MainActor @inlinable
     func onNotification(_ notificationName: Notification.Name, perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
     {
         onReceive(NotificationCenter.default.publisher(for: notificationName), perform: action)
