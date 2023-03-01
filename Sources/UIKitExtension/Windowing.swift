@@ -17,14 +17,14 @@ public extension UIApplication
     @inlinable var keySceneWindow: UIWindow?
     {
         connectedScenes
-            .compactMap {
-                $0 as? UIWindowScene
+            .compactMap { scene in
+                scene as? UIWindowScene
             }
-            .flatMap {
-                $0.windows
+            .flatMap { windowScene in
+                windowScene.windows
             }
-            .first {
-                $0.isKeyWindow
+            .first { window in
+                window.isKeyWindow
             }
     }
 }
