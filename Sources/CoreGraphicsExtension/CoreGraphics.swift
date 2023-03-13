@@ -192,6 +192,13 @@ public extension CGPoint
     
     @inlinable
     @inline(__always)
+    static func * (_ lhs: CGPoint, _ rhs: CGSize) -> CGFloat
+    {
+        return lhs.x * rhs.width + lhs.y * rhs.height
+    }
+    
+    @inlinable
+    @inline(__always)
     static func / (_ lhs: CGPoint, _ rhs: CGFloat) -> CGPoint
     {
         return .init(x: lhs.x / rhs, y: lhs.y / rhs)
@@ -223,6 +230,34 @@ public extension CGPoint
     static func - (lhs:CGPoint, rhs: CGPoint) -> CGPoint
     {
         return .init(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
+    }
+    
+    @inlinable
+    @inline(__always)
+    func scaled(x scaleX: CGFloat, y scaleY: CGFloat) -> CGPoint
+    {
+        return .init(x: x * scaleX, y: y * scaleY)
+    }
+    
+    @inlinable
+    @inline(__always)
+    func scaled(x scaleX: CGFloat) -> CGPoint
+    {
+        return .init(x: x * scaleX, y: y)
+    }
+    
+    @inlinable
+    @inline(__always)
+    func scaled(y scaleY: CGFloat) -> CGPoint
+    {
+        return .init(x: x, y: y * scaleY)
+    }
+    
+    @inlinable
+    @inline(__always)
+    func scaled(_ scale: CGFloat) -> CGPoint
+    {
+        return self * scale
     }
     
     /// linear intepolate a point between `min` and `max` with `self` as `parameter`.
@@ -354,6 +389,34 @@ public extension CGSize
         return .init(x: self.width/2.0, y: self.height/2.0)
     }
     
+    @inlinable
+    @inline(__always)
+    func scaled(x scaleX: CGFloat, y scaleY: CGFloat) -> CGSize
+    {
+        return .init(width: width * scaleX, height: height * scaleY)
+    }
+    
+    @inlinable
+    @inline(__always)
+    func scaled(x scaleX: CGFloat) -> CGSize
+    {
+        return .init(width: width * scaleX, height: height)
+    }
+    
+    @inlinable
+    @inline(__always)
+    func scaled(y scaleY: CGFloat) -> CGSize
+    {
+        return .init(width: width, height: height * scaleY)
+    }
+    
+    @inlinable
+    @inline(__always)
+    func scaled(_ scale: CGFloat) -> CGSize
+    {
+        return self * scale
+    }
+    
     /// See ``clamp(_:width:)``
     @inlinable
     @inline(__always)
@@ -455,6 +518,34 @@ public extension CGRect
     var center: CGPoint
     {
         return .init(x: self.midX, y: self.midY)
+    }
+    
+    @inlinable
+    @inline(__always)
+    func scaled(x scaleX: CGFloat, y scaleY: CGFloat) -> CGRect
+    {
+        return .init(origin: origin.scaled(x: scaleX, y: scaleY), size: size.scaled(x: scaleX, y: scaleY))
+    }
+    
+    @inlinable
+    @inline(__always)
+    func scaled(x scaleX: CGFloat) -> CGRect
+    {
+        return .init(origin: origin.scaled(x: scaleX), size: size.scaled(x: scaleX))
+    }
+    
+    @inlinable
+    @inline(__always)
+    func scaled(y scaleY: CGFloat) -> CGRect
+    {
+        return .init(origin: origin.scaled(y: scaleY), size: size.scaled(y: scaleY))
+    }
+    
+    @inlinable
+    @inline(__always)
+    func scaled(_ scale: CGFloat) -> CGRect
+    {
+        return self * scale
     }
     
     /// Computes CGRect that acts as a Bounding Box for current and provided rectangles.
