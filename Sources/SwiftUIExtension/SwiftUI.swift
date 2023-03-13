@@ -67,6 +67,16 @@ public extension Color
         self.init(colorSpace, red: r, green: g, blue: b, opacity: opacity)
     }
 }
+// MARK: - UnitPoint
+public extension UnitPoint
+{
+    @inlinable
+    @inline(__always)
+    var cgPoint: CGPoint
+    {
+        return .init(x: self.x, y: self.y)
+    }
+}
 
 // MARK: - Animation
 public extension Animation
