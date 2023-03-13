@@ -53,6 +53,34 @@ public extension EdgeInsets
     {
         bottom == 0 ? nil : 0
     }
+    
+    @inlinable
+    @inline(__always)
+    func scaled(x scaleX: CGFloat, y scaleY: CGFloat) -> EdgeInsets
+    {
+        .init(top: top * scaleY, leading: leading * scaleX, bottom: bottom * scaleY, trailing: trailing * scaleX)
+    }
+    
+    @inlinable
+    @inline(__always)
+    func scaled(x scaleX: CGFloat) -> EdgeInsets
+    {
+        .init(top: top, leading: leading * scaleX, bottom: bottom, trailing: trailing * scaleX)
+    }
+    
+    @inlinable
+    @inline(__always)
+    func scaled(y scaleY: CGFloat) -> EdgeInsets
+    {
+        .init(top: top * scaleY, leading: leading, bottom: bottom * scaleY, trailing: trailing)
+    }
+    
+    @inlinable
+    @inline(__always)
+    func scaled(_ scale: CGFloat) -> EdgeInsets
+    {
+        return self * scale
+    }
 }
 
 // MARK: - Color
