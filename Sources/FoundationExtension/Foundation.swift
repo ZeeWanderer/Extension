@@ -117,4 +117,16 @@ public extension UserDefaults
     {
         self.set(value, forKey: defaultName.rawValue)
     }
+    
+    @inlinable
+    func string(forKey defaultName: some RawRepresentable<String>) -> String?
+    {
+        return self.string(forKey: defaultName.rawValue)
+    }
+    
+    @inlinable
+    func bool(forKey defaultName: some RawRepresentable<String>) -> Bool
+    {
+        return self.bool(forKey: defaultName.rawValue)
+    }
 }
