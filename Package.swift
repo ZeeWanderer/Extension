@@ -1,4 +1,4 @@
-// swift-tools-version:5.7
+// swift-tools-version:5.8
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -28,52 +28,44 @@ let package = Package(
         .target(
             name: "SwiftExtension",
             dependencies: [
-                .product(name: "Numerics", package: "swift-numerics") // SE-0246 Accepted but not Implemented into Swift STD due to compiler issues
-            ]
-            //            ,
-            //            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]
+                .product(name: "RealModule", package: "swift-numerics") // SE-0246 Accepted but not Implemented into Swift STD due to compiler issues
+            ],
+            swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]
         ),
         .target(
             name: "FoundationExtension",
-            dependencies: ["SwiftExtension"]
-            //            ,
-            //            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]
+            dependencies: ["SwiftExtension"],
+            swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]
         ),
         .target(
             name: "CoreGraphicsExtension",
-            dependencies: ["SwiftExtension", "FoundationExtension"]
-            //            ,
-            //            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]
+            dependencies: ["SwiftExtension", "FoundationExtension"],
+            swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]
         ),
         .target(
             name: "UIKitExtension",
-            dependencies: ["SwiftExtension"]
-            //            ,
-            //            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]
+            dependencies: ["SwiftExtension"],
+            swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]
         ),
         .target(
             name: "SpriteKitExtension",
-            dependencies: ["UIKitExtension"]
-            //            ,
-            //            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]
+            dependencies: ["UIKitExtension"],
+            swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]
         ),
         .target(
             name: "SwiftUIExtension",
-            dependencies: ["UIKitExtension", "CoreGraphicsExtension"]
-            //            ,
-            //            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]
+            dependencies: ["UIKitExtension", "CoreGraphicsExtension"],
+            swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]
         ),
         .target(
             name: "GeneralExtensions",
-            dependencies: []
-            //            ,
-            //            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]
+            dependencies: [],
+            swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]
         ),
         .target(
             name: "Extension",
-            dependencies: ["SwiftExtension", "FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions"]
-            //            ,
-            //            swiftSettings: [.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"], .when(configuration: .debug))]
+            dependencies: ["SwiftExtension", "FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions"],
+            swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]
         ),
         .testTarget(
             name: "ExtensionTests",
