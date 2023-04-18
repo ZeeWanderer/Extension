@@ -18,7 +18,19 @@ public extension CGFloat
     /// See: ``lerp(_:min:max:)-lglu``
     @inlinable
     @inline(__always)
-    func lerped(min: CGPoint, max: CGPoint) -> CGPoint
+    func lerped<A: Numeric2D, B: Numeric2D, R: Numeric2D>(min: A, max: B) -> R
+    where A.Magnitude: Real, B.Magnitude : Real, R.Magnitude: Real,
+          A.Magnitude == B.Magnitude, A.Magnitude == R.Magnitude, A.Magnitude == Self
+    {
+        return lerp(self, min: min, max: max)
+    }
+    
+    /// linear intepolate a point between `min` and `max` with `self` as `parameter` (t).
+    /// See: ``lerp(_:min:max:)-lglu``
+    @inlinable
+    @inline(__always)
+    func lerped<A: Numeric2D, B: Numeric2D>(min: A, max: B) -> B
+    where A.Magnitude: Real, B.Magnitude : Real, A.Magnitude == B.Magnitude, A.Magnitude == Self
     {
         return lerp(self, min: min, max: max)
     }
@@ -27,7 +39,19 @@ public extension CGFloat
     /// See:  ``ilerp(_:min:max:)-59add``
     @inlinable
     @inline(__always)
-    func ilerped(min: CGPoint, max: CGPoint) -> CGPoint
+    func ilerped<A: Numeric2D, B: Numeric2D, R: Numeric2D>(min: A, max: B) -> R
+    where A.Magnitude: Real, B.Magnitude : Real, R.Magnitude: Real,
+          A.Magnitude == B.Magnitude, A.Magnitude == R.Magnitude, A.Magnitude == Self
+    {
+        return ilerp(self, min: min, max: max)
+    }
+    
+    /// inverse linear intepolate a point between `min` and `max` with `self` as `parameter` (t).
+    /// See:  ``ilerp(_:min:max:)-59add``
+    @inlinable
+    @inline(__always)
+    func ilerped<A: Numeric2D, B: Numeric2D>(min: A, max: B) -> B
+    where A.Magnitude: Real, B.Magnitude : Real, A.Magnitude == B.Magnitude, A.Magnitude == Self
     {
         return ilerp(self, min: min, max: max)
     }
@@ -38,19 +62,6 @@ extension CGFloat: BinaryRepresentable {}
 // MARK: - CGVector
 public extension CGVector
 {
-    @inlinable
-    init(_ point: CGPoint)
-    {
-        self.init(dx: point.x, dy: point.y)
-    }
-    
-    @inlinable
-    @inline(__always)
-    init(_ size: CGSize)
-    {
-        self.init(dx: size.width, dy: size.height)
-    }
-    
     @inlinable
     @inline(__always)
     static func * (_ lhs: CGVector, _ rhs: CGFloat) -> CGVector
@@ -130,6 +141,32 @@ public extension CGVector
     func clamped(to range: ClosedRange<CGFloat>) -> CGVector
     {
         return clamp(self, to: range)
+    }
+}
+
+extension CGVector: Numeric2D
+{
+    public typealias Magnitude = CGFloat
+    
+    @inlinable
+    @inline(__always)
+    public init(xMagnitude: Magnitude, yMagnitude: Magnitude)
+    {
+        self.init(dx: xMagnitude, dy: yMagnitude)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public var xMagnitude: Magnitude
+    {
+        self.dx
+    }
+    
+    @inlinable
+    @inline(__always)
+    public var yMagnitude: Magnitude
+    {
+        self.dy
     }
 }
 
@@ -260,60 +297,6 @@ public extension CGPoint
         return self * scale
     }
     
-    /// linear intepolate a point between `min` and `max` with `self` as `parameter`.
-    /// See:  ``lerp(_:min:max:)-z0dd``
-    @inlinable
-    @inline(__always)
-    func lerped(min: CGPoint, max: CGPoint) -> CGPoint
-    {
-        return lerp(self, min: min, max: max)
-    }
-    
-    /// linear intepolate a point between `min` and `max` for `parameter`  with `self` as `min`.
-    /// See:  ``lerp(_:min:max:)-z0dd``
-    @inlinable
-    @inline(__always)
-    func lerped(_ parameter: CGPoint, max: CGPoint) -> CGPoint
-    {
-        return lerp(parameter, min: self, max: max)
-    }
-    
-    /// linear intepolate a point between `min` and `max` for `parameter`  with `self` as `max`.
-    /// See:  ``lerp(_:min:max:)-z0dd``
-    @inlinable
-    @inline(__always)
-    func lerped(_ parameter: CGPoint, min: CGPoint) -> CGPoint
-    {
-        return lerp(parameter, min: min, max: self)
-    }
-    
-    /// inverse linear intepolate a point between `min` and `max` with `self` as `parameter`.
-    /// See:  ``ilerp(_:min:max:)-24jcs``
-    @inlinable
-    @inline(__always)
-    func ilerped(min: CGPoint, max: CGPoint) -> CGPoint
-    {
-        return ilerp(self, min: min, max: max)
-    }
-    
-    /// inverse linear intepolate a point between `min` and `max` for `parameter`  with `self` as `min`.
-    /// See:  ``ilerp(_:min:max:)-24jcs``
-    @inlinable
-    @inline(__always)
-    func ilerped(_ parameter: CGPoint, max: CGPoint) -> CGPoint
-    {
-        return ilerp(parameter, min: self, max: max)
-    }
-    
-    /// inverse linear intepolate a point between `min` and `max` for `parameter`  with `self` as `max`.
-    /// See:  ``ilerp(_:min:max:)-24jcs``
-    @inlinable
-    @inline(__always)
-    func ilerped(_ parameter: CGPoint, min: CGPoint) -> CGPoint
-    {
-        return ilerp(parameter, min: min, max: self)
-    }
-    
     /// See ``clamp(_:x:)``
     @inlinable
     @inline(__always)
@@ -347,18 +330,37 @@ public extension CGPoint
     }
 }
 
+extension CGPoint: Numeric2D
+{
+    public typealias Magnitude = CGFloat
+    
+    @inlinable
+    @inline(__always)
+    public init(xMagnitude: Magnitude, yMagnitude: Magnitude)
+    {
+        self.init(x: xMagnitude, y: yMagnitude)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public var xMagnitude: Magnitude
+    {
+        self.x
+    }
+    
+    @inlinable
+    @inline(__always)
+    public var yMagnitude: Magnitude
+    {
+        self.y
+    }
+}
+
 extension CGPoint: BinaryRepresentable {}
 
 // MARK: - CGSize
 public extension CGSize
 {
-    @inlinable
-    @inline(__always)
-    init(_ point: CGPoint)
-    {
-        self.init(width: point.x, height: point.y)
-    }
-    
     @inlinable
     @inline(__always)
     init(side: CGFloat)
@@ -447,6 +449,32 @@ public extension CGSize
     func clamped(to range: ClosedRange<CGFloat>) -> CGSize
     {
         return clamp(self, to: range)
+    }
+}
+
+extension CGSize: Numeric2D
+{
+    public typealias Magnitude = CGFloat
+    
+    @inlinable
+    @inline(__always)
+    public init(xMagnitude: Magnitude, yMagnitude: Magnitude)
+    {
+        self.init(width: xMagnitude, height: yMagnitude)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public var xMagnitude: Magnitude
+    {
+        self.width
+    }
+    
+    @inlinable
+    @inline(__always)
+    public var yMagnitude: Magnitude
+    {
+        self.height
     }
 }
 
