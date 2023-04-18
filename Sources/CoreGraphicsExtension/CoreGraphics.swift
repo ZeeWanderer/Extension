@@ -29,8 +29,8 @@ public extension CGFloat
     /// See: ``lerp(_:min:max:)-lglu``
     @inlinable
     @inline(__always)
-    func lerped<A: Numeric2D, B: Numeric2D>(min: A, max: B) -> B
-    where A.Magnitude: Real, B.Magnitude : Real, A.Magnitude == B.Magnitude, A.Magnitude == Self
+    func lerped<T: Numeric2D>(min: T, max: T) -> T
+    where T.Magnitude: Real, T.Magnitude == Self
     {
         return lerp(self, min: min, max: max)
     }
@@ -50,8 +50,8 @@ public extension CGFloat
     /// See:  ``ilerp(_:min:max:)-59add``
     @inlinable
     @inline(__always)
-    func ilerped<A: Numeric2D, B: Numeric2D>(min: A, max: B) -> B
-    where A.Magnitude: Real, B.Magnitude : Real, A.Magnitude == B.Magnitude, A.Magnitude == Self
+    func ilerped<T: Numeric2D>(min: T, max: T) -> T
+    where T.Magnitude: Real, T.Magnitude == Self
     {
         return ilerp(self, min: min, max: max)
     }
