@@ -67,4 +67,16 @@ final class ExtensionTests: XCTestCase
             let _ = union([r1, r2, r3])
         }
     }
+    
+    func testLerpValidity()
+    {
+        let r1 = CGSize(side: 50)
+        let r2 = CGSize(side: 100)
+        
+        let r3 = lerp(0.5, min: r1, max: r2)
+        let r4: CGSize = lerp(0.5, min: r1, max: r2)
+        
+        XCTAssertEqual(CGSize(side: 75), r3)
+        XCTAssertEqual(r4, r3)
+    }
 }
