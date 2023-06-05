@@ -445,6 +445,17 @@ public extension CGRect
     
     @inlinable
     @inline(__always)
+    var diagonal: CGFloat
+    {
+        // Opt for squares
+        if self.width == self.height { return self.width * CGFloat.root(2.0, 2) }
+        
+        // Universal path
+        return CGFloat.root(CGFloat.pow(self.width, 2) + CGFloat.pow(self.height, 2), 2)
+    }
+    
+    @inlinable
+    @inline(__always)
     func scaled(x scaleX: CGFloat, y scaleY: CGFloat) -> CGRect
     {
         return .init(origin: origin.scaled(x: scaleX, y: scaleY), size: size.scaled(x: scaleX, y: scaleY))
