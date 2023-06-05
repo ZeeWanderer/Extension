@@ -81,6 +81,28 @@ public extension EdgeInsets
     {
         return self * scale
     }
+    
+    @inlinable
+    func inset(for edge: Edge) -> CGFloat
+    {
+        switch edge {
+        case .top:
+            return self.top
+        case .leading:
+            return self.leading
+        case .bottom:
+            return self.bottom
+        case .trailing:
+            return self.trailing
+        }
+    }
+    
+    @inlinable
+    func inset(for edge: Edge, or default: CGFloat) -> CGFloat
+    {
+        let inset_ = self.inset(for: edge)
+        return inset_ == 0 ? `default` : inset_
+    }
 }
 
 // MARK: - Color
