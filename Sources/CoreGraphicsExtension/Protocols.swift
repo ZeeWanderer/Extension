@@ -10,7 +10,7 @@ import CoreGraphics
 
 public protocol Numeric2D
 {
-    associatedtype Magnitude : Comparable, Numeric
+    associatedtype Magnitude : Comparable, SignedNumeric
     
     init(xMagnitude: Magnitude, yMagnitude: Magnitude)
     
@@ -18,8 +18,15 @@ public protocol Numeric2D
     
     var xMagnitude: Magnitude { get }
     var yMagnitude: Magnitude { get }
+    
+    static func * (lhs: Self, rhs: Magnitude) -> Self
+    static func * <T>(lhs: Self, rhs: T) -> Magnitude where T: Numeric2D, T.Magnitude == Self.Magnitude
+    // SignedNumeric
+    static prefix func - (operand: Self) -> Self
+    mutating func negate()
 }
 
+// MARK: Numeric2D - Default Implementations
 public extension Numeric2D
 {
     @inlinable
@@ -28,6 +35,110 @@ public extension Numeric2D
     {
         self.init(xMagnitude: numeric2d.xMagnitude, yMagnitude: numeric2d.yMagnitude)
     }
+    
+    @inlinable
+    @inline(__always)
+    static func * (_ lhs: Self, _ rhs: Magnitude) -> Self
+    {
+        return .init(xMagnitude:  lhs.xMagnitude * rhs, yMagnitude: lhs.yMagnitude * rhs)
+    }
+    
+    @inlinable
+    @inline(__always)
+    static func * <T>(lhs: Self, rhs: T) -> Magnitude where T: Numeric2D, T.Magnitude == Self.Magnitude
+    {
+        return lhs.xMagnitude * rhs.xMagnitude + lhs.yMagnitude * rhs.yMagnitude
+    }
+    
+    @inlinable
+    @inline(__always)
+    static prefix func - (operand: Self) -> Self
+    {
+        return Self(xMagnitude: -operand.xMagnitude, yMagnitude: -operand.yMagnitude)
+    }
+    
+    @inlinable
+    @inline(__always)
+    mutating func negate()
+    {
+        return self = -self
+    }
+}
+
+// MARK: Numeric2D - Member variants of static functions
+public extension Numeric2D
+{
+    // SCALE
+    @inlinable
+    @inline(__always)
+    func scaled(x scaleX: Magnitude, y scaleY: Magnitude) -> Self
+    {
+        return .init(xMagnitude: self.xMagnitude * scaleX, yMagnitude: self.yMagnitude * scaleY)
+    }
+    
+    @inlinable
+    @inline(__always)
+    func scaled(x scaleX: Magnitude) -> Self
+    {
+        return .init(xMagnitude: self.xMagnitude * scaleX, yMagnitude: self.yMagnitude)
+    }
+    
+    @inlinable
+    @inline(__always)
+    func scaled(y scaleY: Magnitude) -> Self
+    {
+        return .init(xMagnitude: self.xMagnitude, yMagnitude: self.yMagnitude * scaleY)
+    }
+    
+    @inlinable
+    @inline(__always)
+    func scaled(_ scale: Magnitude) -> Self
+    {
+        return self * scale
+    }
+    
+    @inlinable
+    @inline(__always)
+    func scaled<T>(_ scale: T) -> Self where T: Numeric2D, T.Magnitude == Self.Magnitude
+    {
+        return scaled(x: scale.xMagnitude, y: scale.yMagnitude)
+    }
+    
+    // clamp
+    
+    /// See ``clamp(_:x:)``
+    @inlinable
+    @inline(__always)
+    func clamped(x range: ClosedRange<Magnitude>) -> Self
+    {
+        return clamp(self, x: range)
+    }
+    
+    /// See ``clamp(_:y:)``
+    @inlinable
+    @inline(__always)
+    func clamped(y range: ClosedRange<Magnitude>) -> Self
+    {
+        return clamp(self, y: range)
+    }
+    
+    /// See ``clamp(_:x:y:)``
+    @inlinable
+    @inline(__always)
+    func clamped(x rangeX: ClosedRange<Magnitude>, y rangeY: ClosedRange<Magnitude>) -> Self
+    {
+        return clamp(self, x: rangeX, y: rangeY)
+    }
+    
+    /// See  ``clamp(_:to:)``
+    @inlinable
+    @inline(__always)
+    func clamped(to range: ClosedRange<Magnitude>) -> Self
+    {
+        return clamp(self, to: range)
+    }
+    
+    // LI, RLI
     
     /// linear intepolate a point between `min` and `max` with `self` as `parameter`.
     /// See:  ``lerp(_:min:max:)-z0dd``

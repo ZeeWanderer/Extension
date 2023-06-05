@@ -114,6 +114,7 @@ public extension CGVector
     /// See ``clamp(_:dx:)``
     @inlinable
     @inline(__always)
+    @available(*, deprecated, renamed: "clamped(x:)")
     func clamped(dx range: ClosedRange<CGFloat>) -> CGVector
     {
         return clamp(self, dx: range)
@@ -122,6 +123,7 @@ public extension CGVector
     /// See ``clamp(_:dy:)``
     @inlinable
     @inline(__always)
+    @available(*, deprecated, renamed: "clamped(y:)")
     func clamped(dy range: ClosedRange<CGFloat>) -> CGVector
     {
         return clamp(self, dy: range)
@@ -130,17 +132,10 @@ public extension CGVector
     /// See ``clamp(_:dx:dy:)``
     @inlinable
     @inline(__always)
+    @available(*, deprecated, renamed: "clamped(x:y:)")
     func clamped(dx rangeDx: ClosedRange<CGFloat>, dy rangeDy: ClosedRange<CGFloat>) -> CGVector
     {
         return clamp(self, dx: rangeDx, dy: rangeDy)
-    }
-    
-    /// See  ``clamp(_:to:)``
-    @inlinable
-    @inline(__always)
-    func clamped(to range: ClosedRange<CGFloat>) -> CGVector
-    {
-        return clamp(self, to: range)
     }
 }
 
@@ -268,66 +263,6 @@ public extension CGPoint
     {
         return .init(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
     }
-    
-    @inlinable
-    @inline(__always)
-    func scaled(x scaleX: CGFloat, y scaleY: CGFloat) -> CGPoint
-    {
-        return .init(x: x * scaleX, y: y * scaleY)
-    }
-    
-    @inlinable
-    @inline(__always)
-    func scaled(x scaleX: CGFloat) -> CGPoint
-    {
-        return .init(x: x * scaleX, y: y)
-    }
-    
-    @inlinable
-    @inline(__always)
-    func scaled(y scaleY: CGFloat) -> CGPoint
-    {
-        return .init(x: x, y: y * scaleY)
-    }
-    
-    @inlinable
-    @inline(__always)
-    func scaled(_ scale: CGFloat) -> CGPoint
-    {
-        return self * scale
-    }
-    
-    /// See ``clamp(_:x:)``
-    @inlinable
-    @inline(__always)
-    func clamped(x range: ClosedRange<CGFloat>) -> CGPoint
-    {
-        return clamp(self, x: range)
-    }
-    
-    /// See ``clamp(_:y:)``
-    @inlinable
-    @inline(__always)
-    func clamped(y range: ClosedRange<CGFloat>) -> CGPoint
-    {
-        return clamp(self, y: range)
-    }
-    
-    /// See ``clamp(_:x:y:)``
-    @inlinable
-    @inline(__always)
-    func clamped(x rangeX: ClosedRange<CGFloat>, y rangeY: ClosedRange<CGFloat>) -> CGPoint
-    {
-        return clamp(self, x: rangeX, y: rangeY)
-    }
-    
-    /// See  ``clamp(_:to:)``
-    @inlinable
-    @inline(__always)
-    func clamped(to range: ClosedRange<CGFloat>) -> CGPoint
-    {
-        return clamp(self, to: range)
-    }
 }
 
 extension CGPoint: Numeric2D
@@ -368,13 +303,6 @@ public extension CGSize
         self.init(width: side, height: side)
     }
     
-    @inlinable
-    @inline(__always)
-    static func * (lhs: CGSize, rhs: CGFloat) -> CGSize
-    {
-        return CGSize(width: lhs.width * rhs, height: lhs.height * rhs)
-    }
-    
     /// `width * height`
     @inlinable
     @inline(__always)
@@ -391,37 +319,10 @@ public extension CGSize
         return .init(x: self.width/2.0, y: self.height/2.0)
     }
     
-    @inlinable
-    @inline(__always)
-    func scaled(x scaleX: CGFloat, y scaleY: CGFloat) -> CGSize
-    {
-        return .init(width: width * scaleX, height: height * scaleY)
-    }
-    
-    @inlinable
-    @inline(__always)
-    func scaled(x scaleX: CGFloat) -> CGSize
-    {
-        return .init(width: width * scaleX, height: height)
-    }
-    
-    @inlinable
-    @inline(__always)
-    func scaled(y scaleY: CGFloat) -> CGSize
-    {
-        return .init(width: width, height: height * scaleY)
-    }
-    
-    @inlinable
-    @inline(__always)
-    func scaled(_ scale: CGFloat) -> CGSize
-    {
-        return self * scale
-    }
-    
     /// See ``clamp(_:width:)``
     @inlinable
     @inline(__always)
+    @available(*, deprecated, renamed: "clamped(x:)")
     func clamped(width range: ClosedRange<CGFloat>) -> CGSize
     {
         return clamp(self, width: range)
@@ -430,6 +331,7 @@ public extension CGSize
     /// See ``clamp(_:height:)``
     @inlinable
     @inline(__always)
+    @available(*, deprecated, renamed: "clamped(y:)")
     func clamped(height range: ClosedRange<CGFloat>) -> CGSize
     {
         return clamp(self, height: range)
@@ -438,17 +340,10 @@ public extension CGSize
     /// See ``clamp(_:width:height:)``
     @inlinable
     @inline(__always)
+    @available(*, deprecated, renamed: "clamped(x:y:)")
     func clamped(width rangeWidth: ClosedRange<CGFloat>, height rangeHeight: ClosedRange<CGFloat>) -> CGSize
     {
         return clamp(self, width: rangeWidth, height: rangeHeight)
-    }
-    
-    /// See  ``clamp(_:to:)``
-    @inlinable
-    @inline(__always)
-    func clamped(to range: ClosedRange<CGFloat>) -> CGSize
-    {
-        return clamp(self, to: range)
     }
 }
 
