@@ -8,9 +8,9 @@
 import SwiftUI
 import CoreGraphicsExtension
 
-// MARK: - Numeric2D
+// MARK: - FloatingPoint2D
 
-extension UnitPoint: SignedNumeric2D
+extension UnitPoint: FloatingPoint2D
 {
     public typealias Magnitude = CGFloat
     

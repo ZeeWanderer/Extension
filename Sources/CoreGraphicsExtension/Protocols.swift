@@ -108,10 +108,12 @@ public extension AdditiveArithmetic2D
 }
 
 // MARK: - Numeric2D
+infix operator .* : MultiplicationPrecedence
 public protocol Numeric2D: AdditiveArithmetic2D where Magnitude: Comparable, Magnitude: Numeric
 {
     static func * (lhs: Self, rhs: Magnitude) -> Self
     static func * <T>(lhs: Self, rhs: T) -> Magnitude where T: Numeric2D, T.Magnitude == Self.Magnitude
+    static func .* <T>(_ lhs: Self, _ rhs: T) -> Self where T: Numeric2D, T.Magnitude == Self.Magnitude
 }
 
 public extension Numeric2D
@@ -128,6 +130,13 @@ public extension Numeric2D
     static func * <T>(lhs: Self, rhs: T) -> Magnitude where T: Numeric2D, T.Magnitude == Self.Magnitude
     {
         return lhs.xMagnitude * rhs.xMagnitude + lhs.yMagnitude * rhs.yMagnitude
+    }
+    
+    @inlinable
+    @inline(__always)
+    static func .* <T>(lhs: Self, rhs: T) -> Self where T: Numeric2D, T.Magnitude == Self.Magnitude
+    {
+        return .init(xMagnitude: lhs.xMagnitude * rhs.xMagnitude, yMagnitude: lhs.yMagnitude * rhs.yMagnitude)
     }
 }
 
@@ -274,13 +283,43 @@ public extension Numeric2D
     }
 }
 
+// MARK: - Numeric2D public functions
+
+@inlinable
+@inline(__always)
+public func min<T>(_ lhs: T, _ rhs: T) -> T where T: Numeric2D
+{
+    return T(xMagnitude: min(lhs.xMagnitude, rhs.xMagnitude), yMagnitude: min(lhs.yMagnitude, rhs.yMagnitude))
+}
+
+@inlinable
+@inline(__always)
+public func min<T>(_ scalar: T.Magnitude, _ rhs: T) -> T where T: Numeric2D
+{
+    return T(xMagnitude: min(scalar, rhs.xMagnitude), yMagnitude: min(scalar, rhs.yMagnitude))
+}
+
+@inlinable
+@inline(__always)
+public func max<T>(_ lhs: T, _ rhs: T) -> T where T: Numeric2D
+{
+    return T(xMagnitude: max(lhs.xMagnitude, rhs.xMagnitude), yMagnitude: max(lhs.yMagnitude, rhs.yMagnitude))
+}
+
+@inlinable
+@inline(__always)
+public func max<T>(_ scalar: T.Magnitude, _ rhs: T) -> T where T: Numeric2D
+{
+    return T(xMagnitude: max(scalar, rhs.xMagnitude), yMagnitude: max(scalar, rhs.yMagnitude))
+}
+
+// MARK: - SignedNumeric2D
 public protocol SignedNumeric2D: Numeric2D where Magnitude: SignedNumeric
 {
     static prefix func - (operand: Self) -> Self
     mutating func negate()
 }
 
-// MARK: - SignedNumeric2D
 public extension SignedNumeric2D
 {
     @inlinable
@@ -309,3 +348,37 @@ extension Hashable2D where Magnitude: Hashable
         hasher.combine(self.yMagnitude)
     }
 }
+
+infix operator ./ : MultiplicationPrecedence
+public protocol FloatingPoint2D: SignedNumeric2D, Hashable2D where Magnitude: FloatingPoint
+{
+    static func / (lhs: Self, rhs: Magnitude) -> Self
+    //static func / <T>(lhs: Self, rhs: T) -> Magnitude where T: Numeric2D, T.Magnitude == Self.Magnitude
+    static func ./ <T>(_ lhs: Self, _ rhs: T) -> Self where T: Numeric2D, T.Magnitude == Self.Magnitude
+}
+
+// MARK: - FloatingPoint2D
+public extension FloatingPoint2D
+{
+    @inlinable
+    @inline(__always)
+    static func / (_ lhs: Self, _ rhs: Magnitude) -> Self
+    {
+        return .init(xMagnitude:  lhs.xMagnitude / rhs, yMagnitude: lhs.yMagnitude / rhs)
+    }
+    
+//    @inlinable
+//    @inline(__always)
+//    static func / <T>(lhs: Self, rhs: T) -> Magnitude where T: Numeric2D, T.Magnitude == Self.Magnitude
+//    {
+//        return lhs.xMagnitude / rhs.xMagnitude + lhs.yMagnitude / rhs.yMagnitude
+//    }
+    
+    @inlinable
+    @inline(__always)
+    static func ./ <T>(lhs: Self, rhs: T) -> Self where T: Numeric2D, T.Magnitude == Self.Magnitude
+    {
+        return .init(xMagnitude: lhs.xMagnitude / rhs.xMagnitude, yMagnitude: lhs.yMagnitude / rhs.yMagnitude)
+    }
+}
+

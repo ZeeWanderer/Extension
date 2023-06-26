@@ -62,41 +62,6 @@ extension CGFloat: BinaryRepresentable {}
 // MARK: - CGVector
 public extension CGVector
 {
-    @inlinable
-    @inline(__always)
-    static func / (_ lhs: CGVector, _ rhs: CGFloat) -> CGVector
-    {
-        return .init(dx: lhs.dx / rhs, dy: lhs.dy / rhs)
-    }
-    
-    @inlinable
-    @inline(__always)
-    static func + (lhs:CGVector, rhs: CGFloat) -> CGVector
-    {
-        return .init(dx: lhs.dx + rhs, dy: lhs.dy + rhs)
-    }
-    
-    @inlinable
-    @inline(__always)
-    static func - (lhs:CGVector, rhs: CGFloat) -> CGVector
-    {
-        return .init(dx: lhs.dx - rhs, dy: lhs.dy - rhs)
-    }
-    
-    @inlinable
-    @inline(__always)
-    static func + (lhs:CGVector, rhs: CGVector) -> CGVector
-    {
-        return .init(dx: lhs.dx + rhs.dx, dy: lhs.dy + rhs.dy)
-    }
-    
-    @inlinable
-    @inline(__always)
-    static func - (lhs:CGVector, rhs: CGVector) -> CGVector
-    {
-        return .init(dx: lhs.dx - rhs.dx, dy: lhs.dy - rhs.dy)
-    }
-    
     /// See ``clamp(_:dx:)``
     @inlinable
     @inline(__always)
@@ -125,7 +90,7 @@ public extension CGVector
     }
 }
 
-extension CGVector: SignedNumeric2D
+extension CGVector: FloatingPoint2D
 {
     public typealias Magnitude = CGFloat
     
@@ -159,27 +124,11 @@ extension CGVector: SignedNumeric2D
     }
 }
 
-extension CGVector: Hashable2D {}
-
 extension CGVector: BinaryRepresentable {}
 
 // MARK: - CGPoint
 public extension CGPoint
 {
-    @inlinable
-    @inline(__always)
-    init(_ vector: CGVector)
-    {
-        self.init(x: vector.dx, y: vector.dy)
-    }
-    
-    @inlinable
-    @inline(__always)
-    init(_ size: CGSize)
-    {
-        self.init(x: size.width, y: size.height)
-    }
-    
     /// Translate CGPoint by a given ammount
     @inlinable
     @inline(__always)
@@ -203,44 +152,9 @@ public extension CGPoint
     {
         return .init(x:self.x + size.width, y:self.y + size.height)
     }
-    
-    @inlinable
-    @inline(__always)
-    static func / (_ lhs: CGPoint, _ rhs: CGFloat) -> CGPoint
-    {
-        return .init(x: lhs.x / rhs, y: lhs.y / rhs)
-    }
-    
-    @inlinable
-    @inline(__always)
-    static func + (lhs:CGPoint, rhs: CGFloat) -> CGPoint
-    {
-        return .init(x: lhs.x + rhs, y: lhs.y + rhs)
-    }
-    
-    @inlinable
-    @inline(__always)
-    static func - (lhs:CGPoint, rhs: CGFloat) -> CGPoint
-    {
-        return .init(x: lhs.x - rhs, y: lhs.y - rhs)
-    }
-    
-    @inlinable
-    @inline(__always)
-    static func + (lhs:CGPoint, rhs: CGPoint) -> CGPoint
-    {
-        return .init(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
-    }
-    
-    @inlinable
-    @inline(__always)
-    static func - (lhs:CGPoint, rhs: CGPoint) -> CGPoint
-    {
-        return .init(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
-    }
 }
 
-extension CGPoint: SignedNumeric2D
+extension CGPoint: FloatingPoint2D
 {
     public typealias Magnitude = CGFloat
     
@@ -273,8 +187,6 @@ extension CGPoint: SignedNumeric2D
         }
     }
 }
-
-extension CGPoint: Hashable2D {}
 
 extension CGPoint: BinaryRepresentable {}
 
@@ -332,7 +244,7 @@ public extension CGSize
     }
 }
 
-extension CGSize: SignedNumeric2D
+extension CGSize: FloatingPoint2D
 {
     public typealias Magnitude = CGFloat
     
@@ -365,8 +277,6 @@ extension CGSize: SignedNumeric2D
         }
     }
 }
-
-extension CGSize: Hashable2D {}
 
 extension CGSize: BinaryRepresentable {}
 
