@@ -64,20 +64,6 @@ public extension CGVector
 {
     @inlinable
     @inline(__always)
-    static func * (_ lhs: CGVector, _ rhs: CGFloat) -> CGVector
-    {
-        return .init(dx: lhs.dx * rhs, dy: lhs.dy * rhs)
-    }
-    
-    @inlinable
-    @inline(__always)
-    static func * (_ lhs: CGVector, _ rhs: CGVector) -> CGFloat
-    {
-        return lhs.dx * rhs.dx + lhs.dy * rhs.dy
-    }
-    
-    @inlinable
-    @inline(__always)
     static func / (_ lhs: CGVector, _ rhs: CGFloat) -> CGVector
     {
         return .init(dx: lhs.dx / rhs, dy: lhs.dy / rhs)
@@ -139,7 +125,7 @@ public extension CGVector
     }
 }
 
-extension CGVector: Numeric2D
+extension CGVector: SignedNumeric2D
 {
     public typealias Magnitude = CGFloat
     
@@ -152,18 +138,28 @@ extension CGVector: Numeric2D
     
     @inlinable
     @inline(__always)
-    public var xMagnitude: Magnitude
-    {
-        self.dx
+    public var xMagnitude: CGFloat {
+        get {
+            self.dx
+        }
+        set {
+            self.dx = newValue
+        }
     }
     
     @inlinable
     @inline(__always)
-    public var yMagnitude: Magnitude
-    {
-        self.dy
+    public var yMagnitude: CGFloat {
+        get {
+            self.dy
+        }
+        set {
+            self.dy = newValue
+        }
     }
 }
+
+extension CGVector: Hashable2D {}
 
 extension CGVector: BinaryRepresentable {}
 
@@ -210,27 +206,6 @@ public extension CGPoint
     
     @inlinable
     @inline(__always)
-    static func * (_ lhs: CGPoint, _ rhs: CGFloat) -> CGPoint
-    {
-        return .init(x: lhs.x * rhs, y: lhs.y * rhs)
-    }
-    
-    @inlinable
-    @inline(__always)
-    static func * (_ lhs: CGPoint, _ rhs: CGPoint) -> CGFloat
-    {
-        return lhs.x * rhs.x + lhs.y * rhs.y
-    }
-    
-    @inlinable
-    @inline(__always)
-    static func * (_ lhs: CGPoint, _ rhs: CGSize) -> CGFloat
-    {
-        return lhs.x * rhs.width + lhs.y * rhs.height
-    }
-    
-    @inlinable
-    @inline(__always)
     static func / (_ lhs: CGPoint, _ rhs: CGFloat) -> CGPoint
     {
         return .init(x: lhs.x / rhs, y: lhs.y / rhs)
@@ -265,7 +240,7 @@ public extension CGPoint
     }
 }
 
-extension CGPoint: Numeric2D
+extension CGPoint: SignedNumeric2D
 {
     public typealias Magnitude = CGFloat
     
@@ -278,18 +253,28 @@ extension CGPoint: Numeric2D
     
     @inlinable
     @inline(__always)
-    public var xMagnitude: Magnitude
-    {
-        self.x
+    public var xMagnitude: CGFloat {
+        get {
+            self.x
+        }
+        set {
+            self.x = newValue
+        }
     }
     
     @inlinable
     @inline(__always)
-    public var yMagnitude: Magnitude
-    {
-        self.y
+    public var yMagnitude: CGFloat {
+        get {
+            self.y
+        }
+        set {
+            self.y = newValue
+        }
     }
 }
+
+extension CGPoint: Hashable2D {}
 
 extension CGPoint: BinaryRepresentable {}
 
@@ -347,7 +332,7 @@ public extension CGSize
     }
 }
 
-extension CGSize: Numeric2D
+extension CGSize: SignedNumeric2D
 {
     public typealias Magnitude = CGFloat
     
@@ -360,18 +345,28 @@ extension CGSize: Numeric2D
     
     @inlinable
     @inline(__always)
-    public var xMagnitude: Magnitude
-    {
-        self.width
+    public var xMagnitude: CGFloat {
+        get {
+            self.width
+        }
+        set {
+            self.width = newValue
+        }
     }
     
     @inlinable
     @inline(__always)
-    public var yMagnitude: Magnitude
-    {
-        self.height
+    public var yMagnitude: CGFloat {
+        get {
+            self.height
+        }
+        set {
+            self.height = newValue
+        }
     }
 }
+
+extension CGSize: Hashable2D {}
 
 extension CGSize: BinaryRepresentable {}
 
@@ -488,6 +483,16 @@ public extension CGRect
     func union(_ rects: [CGRect]) -> CGRect
     {
         return CoreGraphicsExtension.union([self]+rects)
+    }
+}
+
+extension CGRect: Hashable
+{
+    @inlinable
+    public func hash(into hasher: inout Hasher)
+    {
+        hasher.combine(self.origin)
+        hasher.combine(self.size)
     }
 }
 

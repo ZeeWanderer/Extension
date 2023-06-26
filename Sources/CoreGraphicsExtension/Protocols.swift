@@ -8,26 +8,20 @@
 import SwiftExtension
 import CoreGraphics
 
-public protocol Numeric2D
+// MARK: - Uniform2D
+public protocol Uniform2D
 {
-    associatedtype Magnitude : Comparable, SignedNumeric
+    associatedtype Magnitude
     
     init(xMagnitude: Magnitude, yMagnitude: Magnitude)
     
     init<T>(_ numeric2d: T) where T: Numeric2D, T.Magnitude == Self.Magnitude
     
-    var xMagnitude: Magnitude { get }
-    var yMagnitude: Magnitude { get }
-    
-    static func * (lhs: Self, rhs: Magnitude) -> Self
-    static func * <T>(lhs: Self, rhs: T) -> Magnitude where T: Numeric2D, T.Magnitude == Self.Magnitude
-    // SignedNumeric
-    static prefix func - (operand: Self) -> Self
-    mutating func negate()
+    var xMagnitude: Magnitude { get mutating set }
+    var yMagnitude: Magnitude { get mutating set }
 }
 
-// MARK: Numeric2D - Default Implementations
-public extension Numeric2D
+public extension Uniform2D
 {
     @inlinable
     @inline(__always)
@@ -35,7 +29,93 @@ public extension Numeric2D
     {
         self.init(xMagnitude: numeric2d.xMagnitude, yMagnitude: numeric2d.yMagnitude)
     }
+}
+
+// MARK: - Equatable2D
+public protocol Equatable2D: Uniform2D where Magnitude: Equatable
+{
+    static func == <T>(lhs: Self, rhs: T) -> Bool where T: Equatable2D, T.Magnitude == Self.Magnitude
+    static func != <T>(lhs: Self, rhs: T) -> Bool where T: Equatable2D, T.Magnitude == Self.Magnitude
+}
+
+public extension Equatable2D
+{
+    static func == <T>(lhs: Self, rhs: T) -> Bool where T: Equatable2D, T.Magnitude == Self.Magnitude
+    {
+        return lhs.xMagnitude == rhs.xMagnitude && lhs.yMagnitude == rhs.yMagnitude
+    }
     
+    static func != <T>(lhs: Self, rhs: T) -> Bool where T: Equatable2D, T.Magnitude == Self.Magnitude
+    {
+        return lhs.xMagnitude != rhs.xMagnitude || lhs.yMagnitude != rhs.yMagnitude
+    }
+}
+
+// MARK: - AdditiveArithmetic2D
+public protocol AdditiveArithmetic2D: Equatable2D where Magnitude: AdditiveArithmetic
+{
+    static func - (lhs: Self, rhs: Magnitude) -> Self
+    static func - <T>(lhs: Self, rhs: T) -> Self where T: Numeric2D, T.Magnitude == Self.Magnitude
+    static func -= (lhs: inout Self, rhs: Magnitude)
+    static func -= <T>(lhs: inout Self, rhs: T) where T: Numeric2D, T.Magnitude == Self.Magnitude
+    static func + (lhs: Self, rhs: Magnitude) -> Self
+    static func + <T>(lhs: Self, rhs: T) -> Self where T: Numeric2D, T.Magnitude == Self.Magnitude
+    static func += (lhs: inout Self, rhs: Magnitude)
+    static func += <T>(lhs: inout Self, rhs: T) where T: Numeric2D, T.Magnitude == Self.Magnitude
+}
+
+public extension AdditiveArithmetic2D
+{
+    static func - (lhs: Self, rhs: Magnitude) -> Self
+    {
+        return Self(xMagnitude: lhs.xMagnitude - rhs, yMagnitude: lhs.yMagnitude - rhs)
+    }
+    
+    static func - <T>(lhs: Self, rhs: T) -> Self where T: Numeric2D, T.Magnitude == Self.Magnitude
+    {
+        return Self(xMagnitude: lhs.xMagnitude - rhs.xMagnitude, yMagnitude: lhs.yMagnitude - rhs.yMagnitude)
+    }
+    
+    static func -= (lhs: inout Self, rhs: Magnitude)
+    {
+        lhs = lhs - rhs
+    }
+    
+    static func -= <T>(lhs: inout Self, rhs: T) where T: Numeric2D, T.Magnitude == Self.Magnitude
+    {
+        lhs = lhs - rhs
+    }
+    
+    static func + (lhs: Self, rhs: Magnitude) -> Self
+    {
+        return Self(xMagnitude: lhs.xMagnitude + rhs, yMagnitude: lhs.yMagnitude + rhs)
+    }
+    
+    static func + <T>(lhs: Self, rhs: T) -> Self where T: Numeric2D, T.Magnitude == Self.Magnitude
+    {
+        return Self(xMagnitude: lhs.xMagnitude + rhs.xMagnitude, yMagnitude: lhs.yMagnitude + rhs.yMagnitude)
+    }
+    
+    static func += (lhs: inout Self, rhs: Magnitude)
+    {
+        lhs = lhs + rhs
+    }
+    
+    static func += <T>(lhs: inout Self, rhs: T) where T: Numeric2D, T.Magnitude == Self.Magnitude
+    {
+        lhs = lhs + rhs
+    }
+}
+
+// MARK: - Numeric2D
+public protocol Numeric2D: AdditiveArithmetic2D where Magnitude: Comparable, Magnitude: Numeric
+{
+    static func * (lhs: Self, rhs: Magnitude) -> Self
+    static func * <T>(lhs: Self, rhs: T) -> Magnitude where T: Numeric2D, T.Magnitude == Self.Magnitude
+}
+
+public extension Numeric2D
+{
     @inlinable
     @inline(__always)
     static func * (_ lhs: Self, _ rhs: Magnitude) -> Self
@@ -48,20 +128,6 @@ public extension Numeric2D
     static func * <T>(lhs: Self, rhs: T) -> Magnitude where T: Numeric2D, T.Magnitude == Self.Magnitude
     {
         return lhs.xMagnitude * rhs.xMagnitude + lhs.yMagnitude * rhs.yMagnitude
-    }
-    
-    @inlinable
-    @inline(__always)
-    static prefix func - (operand: Self) -> Self
-    {
-        return Self(xMagnitude: -operand.xMagnitude, yMagnitude: -operand.yMagnitude)
-    }
-    
-    @inlinable
-    @inline(__always)
-    mutating func negate()
-    {
-        return self = -self
     }
 }
 
@@ -205,5 +271,41 @@ public extension Numeric2D
           A.Magnitude == B.Magnitude, A.Magnitude == R.Magnitude, A.Magnitude == Self.Magnitude
     {
         return ilerp(parameter, min: min, max: self)
+    }
+}
+
+public protocol SignedNumeric2D: Numeric2D where Magnitude: SignedNumeric
+{
+    static prefix func - (operand: Self) -> Self
+    mutating func negate()
+}
+
+// MARK: - SignedNumeric2D
+public extension SignedNumeric2D
+{
+    @inlinable
+    @inline(__always)
+    static prefix func - (operand: Self) -> Self
+    {
+        return Self(xMagnitude: -operand.xMagnitude, yMagnitude: -operand.yMagnitude)
+    }
+    
+    @inlinable
+    @inline(__always)
+    mutating func negate()
+    {
+        return self = -self
+    }
+}
+
+public protocol Hashable2D: Uniform2D, Hashable where Magnitude: Hashable { }
+
+extension Hashable2D where Magnitude: Hashable
+{
+    @inlinable
+    public func hash(into hasher: inout Hasher)
+    {
+        hasher.combine(self.xMagnitude)
+        hasher.combine(self.yMagnitude)
     }
 }
