@@ -15,7 +15,7 @@ public protocol Uniform2D
     
     init(xMagnitude: Magnitude, yMagnitude: Magnitude)
     
-    init<T>(_ numeric2d: T) where T: Numeric2D, T.Magnitude == Self.Magnitude
+    init<T>(_ other: T) where T: Uniform2D, T.Magnitude == Self.Magnitude
     
     var xMagnitude: Magnitude { get mutating set }
     var yMagnitude: Magnitude { get mutating set }
@@ -25,9 +25,9 @@ public extension Uniform2D
 {
     @inlinable
     @inline(__always)
-    init<T>(_ numeric2d: T) where T: Numeric2D, T.Magnitude == Self.Magnitude
+    init<T>(_ other: T) where T: Uniform2D, T.Magnitude == Self.Magnitude
     {
-        self.init(xMagnitude: numeric2d.xMagnitude, yMagnitude: numeric2d.yMagnitude)
+        self.init(xMagnitude: other.xMagnitude, yMagnitude: other.yMagnitude)
     }
 }
 
