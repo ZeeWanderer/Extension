@@ -302,7 +302,7 @@ public extension CGRect
     @inline(__always)
     func translatedBy(dx: CGFloat, dy: CGFloat) -> CGRect
     {
-        return .init(origin: self.origin.translatedBy(dx: dx, dy: dy), size: size)
+        return .init(origin: self.origin.translatedBy(dx: dx, dy: dy), size: self.size)
     }
     
     /// Translate CGRect by a vector defined as ((0,0), point)
@@ -310,7 +310,7 @@ public extension CGRect
     @inline(__always)
     func translated(by point: CGPoint) -> CGRect
     {
-        return .init(origin: self.origin.translated(by: point), size: size)
+        return .init(origin: self.origin.translated(by: point), size: self.size)
     }
     
     /// Translate CGRect by a vector defined as ((0,0), size)
@@ -318,7 +318,7 @@ public extension CGRect
     @inline(__always)
     func translated(by size: CGSize) -> CGRect
     {
-        return .init(origin: self.origin.translated(by: size), size: size)
+        return .init(origin: self.origin.translated(by: size), size: self.size)
     }
     
     // Includes origin into scaling because CGSize describes
