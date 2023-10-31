@@ -83,6 +83,13 @@ public extension EdgeInsets
     }
     
     @inlinable
+    @inline(__always)
+    static func .* <T>(lhs: Self, rhs: T) -> Self where T: Numeric2D, T.Magnitude == CGFloat
+    {
+        return .init(top: lhs.top * rhs.yMagnitude, leading: lhs.leading * rhs.xMagnitude, bottom: lhs.bottom * rhs.yMagnitude, trailing: lhs.trailing * rhs.xMagnitude)
+    }
+    
+    @inlinable
     func inset(for edge: Edge) -> CGFloat
     {
         switch edge {
@@ -145,6 +152,44 @@ public extension Animation
     }
 }
 
+// MARK: - Angle
+public extension Angle
+{
+    @inlinable
+    @inline(__always) var quarter: Int
+    {
+        Int((abs(self.degrees).truncatingRemainder(dividingBy: 360)) / 90.0)
+    }
+}
+
+// MARK: - GeometryProxy
+public extension GeometryProxy
+{
+    @inlinable
+    @inline(__always) func scale(for refernce: CGSize) -> CGPoint
+    {
+        return CGPoint(self.size ./ refernce)
+    }
+}
+
+// MARK: - TimelineSchedule
+public extension TimelineSchedule
+{
+    @inlinable
+    static func cyclic(timeOffsets: [TimeInterval]) -> CyclicTimelineSchedule where Self == CyclicTimelineSchedule {
+        .init(timeOffsets: timeOffsets)
+    }
+    
+    @inlinable
+    static func explicit<S>(timeOffsets: [TimeInterval], referenceDate: Date = .now) -> ExplicitTimelineSchedule<[Date]> where Self == ExplicitTimelineSchedule<S>, S : Sequence, S.Element == Date
+    {
+        let now = referenceDate
+        return .init(timeOffsets.map({ offset in
+            now.addingTimeInterval(offset)
+        }))
+    }
+}
+
 // MARK: - Structs -
 
 
@@ -171,5 +216,56 @@ public struct Shadow
     public static func * (lhs: Self, rhs: CGFloat) -> Self
     {
         return Self(color: lhs.color, radius: lhs.radius * rhs, x: lhs.x * rhs, y: lhs.y * rhs)
+    }
+    
+    @inlinable
+    static func * <T>(lhs: Self, rhs: T) -> Self where T: Numeric2D, T.Magnitude == CGFloat
+    {
+        let minScale = min(rhs.xMagnitude, rhs.yMagnitude)
+        return Self(color: lhs.color, radius: lhs.radius * minScale, x: lhs.x * rhs.xMagnitude, y: lhs.y * rhs.yMagnitude)
+    }
+}
+
+// MARK: - CyclicTimelineSchedule
+public struct CyclicTimelineSchedule: TimelineSchedule
+{
+    public let timeOffsets: [TimeInterval]
+    
+    @inlinable
+    public init(timeOffsets: [TimeInterval])
+    {
+        self.timeOffsets = timeOffsets
+    }
+    
+    @inlinable
+    public func entries(from startDate: Date, mode: TimelineScheduleMode) -> Entries
+    {
+        Entries(last: startDate, offsets: timeOffsets)
+    }
+    
+    public struct Entries: Sequence, IteratorProtocol 
+    {
+        @usableFromInline var last: Date
+        @usableFromInline let offsets: [TimeInterval]
+        
+        @inlinable
+        public init(last: Date, offsets: [TimeInterval])
+        {
+            self.last = last
+            self.offsets = offsets
+        }
+        
+        @usableFromInline
+        var idx: Int = -1
+        
+        @inlinable
+        mutating public func next() -> Date?
+        {
+            idx = (idx + 1) % offsets.count
+            
+            last = last.addingTimeInterval(offsets[idx])
+            
+            return last
+        }
     }
 }
