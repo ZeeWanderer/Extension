@@ -15,20 +15,20 @@ import Foundation
 public extension KeyedDecodingContainer
 {
     @inlinable
-    func decode<K, V, R>(_ type: [K:V].Type, forKey key: Key) throws -> [K:V]
-    where K: RawRepresentable, K: Decodable, K.RawValue == R,
+    func decode<K0, V, R>(_ type: [K0:V].Type, forKey key: Key) throws -> [K0:V]
+    where K0: RawRepresentable, K0: Decodable, K0.RawValue == R,
           V: Decodable,
           R: Decodable, R: Hashable
     {
         let rawDictionary = try self.decode([R: V].self, forKey: key)
-        var dictionary = [K: V]()
+        var dictionary = [K0: V]()
         
         for (key, value) in rawDictionary
         {
-            guard let enumKey = K(rawValue: key) else
+            guard let enumKey = K0(rawValue: key) else
             {
                 throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath,
-                                                                        debugDescription: "Could not parse json key \(key) to a \(K.self) enum"))
+                                                                        debugDescription: "Could not parse json key \(key) to a \(K0.self) enum"))
             }
             
             dictionary[enumKey] = value
