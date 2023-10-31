@@ -63,6 +63,18 @@ where A.Magnitude: Real, B.Magnitude: Real, A.Magnitude == B.Magnitude
     return .init(xMagnitude: x, yMagnitude: y)
 }
 
+/// Linear interpolate value in `[min,max]` for `parameter`.
+/// Each axis is intepolated separately with corresponding `parameter` coordinate as parameter
+/// See: `SwiftExtension/lerp(_:min:max:)`
+@inlinable
+@inline(__always)
+public func lerp(_ parameter: CGFloat, min: CGRect, max: CGRect) -> CGRect
+{
+    let origin = lerp(parameter, min: min.origin, max: max.origin)
+    let size = lerp(parameter, min: min.size, max: max.size)
+    return .init(origin: origin, size: size)
+}
+
 /// Inverse Linear interpolate value in `[min,max]` for `parameter`.
 /// Each axis is intepolated separately.
 /// See: `SwiftExtension/ilerp(_:min:max:)`
