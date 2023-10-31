@@ -216,6 +216,17 @@ public extension CGSize
         return .init(x: self.width/2.0, y: self.height/2.0)
     }
     
+    @inlinable
+    @inline(__always)
+    var diagonal: CGFloat
+    {
+        // Opt for squares
+        if self.width == self.height { return self.width * CGFloat.root(2.0, 2) }
+        
+        // Universal path
+        return CGFloat.root(CGFloat.pow(self.width, 2) + CGFloat.pow(self.height, 2), 2)
+    }
+    
     /// See ``clamp(_:width:)``
     @inlinable
     @inline(__always)
@@ -331,6 +342,13 @@ public extension CGRect
         return .init(origin: lhs.origin * rhs, size: lhs.size * rhs)
     }
     
+    @inlinable
+    @inline(__always)
+    static func .* <T>(lhs: Self, rhs: T) -> Self where T: Numeric2D, T.Magnitude == CGFloat
+    {
+        return .init(origin: lhs.origin .* rhs, size: lhs.size .* rhs)
+    }
+    
     /// `width * height`
     @inlinable
     @inline(__always)
@@ -352,11 +370,7 @@ public extension CGRect
     @inline(__always)
     var diagonal: CGFloat
     {
-        // Opt for squares
-        if self.width == self.height { return self.width * CGFloat.root(2.0, 2) }
-        
-        // Universal path
-        return CGFloat.root(CGFloat.pow(self.width, 2) + CGFloat.pow(self.height, 2), 2)
+        self.size.diagonal
     }
     
     @inlinable
