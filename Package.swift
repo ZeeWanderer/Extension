@@ -54,7 +54,7 @@ let package = Package(
         ),
         .target(
             name: "SwiftUIExtension",
-            dependencies: ["UIKitExtension", "CoreGraphicsExtension"],
+            dependencies: ["UIKitExtension", "CoreGraphicsExtension", "GeneralExtensions"],
             swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]
         ),
         .target(

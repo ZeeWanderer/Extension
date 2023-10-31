@@ -186,6 +186,15 @@ public extension View
         }
     }
     
+    
+    @inlinable
+    @ViewBuilder func hiddenOnRelease() -> some View
+    {
+        self
+            .debugBorder()
+            .hidden(!Config.isTestFlightOrDebug)
+    }
+    
     /// Flips view across the specified axis.
     /// - Note: Uses `rotation3DEffect`
     @inlinable
@@ -245,14 +254,6 @@ public extension View
         {
             self
         }
-    }
-    
-    @inlinable
-    @ViewBuilder func hiddenOnRelease() -> some View
-    {
-        self
-            .debugBorder()
-            .hidden(!Config.isTestFlightOrDebug)
     }
     
     // MARK: Navigation
