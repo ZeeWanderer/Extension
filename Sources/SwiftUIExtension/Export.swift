@@ -7,3 +7,4 @@
 
 @_exported import UIKitExtension
 @_exported import CoreGraphicsExtension
+@_exported import GeneralExtensions

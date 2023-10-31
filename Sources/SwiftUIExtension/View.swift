@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreGraphicsExtension
+import GeneralExtensions
 
 // MARK: - UIViewRepresentables
 /// A hack to get access to `UIView.backgroundColor` of modal superview. Remove when this functionality beomes available in SwiftUI.
@@ -244,6 +245,14 @@ public extension View
         {
             self
         }
+    }
+    
+    @inlinable
+    @ViewBuilder func hiddenOnRelease() -> some View
+    {
+        self
+            .debugBorder()
+            .hidden(!Config.isTestFlightOrDebug)
     }
     
     // MARK: Navigation
