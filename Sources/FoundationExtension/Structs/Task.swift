@@ -1,13 +1,12 @@
 //
-//  Concurrency.swift
-//  
+//  Task.swift
 //
-//  Created by Maksym Kulyk on 04.05.2022.
+//
+//  Created by Maksym Kulyk on 20.05.2024.
 //
 
 import Foundation
 
-// MARK: - Task
 public extension Task where Success == Never, Failure == Never
 {
     /// Convenience function to sleep in seconds.
@@ -15,7 +14,7 @@ public extension Task where Success == Never, Failure == Never
     @inlinable
     static func sleep(seconds duration: TimeInterval) async throws
     {
-
+        
         if #available(iOS 16, *)
         {
             try await Task.sleep(until: .now + .seconds(duration), clock: .continuous)
@@ -35,4 +34,3 @@ public extension Task where Success == Never, Failure == Never
         try await Task.sleep(seconds: delayInterval)
     }
 }
-

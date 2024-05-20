@@ -1,11 +1,11 @@
 //
-//  Swift.swift
+//  BinaryInteger.swift
 //
 //
-//  Created by Maksym Kulyk on 31.10.2023.
+//  Created by Maksym Kulyk on 20.05.2024.
 //
 
-public extension BinaryInteger 
+public extension BinaryInteger
 {
     @inlinable
     @inline(__always) var isEven: Bool { isMultiple(of: 2) }

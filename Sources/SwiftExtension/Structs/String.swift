@@ -1,11 +1,10 @@
 //
-//  Structs.swift
-//  
+//  String.swift
 //
-//  Created by Maksym Kulyk on 20.06.2022.
+//
+//  Created by Maksym Kulyk on 20.05.2024.
 //
 
-// MARK: - String
 public extension String
 {
     @inlinable
