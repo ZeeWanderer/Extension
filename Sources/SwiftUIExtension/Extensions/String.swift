@@ -1,8 +1,8 @@
 //
-//  Swift.swift
+//  String.swift
 //  
 //
-//  Created by Maksym Kulyk on 13.03.2023.
+//  Created by Maksym Kulyk on 21.05.2024.
 //
 
 import Foundation

@@ -1,15 +1,16 @@
 //
-//  Keyboard.swift
-//  
+//  KeyboardHeightHelper.swift
 //
-//  Created by Maksym Kulyk on 11.04.2022.
+//
+//  Created by Maksym Kulyk on 21.05.2024.
 //
 
 import SwiftUI
 
 /// Helper class that listens to keyboard notifications and provides observable keyboard height and a number of helper functions
 /// - Note: Does not use `withAnimation`, so animation needs to be set by end user via `animation`.
-@MainActor public final class KeyboardHeightHelper: ObservableObject
+@MainActor 
+public final class KeyboardHeightHelper: ObservableObject
 {
     @MainActor @Published public var keyboardHeight: CGFloat = 0
     
@@ -108,16 +109,5 @@ import SwiftUI
     {
         self.keyboardWillShowNotificationTask?.cancel()
         self.keyboardWillHideNotificationTask?.cancel()
-    }
-}
-
-// MARK: - View
-public extension View
-{
-    @MainActor @inlinable
-    @discardableResult func endTextEditing() -> Bool
-    {
-        return UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
-                                               to: nil, from: nil, for: nil)
     }
 }

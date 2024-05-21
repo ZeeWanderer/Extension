@@ -6,77 +6,30 @@
 //
 
 import SwiftUI
+import UIKitExtension
 import CoreGraphicsExtension
 import GeneralExtensions
-
-// MARK: - UIViewRepresentables
-/// A hack to get access to `UIView.backgroundColor` of modal superview. Remove when this functionality beomes available in SwiftUI.
-public struct ClearBackgroundView: UIViewRepresentable
-{
-    @inlinable
-    public init() {} // for @inlinable
-    
-    @inlinable
-    public func makeUIView(context: Context) -> some UIView
-    {
-        let view = UIView()
-        Task {
-            await MainActor.run {
-                view.superview?.superview?.backgroundColor = .clear
-            }
-        }
-        return view
-    }
-    
-    @inlinable
-    public func updateUIView(_ uiView: UIViewType, context: Context)
-    {
-    }
-}
-
-// MARK: - ViewModifiers
-/// Clears background on modal views. Uses ``ClearBackgroundView``.
-public struct ClearBackgroundViewModifier: ViewModifier
-{
-    @inlinable
-    public init() {} // for @inlinable
-    
-    public func body(content: Content) -> some View
-    {
-        content
-            .background(ClearBackgroundView())
-    }
-}
-
-// MARK: - Views
-/// Delays instantiation of wrapped view untill it is actually displayed.
-/// - Note: May degrade perfomance, use carefully.
-public struct LazyView<Content>: View where Content : View
-{
-    public let build: () -> Content
-    
-    @inlinable
-    public init(_ build: @autoclosure @escaping () -> Content)
-    {
-        self.build = build
-    }
-    
-    @inlinable
-    public init(_ build: @escaping () -> Content)
-    {
-        self.build = build
-    }
-    
-    @inlinable
-    public var body: Content
-    {
-        build()
-    }
-}
 
 // MARK: - View
 public extension View
 {
+    
+    // MARK: Actions
+    @MainActor @inlinable
+    @discardableResult func endTextEditing() -> Bool
+    {
+        return UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                               to: nil, from: nil, for: nil)
+    }
+    
+    
+    @MainActor @inlinable
+    func screenShot(frame:CGRect, afterScreenUpdates: Bool) -> UIImage {
+        let hosting = UIHostingController(rootView: self)
+        hosting.overrideUserInterfaceStyle = UIApplication.shared.keySceneWindow?.overrideUserInterfaceStyle ?? .unspecified
+        hosting.view.frame = frame
+        return hosting.view.screenShot(afterScreenUpdates: afterScreenUpdates)
+    }
     
     // MARK: Notifications
     @MainActor @inlinable
@@ -254,6 +207,32 @@ public extension View
         {
             self
         }
+    }
+    
+    @MainActor @inlinable
+    @ViewBuilder func screenShot(_ trigger: Binding<Bool>, closure: @escaping (UIImage)->Void, envClosure: ((Self) -> some View)? = nil) -> some View {
+        self
+            .background {
+                GeometryReader { proxy in
+                    Color.clear
+                        .onChange(of: trigger.wrappedValue, perform: { value in
+                            @ViewBuilder
+                            func envViewBuilder(_ view: Self) -> some View
+                            {
+                                if let envClosure { envClosure(view) }
+                                else { view }
+                            }
+                            
+                            let view_ = envViewBuilder(self)
+                            
+                            let image = view_.screenShot(frame: proxy.frame(in: .global), afterScreenUpdates: true)
+                            
+                            closure(image)
+                            
+                            return
+                        })
+                }
+            }
     }
     
     // MARK: Navigation

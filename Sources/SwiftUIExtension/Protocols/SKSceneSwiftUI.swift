@@ -1,14 +1,12 @@
 //
-//  SpriteKit.swift
-//  
+//  SKSceneSwiftUI.swift
 //
-//  Created by Maksym Kulyk on 18.01.2023.
+//
+//  Created by Maksym Kulyk on 21.05.2024.
 //
 
 import SwiftUI
 import SpriteKit
-
-// MARK: - Pridge Protocols
 
 public protocol SKSceneSwiftUI: SKScene
 {
@@ -67,41 +65,5 @@ public extension SKSceneSwiftUI
     var isPausedInit: Bool
     {
         false
-    }
-}
-
-// MARK: - SpriteView
-
-public extension SpriteView
-{
-    /// Setup callbacks for SwiftUI events such as onAppear and onDisappear
-    @inlinable @ViewBuilder @MainActor
-    func setup(_ scene: SKSceneSwiftUI) -> some View
-    {
-        self
-            .onAppear {
-                scene.onAppear()
-            }
-            .onDisappear {
-                scene.onDisappear()
-            }
-    }
-}
-
-public struct SpriteViewBuilder: View
-{
-    public let scene: SKSceneSwiftUI
-    
-    @inlinable
-    public init(scene: SKSceneSwiftUI)
-    {
-        self.scene = scene
-    }
-    
-    @inlinable
-    public var body: some View
-    {
-        SpriteView(scene: scene, transition: scene.transitionInit, isPaused: scene.isPausedInit, preferredFramesPerSecond: scene.preferredFramesPerSecond, options: scene.options, debugOptions: scene.debugOptions)
-            .setup(scene)
     }
 }

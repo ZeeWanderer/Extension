@@ -1,16 +1,14 @@
 //
-//  Debug.swift
-//  
+//  View+DEBUG.swift
 //
-//  Created by Maksym Kulyk on 05.04.2022.
+//
+//  Created by Maksym Kulyk on 21.05.2024.
 //
 
 import SwiftUI
 
-// MARK: - View
 public extension View
 {
-    
     // MARK: Actions
     @inlinable
     func debugAction(_ closure: () -> Void) -> Self
@@ -93,5 +91,4 @@ public extension View
             view.background(color)
         }
     }
-    
 }

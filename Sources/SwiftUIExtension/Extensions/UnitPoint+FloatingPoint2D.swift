@@ -1,14 +1,12 @@
 //
-//  File.swift
-//  
+//  UnitPoint+FloatingPoint2D.swift
 //
-//  Created by Maksym Kulyk on 26.06.2023.
+//
+//  Created by Maksym Kulyk on 21.05.2024.
 //
 
 import SwiftUI
 import CoreGraphicsExtension
-
-// MARK: - FloatingPoint2D
 
 extension UnitPoint: FloatingPoint2D
 {
