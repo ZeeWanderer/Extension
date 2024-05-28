@@ -1,6 +1,6 @@
 //
 //  Utilities.swift
-//  
+//
 //
 //  Created by Maksym Kulyk on 09.08.2023.
 //
@@ -18,47 +18,20 @@ public func selectValue<V>(universal: () -> V,
 {
     switch UIDevice.current.userInterfaceIdiom
     {
-    case .phone:
-        if let phone
-        {return phone()}
-        else
-        {break}
-    case .pad:
-        if let pad
-        {return pad()}
-        else
-        {break}
-    case .mac:
-        if let mac
-        {return mac()}
-        else
-        {break}
-    case .tv:
-        if let tv
-        {return tv()}
-        else
-        {break}
-    case .carPlay:
-        if let carPlay
-        {return carPlay()}
-        else
-        {break}
-    case .vision:
-        if let vision
-        {return vision()}
-        else
-        {break}
-    case .unspecified:
-        break
-    @unknown default:
-        break
+    case .phone: if let phone {return phone()} else {break}
+    case .pad: if let pad {return pad()} else {break}
+    case .mac: if let mac {return mac()} else {break}
+    case .tv: if let tv {return tv()} else {break}
+    case .carPlay: if let carPlay {return carPlay()} else {break}
+    case .vision: if let vision {return vision()} else {break}
+    case .unspecified: break
+    @unknown default: break
     }
-    
     return universal()
 }
 
 @MainActor @inlinable
-public func selectValue<V>(universal: V, 
+public func selectValue<V>(universal: V,
                            phone: V? = nil,
                            pad:V? = nil,
                            mac:V? = nil,
@@ -68,41 +41,37 @@ public func selectValue<V>(universal: V,
 {
     switch UIDevice.current.userInterfaceIdiom
     {
-    case .phone:
-        if let phone
-        {return phone}
-        else
-        {break}
-    case .pad:
-        if let pad
-        {return pad}
-        else
-        {break}
-    case .mac:
-        if let mac
-        {return mac}
-        else
-        {break}
-    case .tv:
-        if let tv
-        {return tv}
-        else
-        {break}
-    case .carPlay:
-        if let carPlay
-        {return carPlay}
-        else
-        {break}
-    case .vision:
-        if let vision
-        {return vision}
-        else
-        {break}
-    case .unspecified:
-        break
-    @unknown default:
-        break
+    case .phone: if let phone {return phone} else {break}
+    case .pad: if let pad {return pad} else {break}
+    case .mac: if let mac {return mac} else {break}
+    case .tv: if let tv {return tv} else {break}
+    case .carPlay: if let carPlay {return carPlay} else {break}
+    case .vision: if let vision {return vision} else {break}
+    case .unspecified: break
+    @unknown default: break
     }
-    
+    return universal
+}
+
+@MainActor @inlinable
+public func scaleValue<N>(universal: N,
+                          phone: N? = nil,
+                          pad:N? = nil,
+                          mac:N? = nil,
+                          tv:N? = nil,
+                          carPlay:N? = nil,
+                          vision:N? = nil) -> N where N : Numeric
+{
+    switch UIDevice.current.userInterfaceIdiom
+    {
+    case .phone: if let phone {return universal * phone} else {break}
+    case .pad: if let pad {return universal * pad} else {break}
+    case .mac: if let mac {return universal * mac} else {break}
+    case .tv: if let tv {return universal * tv} else {break}
+    case .carPlay: if let carPlay {return universal * carPlay} else {break}
+    case .vision: if let vision {return universal * vision} else {break}
+    case .unspecified: break
+    @unknown default: break
+    }
     return universal
 }
