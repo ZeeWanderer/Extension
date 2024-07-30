@@ -20,3 +20,11 @@ public func debug_print(_ items: Any..., separator: String = " ", terminator: St
 {
     debug_action { print(items, separator: separator, terminator: terminator) }
 }
+
+/// Helper function that prints only if DEBUG is true
+@MainActor
+@inlinable
+public func debug_print(_ items: Any..., separator: String = " ", terminator: String = "\n") async
+{
+    debug_action { print(items, separator: separator, terminator: terminator) }
+}
