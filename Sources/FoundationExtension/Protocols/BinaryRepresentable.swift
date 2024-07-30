@@ -23,7 +23,8 @@ public extension BinaryRepresentable
     @inlinable
     var data: Data
     {
-        var selfMutable = self
-        return .init(bytes: &selfMutable, count: MemoryLayout<BinaryRepresentableType>.size)
+        return withUnsafePointer(to: self) { pointer in
+            return Data(bytes: pointer, count: MemoryLayout<BinaryRepresentableType>.size)
+        }
     }
 }
