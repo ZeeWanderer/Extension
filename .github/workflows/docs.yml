@@ -1,6 +1,7 @@
 name: Deploy DocC Documentation to Github Pages
 on:
   # Runs on pushes targeting the master branch
+  workflow_dispatch:
   push:
     branches: ["main"]
 
