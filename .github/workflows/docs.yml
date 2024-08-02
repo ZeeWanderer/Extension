@@ -38,6 +38,7 @@ jobs:
           hosting-base-path: ""
           use-xcodebuild: true
           xcodebuild-destination: "generic/platform=iOS"
+          xcodebuild-scheme: "Extension"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
