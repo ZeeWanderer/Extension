@@ -8,6 +8,7 @@
 import UIKit
 import AVFoundation
 
+/// A simple class made to trigger standard haptic and sound feedbacks
 @MainActor public final class FeedbackHelper
 {
     // MARK: - Internal
