@@ -33,7 +33,7 @@ jobs:
         with:
           output: docs
           transform-for-static-hosting: true
-          enable-index-buildiung: true
+          enable-index-building: true
           enable-inherited-docs: true
           hosting-base-path: ""
           use-xcodebuild: true
@@ -45,4 +45,4 @@ jobs:
           path: 'docs'
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4.0.5
