@@ -205,7 +205,7 @@ public extension Numeric2D
         return clamp(self, x: rangeX, y: rangeY)
     }
     
-    /// See  ``clamp(_:to:)``
+    /// See  ``clamp(_:to:)-u87g
     @inlinable
     @inline(__always)
     func clamped(to range: ClosedRange<Magnitude>) -> Self
@@ -216,7 +216,7 @@ public extension Numeric2D
     // LI, RLI
     
     /// linear intepolate a point between `min` and `max` with `self` as `parameter`.
-    /// See:  ``lerp(_:min:max:)-z0dd``
+    /// See:  ``lerp(_:min:max:)-6esqb``
     @inlinable
     @inline(__always)
     func lerped<A: Numeric2D, B: Numeric2D, R: Numeric2D>(min: A, max: B) -> R
@@ -227,7 +227,7 @@ public extension Numeric2D
     }
     
     /// linear intepolate a point between `min` and `max` for `parameter`  with `self` as `min`.
-    /// See:  ``lerp(_:min:max:)-z0dd``
+    /// See:  ``lerp(_:min:max:)-6esqb``
     @inlinable
     @inline(__always)
     func lerped<A: Numeric2D, B: Numeric2D, R: Numeric2D>(_ parameter: A, max: B) -> R
@@ -238,7 +238,7 @@ public extension Numeric2D
     }
     
     /// linear intepolate a point between `min` and `max` for `parameter`  with `self` as `max`.
-    /// See:  ``lerp(_:min:max:)-z0dd``
+    /// See:  ``lerp(_:min:max:)-6esqb``
     @inlinable
     @inline(__always)
     func lerped<A: Numeric2D, B: Numeric2D, R: Numeric2D>(_ parameter: A, min: B) -> R
@@ -250,7 +250,7 @@ public extension Numeric2D
     
     
     /// inverse linear intepolate a point between `min` and `max` with `self` as `parameter`.
-    /// See:  ``ilerp(_:min:max:)-24jcs``
+    /// See:  ``ilerp(_:min:max:)-53q91``
     @inlinable
     @inline(__always)
     func ilerped<A: Numeric2D, B: Numeric2D, R: Numeric2D>(min: A, max: B) -> R
@@ -261,7 +261,7 @@ public extension Numeric2D
     }
     
     /// inverse linear intepolate a point between `min` and `max` for `parameter`  with `self` as `min`.
-    /// See:  ``ilerp(_:min:max:)-24jcs``
+    /// See:  ``ilerp(_:min:max:)-53q91``
     @inlinable
     @inline(__always)
     func ilerped<A: Numeric2D, B: Numeric2D, R: Numeric2D>(_ parameter: A, max: B) -> R
@@ -272,7 +272,7 @@ public extension Numeric2D
     }
     
     /// inverse linear intepolate a point between `min` and `max` for `parameter`  with `self` as `max`.
-    /// See:  ``ilerp(_:min:max:)-24jcs``
+    /// See:  ``ilerp(_:min:max:)-53q91``
     @inlinable
     @inline(__always)
     func ilerped<A: Numeric2D, B: Numeric2D, R: Numeric2D>(_ parameter: A, min: B) -> R
