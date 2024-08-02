@@ -25,24 +25,27 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4
       - name: Setup Xcode version
-        uses: maxim-lobanov/setup-xcode@v1.6.0
+        uses: maxim-lobanov/setup-xcode@v1
       - name: Build docs
-        uses: sersoft-gmbh/swifty-docs-action@v3
+        uses: 0xWDG/build-documentation@0.1.1
         with:
-          output: docs
-          transform-for-static-hosting: true
-          enable-index-building: true
-          enable-inherited-docs: true
-          hosting-base-path: "Extension"
-          # use-xcodebuild: true
-          # xcodebuild-destination: "generic/platform=iOS"
-          # xcodebuild-scheme: "Extension"
+          iOS: true
+        # uses: sersoft-gmbh/swifty-docs-action@v3
+        # with:
+        #   output: docs
+        #   transform-for-static-hosting: true
+        #   enable-index-building: true
+        #   enable-inherited-docs: true
+        #   hosting-base-path: "Extension"
+        #   use-xcodebuild: true
+        #   xcodebuild-destination: "generic/platform=iOS"
+        #   xcodebuild-scheme: "Extension"
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3.0.1
+        uses: actions/upload-pages-artifact@v3
         with:
           path: 'docs'
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4.0.5
+        uses: actions/deploy-pages@v4
