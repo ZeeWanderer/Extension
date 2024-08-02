@@ -33,7 +33,11 @@ jobs:
         with:
           output: docs
           transform-for-static-hosting: true
-          osting-base-path: ""
+          enable-index-buildiung: true
+          enable-inherited-docs: true
+          hosting-base-path: ""
+          use-xcodebuild: true
+          xcodebuild-destination: "generic/platform=iOS"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
