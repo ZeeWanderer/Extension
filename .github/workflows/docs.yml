@@ -35,12 +35,12 @@ jobs:
           transform-for-static-hosting: true
           enable-index-building: true
           enable-inherited-docs: true
-          hosting-base-path: ""
+          hosting-base-path: "Extension"
           use-xcodebuild: true
           xcodebuild-destination: "generic/platform=iOS"
           xcodebuild-scheme: "Extension"
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3.0.1
         with:
           path: 'docs'
       - name: Deploy to GitHub Pages
