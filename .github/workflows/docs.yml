@@ -29,23 +29,26 @@ jobs:
       - name: Setup Xcode version
         uses: maxim-lobanov/setup-xcode@v1
       - name: Build docs
-        uses: 0xWDG/build-documentation@0.1.1
-        with:
-          iOS: true
-        # uses: sersoft-gmbh/swifty-docs-action@v3
+        # uses: 0xWDG/build-documentation@0.1.1
         # with:
-        #   output: docs
-        #   transform-for-static-hosting: true
-        #   enable-index-building: true
-        #   enable-inherited-docs: true
-        #   hosting-base-path: "Extension"
-        #   use-xcodebuild: true
-        #   xcodebuild-destination: "generic/platform=iOS"
-        #   xcodebuild-scheme: "Extension"
+        #   iOS: true
+        uses: sersoft-gmbh/swifty-docs-action@v3
+        with:
+          output: docs
+          transform-for-static-hosting: true
+          enable-index-building: true
+          enable-inherited-docs: true
+          hosting-base-path: "Extension"
+          use-xcodebuild: true
+          xcodebuild-destination: "generic/platform=iOS"
+          xcodebuild-scheme: "Extension"
+      - name: Build Jekyll for GitHub Pages
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: "./docs"
+          verbose: true
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
-        with:
-          path: 'docs'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
