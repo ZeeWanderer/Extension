@@ -11,7 +11,7 @@ public extension UITableView
 {
     
     /**
-     Registers ReusableView, NibLoadableView compliant UICollectionViewCell class
+     Registers ReusableView, NibLoadableView compliant UITableViewCell class
      
      ```
      // register reusable cell
@@ -19,7 +19,7 @@ public extension UITableView
      ```
      */
     @inlinable
-    func register<T: UICollectionViewCell>(_: T.Type) where T: ReusableView, T: NibLoadableView
+    func register<T: UITableViewCell>(_: T.Type) where T: ReusableView, T: NibLoadableView
     {
         let bundle = Bundle(for: T.self)
         let nib = UINib(nibName: T.nibName, bundle: bundle)
