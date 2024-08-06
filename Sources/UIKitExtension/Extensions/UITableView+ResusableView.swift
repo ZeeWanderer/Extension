@@ -10,7 +10,7 @@ import UIKit
 public extension UITableView
 {
     /**
-     Registers ReusableView compliant UICollectionViewCell class
+     Registers ReusableView compliant UITableViewCell class
      
      ```
      // register reusable cell
@@ -24,7 +24,7 @@ public extension UITableView
     }
     
     /**
-     Registers ReusableView compliant UICollectionReusableView class
+     Registers ReusableView compliant UITableViewHeaderFooterView class
      
      ```
      // register reusable view
@@ -66,7 +66,7 @@ public extension UITableView
      Dequeues ReusableView compliant Cell.
      
      - Parameter indexPath: The index path specifying the location of the supplementary view in the collection view. The data source receives this information when it is asked for the view and should just pass it along. This method uses the information to perform additional configuration based on the view’s position in the collection view.
-     - Returns: A valid UICollectionReusableView object.
+     - Returns: A valid UITableViewCell object.
      
      - Important: Cell class must be registered first
      ```
@@ -92,7 +92,7 @@ public extension UITableView
      
      - Parameter elementKind: The kind of supplementary view to retrieve. This value is defined by the layout object.
      - Parameter indexPath: The index path specifying the location of the supplementary view in the collection view. The data source receives this information when it is asked for the view and should just pass it along. This method uses the information to perform additional configuration based on the view’s position in the collection view.
-     - Returns: A valid UICollectionReusableView object.
+     - Returns: A valid UITableViewHeaderFooterView object.
      
      - Important: View class must be registered first
      ```

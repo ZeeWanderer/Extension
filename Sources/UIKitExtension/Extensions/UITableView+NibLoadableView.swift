@@ -28,7 +28,7 @@ public extension UITableView
     }
     
     /**
-     Registers ReusableView, NibLoadableView compliant UICollectionReusableView class
+     Registers ReusableView, NibLoadableView compliant UITableViewCell class
      
      ```
      // register reusable view
