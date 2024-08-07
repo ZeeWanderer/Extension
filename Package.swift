@@ -70,5 +70,6 @@ let package = Package(
         .testTarget(
             name: "ExtensionTests",
             dependencies: ["SwiftExtension", "FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions"]),
-    ]
+    ],
+    swiftLanguageVersions: [.v5]
 )
