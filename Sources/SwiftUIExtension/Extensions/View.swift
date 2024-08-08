@@ -108,6 +108,12 @@ public extension View
         self.if(!condition, transform: transform)
     }
     
+    @inlinable
+    func transform(@ViewBuilder _ transform: (Self) -> some View) -> some View
+    {
+        transform(self)
+    }
+    
     /// Applies glow determined by the View content with radius of `radius`.
     @inlinable
     func glow(radius: CGFloat = 5) -> some View
