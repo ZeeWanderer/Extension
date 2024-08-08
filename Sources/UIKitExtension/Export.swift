@@ -6,3 +6,4 @@
 //
 
 @_exported import SwiftExtension
+@_exported import CoreGraphicsExtension

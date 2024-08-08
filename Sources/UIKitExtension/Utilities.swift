@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreGraphicsExtension
 
 @MainActor @inlinable
 public func selectValue<V>(universal: () -> V,
@@ -73,5 +74,101 @@ public func scaleValue<N>(universal: N,
     case .unspecified: break
     @unknown default: break
     }
+    return universal
+}
+
+@MainActor @inlinable
+public func scaleValue<V, S>(universal: V,
+                             phone: S? = nil,
+                             pad:S? = nil,
+                             mac:S? = nil,
+                             tv:S? = nil,
+                             carPlay:S? = nil,
+                             vision:S? = nil) -> V where V : Numeric2D, S == V.Magnitude
+{
+    switch UIDevice.current.userInterfaceIdiom
+    {
+    case .phone: if let phone {return universal * phone} else {break}
+    case .pad: if let pad {return universal * pad} else {break}
+    case .mac: if let mac {return universal * mac} else {break}
+    case .tv: if let tv {return universal * tv} else {break}
+    case .carPlay: if let carPlay {return universal * carPlay} else {break}
+    case .vision: if let vision {return universal * vision} else {break}
+    case .unspecified: break
+    @unknown default: break
+    }
+    
+    return universal
+}
+
+@MainActor @inlinable
+public func scaleValue<V, S>(universal: V,
+                             phone: S? = nil,
+                             pad:S? = nil,
+                             mac:S? = nil,
+                             tv:S? = nil,
+                             carPlay:S? = nil,
+                             vision:S? = nil) -> V where V : Numeric2D, S : Numeric2D, V.Magnitude == S.Magnitude
+{
+    switch UIDevice.current.userInterfaceIdiom
+    {
+    case .phone: if let phone {return universal .* phone} else {break}
+    case .pad: if let pad {return universal .* pad} else {break}
+    case .mac: if let mac {return universal .* mac} else {break}
+    case .tv: if let tv {return universal .* tv} else {break}
+    case .carPlay: if let carPlay {return universal .* carPlay} else {break}
+    case .vision: if let vision {return universal .* vision} else {break}
+    case .unspecified: break
+    @unknown default: break
+    }
+    
+    return universal
+}
+
+@MainActor @inlinable
+public func scaleValue(universal: CGRect,
+                       phone: CGFloat? = nil,
+                       pad:CGFloat? = nil,
+                       mac:CGFloat? = nil,
+                       tv:CGFloat? = nil,
+                       carPlay:CGFloat? = nil,
+                       vision:CGFloat? = nil) -> CGRect
+{
+    switch UIDevice.current.userInterfaceIdiom
+    {
+    case .phone: if let phone {return universal * phone} else {break}
+    case .pad: if let pad {return universal * pad} else {break}
+    case .mac: if let mac {return universal * mac} else {break}
+    case .tv: if let tv {return universal * tv} else {break}
+    case .carPlay: if let carPlay {return universal * carPlay} else {break}
+    case .vision: if let vision {return universal * vision} else {break}
+    case .unspecified: break
+    @unknown default: break
+    }
+    
+    return universal
+}
+
+@MainActor @inlinable
+public func scaleValue<N>(universal: CGRect,
+                          phone: N? = nil,
+                          pad:N? = nil,
+                          mac:N? = nil,
+                          tv:N? = nil,
+                          carPlay:N? = nil,
+                          vision:N? = nil) -> CGRect where N: Numeric2D, N.Magnitude == CGFloat
+{
+    switch UIDevice.current.userInterfaceIdiom
+    {
+    case .phone: if let phone {return universal .* phone} else {break}
+    case .pad: if let pad {return universal .* pad} else {break}
+    case .mac: if let mac {return universal .* mac} else {break}
+    case .tv: if let tv {return universal .* tv} else {break}
+    case .carPlay: if let carPlay {return universal .* carPlay} else {break}
+    case .vision: if let vision {return universal .* vision} else {break}
+    case .unspecified: break
+    @unknown default: break
+    }
+    
     return universal
 }
