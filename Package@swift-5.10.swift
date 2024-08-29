@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -70,5 +70,6 @@ let package = Package(
         .testTarget(
             name: "ExtensionTests",
             dependencies: ["SwiftExtension", "FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions", "Extension"]),
-    ]
+    ],
+    swiftLanguageVersions: [.v5]
 )

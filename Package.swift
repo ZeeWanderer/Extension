@@ -1,4 +1,4 @@
-// swift-tools-version:5.10
+// swift-tools-version:6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -19,7 +19,7 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-        .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0"),
+        .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.4.1"),
         .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
     ],
     targets: [
@@ -30,46 +30,46 @@ let package = Package(
             dependencies: [
                 .product(name: "RealModule", package: "swift-numerics") // SE-0246 Accepted but not Implemented into Swift STD due to compiler issues
             ],
-            swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]
+            swiftSettings: []
         ),
         .target(
             name: "FoundationExtension",
             dependencies: ["SwiftExtension"],
-            swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]
+            swiftSettings: []
         ),
         .target(
             name: "CoreGraphicsExtension",
             dependencies: ["SwiftExtension", "FoundationExtension"],
-            swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]
+            swiftSettings: []
         ),
         .target(
             name: "UIKitExtension",
             dependencies: ["SwiftExtension", "CoreGraphicsExtension"],
-            swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]
+            swiftSettings: []
         ),
         .target(
             name: "SpriteKitExtension",
             dependencies: ["UIKitExtension"],
-            swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]
+            swiftSettings: []
         ),
         .target(
             name: "SwiftUIExtension",
             dependencies: ["UIKitExtension", "CoreGraphicsExtension", "GeneralExtensions"],
-            swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]
+            swiftSettings: []
         ),
         .target(
             name: "GeneralExtensions",
             dependencies: [],
-            swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]
+            swiftSettings: []
         ),
         .target(
             name: "Extension",
             dependencies: ["SwiftExtension", "FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions"],
-            swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]
+            swiftSettings: []
         ),
         .testTarget(
             name: "ExtensionTests",
             dependencies: ["SwiftExtension", "FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions", "Extension"]),
     ],
-    swiftLanguageVersions: [.v5]
+    swiftLanguageModes: [.v5, .v6]
 )
