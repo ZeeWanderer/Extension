@@ -9,6 +9,8 @@ import Foundation
 
 public extension Collection
 {
+    @inlinable
+    @inline(__always)
     var isNotEmpty: Bool {
         return !self.isEmpty
     }
