@@ -124,6 +124,7 @@ extension CGVector: FloatingPoint2D
     }
 }
 
+extension CGVector: Hashable {}
 extension CGVector: BinaryRepresentable {}
 
 // MARK: - CGPoint
@@ -188,6 +189,7 @@ extension CGPoint: FloatingPoint2D
     }
 }
 
+extension CGPoint: Hashable {}
 extension CGPoint: BinaryRepresentable {}
 
 // MARK: - CGSize
@@ -289,6 +291,7 @@ extension CGSize: FloatingPoint2D
     }
 }
 
+extension CGSize: Hashable {}
 extension CGSize: BinaryRepresentable {}
 
 // MARK: - CGRect

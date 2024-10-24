@@ -10,7 +10,9 @@ import Foundation
 extension Date: RawRepresentable
 {
     @usableFromInline
-    internal static let formatter = ISO8601DateFormatter()
+    internal static var formatter: ISO8601DateFormatter {
+        ISO8601DateFormatter()
+    }
     
     @inlinable
     public var rawValue: String

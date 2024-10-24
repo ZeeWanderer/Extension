@@ -9,7 +9,7 @@ import SwiftUI
 
 /// Helper class that listens to keyboard notifications and provides observable keyboard height and a number of helper functions
 /// - Note: Does not use `withAnimation`, so animation needs to be set by end user via `animation`.
-@MainActor 
+@MainActor
 public final class KeyboardHeightHelper: ObservableObject
 {
     @MainActor @Published public var keyboardHeight: CGFloat = 0
@@ -70,29 +70,31 @@ public final class KeyboardHeightHelper: ObservableObject
         keyboardWillShowNotificationTask = Task
         {
             [weak self] in
-            for await notification in NotificationCenter.default.notifications(named: UIResponder.keyboardWillShowNotification)
+            for await data: (UIView.AnimationCurve, NSNumber, CGFloat) in NotificationCenter.default.notifications(named: UIResponder.keyboardWillShowNotification)
+                .compactMap({ notification in
+                    guard let userInfo = notification.userInfo,
+                          let keyboardRect = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
+                          let duration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber,
+                          let curve_raw = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? NSNumber,
+                          let curve = UIView.AnimationCurve(rawValue: Int(truncating: curve_raw))
+                    else { return nil }
+                    
+                    return (curve, duration, keyboardRect.height)
+                })
             {
-                guard let userInfo = notification.userInfo,
-                      let keyboardRect = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
-                      let duration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber,
-                      let curve_raw = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? NSNumber,
-                      let curve = UIView.AnimationCurve(rawValue: Int(truncating: curve_raw))
-                else
-                {
-                    return
-                }
+                let (curve, duration, height) = data
                 
                 self?.curve = curve
                 self?.duration = CGFloat(truncating: duration)
                 
-                await self?.set_keyboardHeight(keyboardRect.height)
+                await self?.set_keyboardHeight(height)
             }
         }
         
         keyboardWillHideNotificationTask = Task
         {
             [weak self] in
-            for await _ in NotificationCenter.default.notifications(named: UIResponder.keyboardWillHideNotification)
+            for await _ in NotificationCenter.default.notifications(named: UIResponder.keyboardWillHideNotification).map({ _ in true })
             {
                 await self?.set_keyboardHeight(0)
             }

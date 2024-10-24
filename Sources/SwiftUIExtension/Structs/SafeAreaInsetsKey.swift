@@ -8,7 +8,7 @@
 import UIKitExtension
 import SwiftUI
 
-public struct SafeAreaInsetsKey: EnvironmentKey
+public struct SafeAreaInsetsKey: @preconcurrency EnvironmentKey
 {
     @inlinable @MainActor
     public static var defaultValue: EdgeInsets
