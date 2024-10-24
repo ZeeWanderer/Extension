@@ -5,7 +5,7 @@
 //  Created by zee wanderer on 24.10.2024.
 //
 
-extension MutableCollection where Self: BidirectionalCollection
+public extension MutableCollection where Self: BidirectionalCollection
 {
     /// Returns the element at the specified index if it is within bounds, otherwise nil.
     @inlinable
