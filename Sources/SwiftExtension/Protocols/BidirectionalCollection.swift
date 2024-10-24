@@ -1,8 +1,8 @@
 //
 //  BidirectionalCollection.swift
+//  Extension
 //
-//
-//  Created by Maksym Kulyk on 20.05.2024.
+//  Created by zee wanderer on 24.10.2024.
 //
 
 public extension BidirectionalCollection
