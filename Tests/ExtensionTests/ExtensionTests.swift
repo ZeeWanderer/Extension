@@ -1,5 +1,10 @@
 import XCTest
 import SwiftUI
+import SwiftSyntax
+import SwiftSyntaxBuilder
+import SwiftSyntaxMacros
+import SwiftSyntaxMacrosTestSupport
+@testable import MacrosExtension
 @testable import SwiftExtension
 @testable import FoundationExtension
 @testable import CoreGraphicsExtension
@@ -7,6 +12,14 @@ import SwiftUI
 @testable import SpriteKitExtension
 @testable import SwiftUIExtension
 @testable import GeneralExtensions
+
+#if canImport(Macros)
+import Macros
+
+let testMacros: [String: Macro.Type] = [
+    "FlatEnum": FlatEnumMacro.self,
+]
+#endif
 
 final class ExtensionTests: XCTestCase
 {
@@ -115,5 +128,38 @@ final class ExtensionTests: XCTestCase
         XCTAssertEqual(r0, r4)
         XCTAssertEqual(r0, r5)
         XCTAssertEqual(r0, r6)
+    }
+    
+    func testMacro() throws {
+        #if canImport(Macros)
+        assertMacroExpansion(
+            """
+            @FlatEnum
+            enum Test {
+            case test0(Bool), test1(Int)
+            }
+            """,
+            expandedSource: """
+            enum Test {
+            case test0(Bool), test1(Int)
+            public enum FlatTest {
+            case test0
+            case test1
+            }
+            var flat: FlatTest {
+                switch self {
+                case .test0:
+                    return .test0
+                case .test1:
+                    return .test1
+                }
+            }
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
     }
 }
