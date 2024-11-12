@@ -7,17 +7,6 @@ export DEVELOPER_DIR="$(xcode-select -p)"
 
 echo "Using Xcode at: $DEVELOPER_DIR"
 
-# Step 2: Create a temporary .xcconfig file within the script
-cat > temp.xcconfig <<EOF
-// Skip DocC for all targets
-SKIP_DOCC = YES
-
-// Allow DocC for the 'Extension' target
-#if TARGET_NAME == Extension
-SKIP_DOCC = NO
-#endif
-EOF
-
 # Step 3: Specify a known Derived Data path
 DERIVED_DATA_PATH="build"
 
@@ -26,7 +15,6 @@ echo "Building documentation..."
 xcodebuild docbuild -scheme Extension \
     -destination 'generic/platform=iOS' \
     -skipMacroValidation \
-    -xcconfig temp.xcconfig \
     -derivedDataPath "$DERIVED_DATA_PATH"
 
 # Step 5: Find the .doccarchive for your module
