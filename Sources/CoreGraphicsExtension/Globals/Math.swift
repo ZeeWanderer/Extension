@@ -230,3 +230,33 @@ public func clamp(_ value: CGSize, width rangeWidth: ClosedRange<CGFloat>, heigh
 {
     return .init(width: value.width.clamped(to: rangeWidth), height: value.height.clamped(to: rangeHeight))
 }
+
+// MARK: - Numeric2D public functions
+
+@inlinable
+@inline(__always)
+public func min<T>(_ lhs: T, _ rhs: T) -> T where T: Numeric2D
+{
+    return T(xMagnitude: min(lhs.xMagnitude, rhs.xMagnitude), yMagnitude: min(lhs.yMagnitude, rhs.yMagnitude))
+}
+
+@inlinable
+@inline(__always)
+public func min<T>(_ scalar: T.Magnitude, _ rhs: T) -> T where T: Numeric2D
+{
+    return T(xMagnitude: min(scalar, rhs.xMagnitude), yMagnitude: min(scalar, rhs.yMagnitude))
+}
+
+@inlinable
+@inline(__always)
+public func max<T>(_ lhs: T, _ rhs: T) -> T where T: Numeric2D
+{
+    return T(xMagnitude: max(lhs.xMagnitude, rhs.xMagnitude), yMagnitude: max(lhs.yMagnitude, rhs.yMagnitude))
+}
+
+@inlinable
+@inline(__always)
+public func max<T>(_ scalar: T.Magnitude, _ rhs: T) -> T where T: Numeric2D
+{
+    return T(xMagnitude: max(scalar, rhs.xMagnitude), yMagnitude: max(scalar, rhs.yMagnitude))
+}

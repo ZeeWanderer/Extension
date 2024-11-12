@@ -15,7 +15,7 @@ import FoundationExtension
 public extension CGFloat
 {
     /// linear intepolate a point between `min` and `max` with `self` as `parameter` (t).
-    /// See: ``lerp(_:min:max:)-lglu``
+    /// See: ``lerp(_:min:max:)-2nn16``
     @inlinable
     @inline(__always)
     func lerped<A: Numeric2D, B: Numeric2D, R: Numeric2D>(min: A, max: B) -> R
