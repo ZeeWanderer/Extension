@@ -23,7 +23,7 @@ extension FlatEnumMacro: MemberMacro {
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
         guard let enumDecl = declaration.as(EnumDeclSyntax.self) else {
-            throw CustomError.message("`@FlattenedEnum` can only be applied to enums")
+            throw CustomError.message("`@FlatEnum` can only be applied to enums")
         }
         
         let enumName = enumDecl.name.text
