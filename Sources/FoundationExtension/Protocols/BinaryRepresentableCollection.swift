@@ -23,9 +23,8 @@ public extension BinaryRepresentableCollection
     @inlinable
     var data: Data
     {
-        let mutableArray = Array(self)
-        return withUnsafePointer(to: mutableArray) { pointer in
-            return Data(bytes: pointer, count: mutableArray.count * MemoryLayout<Element>.stride)
+        return Array(self).withUnsafeBufferPointer { buffer in
+            return Data(buffer: buffer)
         }
     }
 }
