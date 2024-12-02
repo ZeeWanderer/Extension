@@ -5,6 +5,7 @@
 //  Created by zee wanderer on 02.08.2024.
 //
 
+#if canImport(UIKit)
 import UIKit
 
 public protocol NibLoadableView: AnyObject
@@ -20,3 +21,4 @@ public extension NibLoadableView where Self: UIView
         return String(describing: Self.self)
     }
 }
+#endif

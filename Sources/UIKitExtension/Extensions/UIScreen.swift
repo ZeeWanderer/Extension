@@ -5,6 +5,7 @@
 //  Created by zee wanderer on 02.08.2024.
 //
 
+#if canImport(UIKit)
 import UIKit
 
 public extension UIScreen
@@ -21,3 +22,4 @@ public extension UIScreen
         return UIScreen.main.bounds.size.height
     }
 }
+#endif

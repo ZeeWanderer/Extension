@@ -5,6 +5,7 @@
 //  Created by zee wanderer on 02.08.2024.
 //
 
+#if canImport(UIKit)
 import UIKit
 
 public extension UIColor
@@ -91,3 +92,4 @@ public extension UIColor
         return nil
     }
 }
+#endif

@@ -6,6 +6,7 @@
 //
 
 import SwiftExtension
+#if canImport(UIKit)
 import UIKit
 
 /// Strokes specified rect in current CGContext if it can get one
@@ -22,3 +23,4 @@ public func debug_rect(_ rect: CGRect, color: CGColor = UIColor.white.cgColor)
         }
     }
 }
+#endif

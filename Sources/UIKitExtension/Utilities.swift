@@ -5,6 +5,7 @@
 //  Created by Maksym Kulyk on 09.08.2023.
 //
 
+#if canImport(UIKit) // TODO: port this
 import UIKit
 import CoreGraphicsExtension
 
@@ -172,3 +173,4 @@ public func scaleValue<N>(universal: CGRect,
     
     return universal
 }
+#endif
