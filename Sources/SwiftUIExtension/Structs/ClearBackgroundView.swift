@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-#if canImport(UIKitExtension) // TODO: implement for macos
+#if canImport(UIKit) // TODO: implement for macos
 import UIKitExtension
 
 /// A hack to get access to `UIView.backgroundColor` of modal superview. Remove when this functionality beomes available in SwiftUI.

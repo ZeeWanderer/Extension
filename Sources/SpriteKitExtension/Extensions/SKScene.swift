@@ -5,7 +5,7 @@
 //  Created by Maksym Kulyk on 09.03.2022.
 //
 
-#if canImport(UIKitExtension)
+#if canImport(UIKit)
 import UIKitExtension
 import SpriteKit
 

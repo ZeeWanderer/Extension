@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-#if canImport(UIKitExtension)
+#if canImport(UIKit)
 import UIKitExtension
 #endif
 import CoreGraphicsExtension
@@ -15,7 +15,7 @@ import GeneralExtensions
 // MARK: - View
 public extension View
 {
-#if canImport(UIKitExtension)
+#if canImport(UIKit)
     // MARK: Actions
     @MainActor @inlinable
     @discardableResult func endTextEditing() -> Bool
@@ -43,7 +43,7 @@ public extension View
     
     @MainActor @inlinable
     func onDidEnterBackgroundNotification(perform action: @escaping (Notification) -> Void) -> some View {
-        #if canImport(UIKitExtension)
+        #if canImport(UIKit)
         onNotification(
             UIApplication.didEnterBackgroundNotification,
             perform: action
@@ -58,7 +58,7 @@ public extension View
 
     @MainActor @inlinable
     func onWillEnterForegroundNotification(perform action: @escaping (Notification) -> Void) -> some View {
-        #if canImport(UIKitExtension)
+        #if canImport(UIKit)
         onNotification(
             UIApplication.willEnterForegroundNotification,
             perform: action
@@ -73,7 +73,7 @@ public extension View
 
     @MainActor @inlinable
     func onDidReceiveMemoryWarningNotification(perform action: @escaping (Notification) -> Void) -> some View {
-        #if canImport(UIKitExtension)
+        #if canImport(UIKit)
         onNotification(
             UIApplication.didReceiveMemoryWarningNotification,
             perform: action
@@ -86,7 +86,7 @@ public extension View
 
     @MainActor @inlinable
     func onDidFinishLaunchingNotification(perform action: @escaping (Notification) -> Void) -> some View {
-        #if canImport(UIKitExtension)
+        #if canImport(UIKit)
         onNotification(
             UIApplication.didFinishLaunchingNotification,
             perform: action
@@ -101,7 +101,7 @@ public extension View
 
     @MainActor @inlinable
     func onWillTerminateNotification(perform action: @escaping (Notification) -> Void) -> some View {
-        #if canImport(UIKitExtension)
+        #if canImport(UIKit)
         onNotification(
             UIApplication.willTerminateNotification,
             perform: action
@@ -160,7 +160,7 @@ public extension View
             .shadow(color: color, radius: radius / 2)
     }
     
-#if canImport(UIKitExtension)
+#if canImport(UIKit)
     /// Clears background on modal views. Applies ``ClearBackgroundViewModifier``.
     @inlinable
     func clearModalBackground() -> some View
@@ -239,7 +239,7 @@ public extension View
     {
         if #available(iOS 16.0, *)
         {
-#if canImport(UIKitExtension)
+#if canImport(UIKit)
             self
                 .defersSystemGestures(on: edges)
 #else
@@ -252,7 +252,7 @@ public extension View
         }
     }
     
-#if canImport(UIKitExtension)
+#if canImport(UIKit)
     @MainActor @inlinable
     @ViewBuilder func screenShot(_ trigger: Binding<Bool>, closure: @escaping (UIImage)->Void, envClosure: ((Self) -> some View)? = nil) -> some View {
         self

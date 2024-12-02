@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-#if canImport(UIKitExtension)
+#if canImport(UIKit)
 /// Clears background on modal views. Uses ``ClearBackgroundView``.
 public struct ClearBackgroundViewModifier: ViewModifier
 {

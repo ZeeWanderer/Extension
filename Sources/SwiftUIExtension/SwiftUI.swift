@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-#if canImport(UIKitExtension)
+#if canImport(UIKit)
 // MARK: - UIEdgeInsets
 public extension UIEdgeInsets
 {

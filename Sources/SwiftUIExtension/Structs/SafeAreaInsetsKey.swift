@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-#if canImport(UIKitExtension)
+#if canImport(UIKit)
 import UIKitExtension
 
 public struct SafeAreaInsetsKey: @preconcurrency EnvironmentKey

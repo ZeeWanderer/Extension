@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-#if canImport(UIKitExtension)
+#if canImport(UIKit)
 public extension EnvironmentValues
 {
     /// The current SafeArea EdgeInsets of the scene
