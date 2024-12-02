@@ -5,8 +5,9 @@
 //  Created by Maksym Kulyk on 20.05.2024.
 //
 
-import UIKitExtension
 import SwiftUI
+#if canImport(UIKitExtension)
+import UIKitExtension
 
 public struct SafeAreaInsetsKey: @preconcurrency EnvironmentKey
 {
@@ -16,3 +17,4 @@ public struct SafeAreaInsetsKey: @preconcurrency EnvironmentKey
         UIApplication.shared.keySceneWindow?.safeAreaInsets.swiftUIInsets ?? EdgeInsets()
     }
 }
+#endif

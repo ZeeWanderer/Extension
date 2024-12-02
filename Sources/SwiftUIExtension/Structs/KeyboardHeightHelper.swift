@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+#if canImport(UIKitExtension) // TODO: implement for macos
 /// Helper class that listens to keyboard notifications and provides observable keyboard height and a number of helper functions
 /// - Note: Does not use `withAnimation`, so animation needs to be set by end user via `animation`.
 @MainActor
@@ -113,3 +114,4 @@ public final class KeyboardHeightHelper: ObservableObject
         self.keyboardWillHideNotificationTask?.cancel()
     }
 }
+#endif

@@ -10,13 +10,23 @@ let package = Package(
         .iOS(.v15),
         .macCatalyst(.v15),
         .macOS(.v13),
+        .visionOS(.v2)
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "Extension",
             //type: .static,
-            targets: ["SwiftExtension", "FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions", "Extension"]),
+            targets: ["SwiftExtension",
+                      "FoundationExtension",
+                      "CoreGraphicsExtension",
+                      "UIKitExtension",
+                      "SpriteKitExtension",
+                      "SwiftUIExtension",
+                      "GeneralExtensions",
+                      "Extension"
+                     ]
+        ),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -64,12 +74,18 @@ let package = Package(
         ),
         .target(
             name: "SpriteKitExtension",
-            dependencies: ["UIKitExtension"],
+            dependencies: [
+                .target(name: "UIKitExtension", condition: .when(platforms: [.iOS, .tvOS, .macCatalyst, .visionOS, .watchOS]))
+            ],
             swiftSettings: []
         ),
         .target(
             name: "SwiftUIExtension",
-            dependencies: ["UIKitExtension", "CoreGraphicsExtension", "GeneralExtensions"],
+            dependencies: [
+                .target(name: "UIKitExtension", condition: .when(platforms: [.iOS, .tvOS, .macCatalyst, .visionOS, .watchOS])),
+                "CoreGraphicsExtension",
+                "GeneralExtensions"
+            ],
             swiftSettings: []
         ),
         .target(
@@ -79,15 +95,34 @@ let package = Package(
         ),
         .target(
             name: "Extension",
-            dependencies: ["MacrosExtension", "SwiftExtension", "FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions"],
+            dependencies: [
+                "MacrosExtension",
+                "SwiftExtension",
+                "FoundationExtension",
+                "CoreGraphicsExtension",
+                .target(name: "UIKitExtension", condition: .when(platforms: [.iOS, .tvOS, .macCatalyst, .visionOS, .watchOS])),
+                "SpriteKitExtension",
+                "SwiftUIExtension",
+                "GeneralExtensions"
+            ],
             swiftSettings: []
         ),
         .testTarget(
             name: "ExtensionTests",
             dependencies: [
-                "Macros","MacrosExtension", "SwiftExtension", "FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions", "Extension",
+                "Macros",
+                "MacrosExtension",
+                "SwiftExtension",
+                "FoundationExtension",
+                "CoreGraphicsExtension",
+                .target(name: "UIKitExtension", condition: .when(platforms: [.iOS, .tvOS, .macCatalyst, .visionOS, .watchOS])),
+                "SpriteKitExtension",
+                "SwiftUIExtension",
+                "GeneralExtensions",
+                "Extension",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
-            ]),
+            ]
+        ),
     ],
     swiftLanguageModes: [
         .v5,

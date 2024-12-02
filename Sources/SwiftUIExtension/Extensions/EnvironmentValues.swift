@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+#if canImport(UIKitExtension)
 public extension EnvironmentValues
 {
     /// The current SafeArea EdgeInsets of the scene
@@ -19,3 +20,4 @@ public extension EnvironmentValues
         self[SafeAreaInsetsKey.self]
     }
 }
+#endif

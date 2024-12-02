@@ -6,7 +6,8 @@
 //
 
 import SwiftUI
-import UIKit
+#if canImport(UIKitExtension) // TODO: implement for macos
+import UIKitExtension
 
 /// A hack to get access to `UIView.backgroundColor` of modal superview. Remove when this functionality beomes available in SwiftUI.
 public struct ClearBackgroundView: UIViewRepresentable
@@ -31,3 +32,4 @@ public struct ClearBackgroundView: UIViewRepresentable
     {
     }
 }
+#endif

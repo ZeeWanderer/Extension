@@ -6,14 +6,16 @@
 //
 
 import SwiftUI
+#if canImport(UIKitExtension)
 import UIKitExtension
+#endif
 import CoreGraphicsExtension
 import GeneralExtensions
 
 // MARK: - View
 public extension View
 {
-    
+#if canImport(UIKitExtension)
     // MARK: Actions
     @MainActor @inlinable
     @discardableResult func endTextEditing() -> Bool
@@ -30,6 +32,7 @@ public extension View
         hosting.view.frame = frame
         return hosting.view.screenShot(afterScreenUpdates: afterScreenUpdates)
     }
+#endif
     
     // MARK: Notifications
     @MainActor @inlinable
@@ -39,48 +42,76 @@ public extension View
     }
     
     @MainActor @inlinable
-    func onDidEnterBackgroundNotification(perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
-    {
-        onNotification (
+    func onDidEnterBackgroundNotification(perform action: @escaping (Notification) -> Void) -> some View {
+        #if canImport(UIKitExtension)
+        onNotification(
             UIApplication.didEnterBackgroundNotification,
             perform: action
         )
+        #else
+        onNotification(
+            NSApplication.didResignActiveNotification,
+            perform: action
+        )
+        #endif
     }
-    
+
     @MainActor @inlinable
-    func onWillEnterForegroundNotification(perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
-    {
-        onNotification (
+    func onWillEnterForegroundNotification(perform action: @escaping (Notification) -> Void) -> some View {
+        #if canImport(UIKitExtension)
+        onNotification(
             UIApplication.willEnterForegroundNotification,
             perform: action
         )
+        #else
+        onNotification(
+            NSApplication.didBecomeActiveNotification,
+            perform: action
+        )
+        #endif
     }
-    
+
     @MainActor @inlinable
-    func onDidReceiveMemoryWarningNotification(perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
-    {
-        onNotification (
+    func onDidReceiveMemoryWarningNotification(perform action: @escaping (Notification) -> Void) -> some View {
+        #if canImport(UIKitExtension)
+        onNotification(
             UIApplication.didReceiveMemoryWarningNotification,
             perform: action
         )
+        #else
+        //TODO: figure this one out, macos appears not to have an equivalent
+        self
+        #endif
     }
-    
+
     @MainActor @inlinable
-    func onDidFinishLaunchingNotification(perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
-    {
-        onNotification (
+    func onDidFinishLaunchingNotification(perform action: @escaping (Notification) -> Void) -> some View {
+        #if canImport(UIKitExtension)
+        onNotification(
             UIApplication.didFinishLaunchingNotification,
             perform: action
         )
+        #else
+        onNotification(
+            NSApplication.didFinishLaunchingNotification,
+            perform: action
+        )
+        #endif
     }
-    
+
     @MainActor @inlinable
-    func onWillTerminateNotification(perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
-    {
-        onNotification (
+    func onWillTerminateNotification(perform action: @escaping (Notification) -> Void) -> some View {
+        #if canImport(UIKitExtension)
+        onNotification(
             UIApplication.willTerminateNotification,
             perform: action
         )
+        #else
+        onNotification(
+            NSApplication.willTerminateNotification,
+            perform: action
+        )
+        #endif
     }
     
     // MARK: Modifiers
@@ -129,12 +160,14 @@ public extension View
             .shadow(color: color, radius: radius / 2)
     }
     
+#if canImport(UIKitExtension)
     /// Clears background on modal views. Applies ``ClearBackgroundViewModifier``.
     @inlinable
     func clearModalBackground() -> some View
     {
         self.modifier(ClearBackgroundViewModifier())
     }
+#endif
     
     /// Applies `.hidden()` to view on provided condition
     @inlinable
@@ -206,8 +239,12 @@ public extension View
     {
         if #available(iOS 16.0, *)
         {
+#if canImport(UIKitExtension)
             self
                 .defersSystemGestures(on: edges)
+#else
+            self
+#endif
         }
         else
         {
@@ -215,6 +252,7 @@ public extension View
         }
     }
     
+#if canImport(UIKitExtension)
     @MainActor @inlinable
     @ViewBuilder func screenShot(_ trigger: Binding<Bool>, closure: @escaping (UIImage)->Void, envClosure: ((Self) -> some View)? = nil) -> some View {
         self
@@ -240,6 +278,7 @@ public extension View
                 }
             }
     }
+
     
     // MARK: Navigation
     /// Navigate to `destination` using a `binding`. Destination is instantiated imideately and repeatedly on any state changes.
@@ -265,6 +304,7 @@ public extension View
                 .hidden()
         }
     }
+#endif
     
     // MARK: Compatibility - DEPRECATED
     /// Backwards compatible `task` call.

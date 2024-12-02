@@ -9,7 +9,9 @@
 @_exported import SwiftExtension
 @_exported import FoundationExtension
 @_exported import CoreGraphicsExtension
+#if canImport(UIKitExtension)
 @_exported import UIKitExtension
+#endif
 @_exported import SpriteKitExtension
 @_exported import SwiftUIExtension
 @_exported import GeneralExtensions

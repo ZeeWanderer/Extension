@@ -5,11 +5,13 @@
 //  Created by Maksym Kulyk on 09.03.2022.
 //
 
+#if canImport(UIKitExtension)
 import UIKitExtension
 import SpriteKit
 
 public extension SKScene
 {
+    
     /// Screenshot of the current scene
     @inlinable
     var screenShot: UIImage
@@ -51,3 +53,5 @@ public extension SKScene
         return screenshotImage;
     }
 }
+
+#endif
