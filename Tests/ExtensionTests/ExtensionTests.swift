@@ -168,7 +168,7 @@ final class ExtensionTests: XCTestCase
         #endif
     }
     
-    func testMacro2() throws {
+    func testMacroCustomStringConvertible() throws {
         #if canImport(Macros)
         assertMacroExpansion(
             """

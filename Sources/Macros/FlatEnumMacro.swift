@@ -30,10 +30,9 @@ extension FlatEnumMacro: MemberMacro {
         let flatEnumName = "\(Self.flatEnumSuffix)\(enumName)"
         
         // Collect the cases in the original enum
-        let cases = enumDecl.memberBlock.members.compactMap { member -> EnumCaseElementSyntax? in
-            guard let enumCaseDecl = member.decl.as(EnumCaseDeclSyntax.self) else { return nil }
-            return enumCaseDecl.elements.first
-        }
+        let cases = enumDecl.memberBlock.members.compactMap { member in
+            member.decl.as(EnumCaseDeclSyntax.self)?.elements
+        }.flatMap { $0 }
         
         // Create a list of EnumCaseDeclSyntax elements for each case
         let caseDecls = cases.map { caseElement in
@@ -45,21 +44,39 @@ extension FlatEnumMacro: MemberMacro {
             )
         }
         
+        // Check if the original enum conforms to CustomStringConvertible
+        let conformsToCustomStringConvertible = enumDecl.inheritanceClause?.inheritedTypes.contains { inheritedType in
+            if let simpleType = inheritedType.type.as(IdentifierTypeSyntax.self) {
+                return simpleType.name.text == "CustomStringConvertible"
+            }
+            return false
+        } ?? false
+        
+        // If the original conforms, have the flat enum conform as well.
+        let flatEnumInheritanceClause: InheritanceClauseSyntax? = conformsToCustomStringConvertible ? InheritanceClauseSyntax {
+            InheritedTypeSyntax(type: IdentifierTypeSyntax(name: .identifier("CustomStringConvertible")))
+        } : nil
+        
         // Build the flat enum declaration with cases
         let flatEnumDecl = EnumDeclSyntax(
             modifiers: [DeclModifierSyntax(name: .identifier("public"))],
             name: .identifier(flatEnumName),
-            genericParameterClause: nil, inheritanceClause: nil,
+            genericParameterClause: nil,
+            inheritanceClause: flatEnumInheritanceClause,
             genericWhereClause: nil,
             memberBlock: MemberBlockSyntax {
                 for caseDecl in caseDecls {
                     MemberBlockItemSyntax(decl: caseDecl)
                 }
+                if conformsToCustomStringConvertible {
+                    MemberBlockItemSyntax(decl: DeclSyntax("""
+                    public var description: String { "\\(self)" }
+                    """))
+                }
             }
         ).with(\.leadingTrivia, .newline)
         
         // Create the property declaration
-        // TODO: implement using SwiftSyntax
         let typePropertyDecl = DeclSyntax("""
         var \(raw: Self.flatPropertyName): \(raw: flatEnumName) {
             switch self {
@@ -80,3 +97,4 @@ struct CustomError: Error, CustomStringConvertible {
         CustomError(description: message)
     }
 }
+
