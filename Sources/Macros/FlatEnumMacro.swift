@@ -34,12 +34,15 @@ extension FlatEnumMacro: MemberMacro {
             member.decl.as(EnumCaseDeclSyntax.self)?.elements
         }.flatMap { $0 }
         
-        // Create a list of EnumCaseDeclSyntax elements for each case
+        // Create a list of EnumCaseDeclSyntax elements for each case, trimming trivia from names
         let caseDecls = cases.map { caseElement in
-            EnumCaseDeclSyntax(
+            let trimmedName = TokenSyntax.identifier(caseElement.name.text)
+                .with(\.leadingTrivia, [])
+                .with(\.trailingTrivia, [])
+            return EnumCaseDeclSyntax(
                 caseKeyword: .keyword(.case),
                 elements: EnumCaseElementListSyntax {
-                    EnumCaseElementSyntax(name: caseElement.name)
+                    EnumCaseElementSyntax(name: trimmedName)
                 }
             )
         }
@@ -76,11 +79,11 @@ extension FlatEnumMacro: MemberMacro {
             }
         ).with(\.leadingTrivia, .newline)
         
-        // Create the property declaration
+        // Create the property declaration using case names without trivia
         let typePropertyDecl = DeclSyntax("""
         var \(raw: Self.flatPropertyName): \(raw: flatEnumName) {
             switch self {
-            \(raw: cases.map { "case .\($0.name): return .\($0.name)" }.joined(separator: "\n"))
+            \(raw: cases.map { "case .\($0.name.text): return .\($0.name.text)" }.joined(separator: "\n"))
             }
         }
         """)

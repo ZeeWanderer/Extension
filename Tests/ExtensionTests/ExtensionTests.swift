@@ -173,15 +173,17 @@ final class ExtensionTests: XCTestCase
         assertMacroExpansion(
             """
             @FlatEnum
-            enum Test: CustomStringConvertible {
+            enum Test: Hashable, CustomStringConvertible {
             var description: String { "\\(self)" }
-            case test0(Bool), test1(Int)
+            case test0(Bool)
+            case test1 // TMP
             }
             """,
             expandedSource: """
-            enum Test: CustomStringConvertible {
+            enum Test: Hashable, CustomStringConvertible {
             var description: String { "\\(self)" }
-            case test0(Bool), test1(Int)
+            case test0(Bool)
+            case test1 // TMP
 
                 public enum FlatTest: CustomStringConvertible {
                     case test0
