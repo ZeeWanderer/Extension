@@ -6,6 +6,7 @@
 //  Copyright © 2020 max. All rights reserved.
 //
 
+#if canImport(UIKit)
 import UIKit
 
 public extension Bundle
@@ -22,3 +23,4 @@ public extension Bundle
         return infoDictionary?["CFBundleVersion"] as? String
     }
 }
+#endif

@@ -5,6 +5,7 @@
 //  Created by Maksym Kulyk on 21.05.2024.
 //
 
+#if canImport(UIKit)
 import SwiftUI
 
 /// Helper class that listens to keyboard notifications and provides observable keyboard height and a number of helper functions
@@ -113,3 +114,4 @@ public final class KeyboardHeightHelper: ObservableObject
         self.keyboardWillHideNotificationTask?.cancel()
     }
 }
+#endif

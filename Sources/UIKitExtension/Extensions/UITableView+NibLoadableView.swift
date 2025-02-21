@@ -5,6 +5,7 @@
 //  Created by zee wanderer on 02.08.2024.
 //
 
+#if canImport(UIKit)
 import UIKit
 
 public extension UITableView
@@ -44,3 +45,4 @@ public extension UITableView
         register(nib, forHeaderFooterViewReuseIdentifier: T.defaultReuseIdentifier)
     }
 }
+#endif

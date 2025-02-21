@@ -5,6 +5,7 @@
 //  Created by Maksym Kulyk on 13.04.2022.
 //
 
+#if canImport(UIKit)
 import UIKit
 import AVFoundation
 
@@ -319,3 +320,4 @@ import AVFoundation
         }
     }
 }
+#endif

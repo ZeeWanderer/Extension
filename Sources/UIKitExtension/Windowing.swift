@@ -5,6 +5,7 @@
 //  Created by Maksym Kulyk on 31.10.2021.
 //
 
+#if canImport(UIKit)
 import UIKit
 
 // MARK: - UIApplication
@@ -66,3 +67,4 @@ public extension UIViewController
         }
     }
 }
+#endif

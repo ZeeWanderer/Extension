@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+#if canImport(UIKit)
 // MARK: - UIEdgeInsets
 public extension UIEdgeInsets
 {
@@ -16,6 +17,7 @@ public extension UIEdgeInsets
         EdgeInsets(top: top, leading: left, bottom: bottom, trailing: right)
     }
 }
+#endif
 
 // MARK: - EdgeInsets
 public extension EdgeInsets

@@ -5,6 +5,7 @@
 //  Created by zee wanderer on 02.08.2024.
 //
 
+#if canImport(UIKit)
 import UIKit
 
 public extension UIView
@@ -57,3 +58,4 @@ public extension UIView
     @inlinable func get<T: UIView>(all type: T.Type) -> [T] { return UIView.getAllSubviews(from: self) as [T] }
     @inlinable func get(all types: [UIView.Type]) -> [UIView] { return UIView.getAllSubviews(from: self, types: types) }
 }
+#endif

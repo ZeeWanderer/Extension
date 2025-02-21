@@ -5,6 +5,7 @@ import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 @testable import MacrosExtension
+#if canImport(UIKit)
 @testable import SwiftExtension
 @testable import FoundationExtension
 @testable import CoreGraphicsExtension
@@ -12,6 +13,7 @@ import SwiftSyntaxMacrosTestSupport
 @testable import SpriteKitExtension
 @testable import SwiftUIExtension
 @testable import GeneralExtensions
+#endif
 
 #if canImport(Macros)
 import Macros
@@ -23,6 +25,7 @@ let testMacros: [String: Macro.Type] = [
 
 final class ExtensionTests: XCTestCase
 {
+#if canImport(UIKit)
     func testBoundingBoxValidity()
     {
         let r1 = CGRect(origin: .zero, size: CGSize(width: 100, height: 100))
@@ -129,31 +132,73 @@ final class ExtensionTests: XCTestCase
         XCTAssertEqual(r0, r5)
         XCTAssertEqual(r0, r6)
     }
-    
+#endif
     func testMacro() throws {
         #if canImport(Macros)
         assertMacroExpansion(
             """
             @FlatEnum
             enum Test {
-            case test0(Bool), test1(Int)
+                case test0(Bool), test1(Int)
             }
             """,
             expandedSource: """
             enum Test {
-            case test0(Bool), test1(Int)
-            public enum FlatTest {
-            case test0
-            case test1
-            }
-            var flat: FlatTest {
-                switch self {
-                case .test0:
-                    return .test0
-                case .test1:
-                    return .test1
+                case test0(Bool), test1(Int)
+
+                public enum FlatTest {
+                    case test0
+                    case test1
+                }
+
+                var flat: FlatTest {
+                    switch self {
+                    case .test0:
+                        return .test0
+                    case .test1:
+                        return .test1
+                    }
                 }
             }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+    
+    func testMacro2() throws {
+        #if canImport(Macros)
+        assertMacroExpansion(
+            """
+            @FlatEnum
+            enum Test: CustomStringConvertible {
+            var description: String { "\\(self)" }
+            case test0(Bool), test1(Int)
+            }
+            """,
+            expandedSource: """
+            enum Test: CustomStringConvertible {
+            var description: String { "\\(self)" }
+            case test0(Bool), test1(Int)
+
+                public enum FlatTest: CustomStringConvertible {
+                    case test0
+                    case test1
+                    public var description: String {
+                        "\\(self)"
+                    }
+                }
+
+                var flat: FlatTest {
+                    switch self {
+                    case .test0:
+                        return .test0
+                    case .test1:
+                        return .test1
+                    }
+                }
             }
             """,
             macros: testMacros

@@ -5,6 +5,7 @@
 //  Created by Maksym Kulyk on 21.05.2024.
 //
 
+#if canImport(UIKit)
 import SwiftUI
 import UIKit
 
@@ -31,3 +32,4 @@ public struct ClearBackgroundView: UIViewRepresentable
     {
     }
 }
+#endif

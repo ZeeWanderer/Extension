@@ -6,6 +6,7 @@
 //  Copyright © 2020 max. All rights reserved.
 //
 
+#if canImport(UIKit)
 import UIKit
 
 public extension UIFont
@@ -46,3 +47,4 @@ public func adjustAttributesToFit(line: String, in rect : CGRect, m_attributes:i
     
     m_attributes[.font] = s_font.withSize(min(height_size, width_size))
 }
+#endif

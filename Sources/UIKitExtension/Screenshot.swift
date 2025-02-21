@@ -6,6 +6,7 @@
 //  Copyright © 2020 max. All rights reserved.
 //
 
+#if canImport(UIKit)
 import UIKit
 
 public extension UIView 
@@ -59,3 +60,4 @@ public extension CALayer
         return screenshot
     }
 }
+#endif

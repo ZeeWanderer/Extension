@@ -6,14 +6,17 @@
 //
 
 import SwiftUI
+#if canImport(UIKit)
 import UIKitExtension
+#endif
 import CoreGraphicsExtension
 import GeneralExtensions
 
 // MARK: - View
 public extension View
 {
-    
+ 
+#if canImport(UIKit)
     // MARK: Actions
     @MainActor @inlinable
     @discardableResult func endTextEditing() -> Bool
@@ -30,6 +33,7 @@ public extension View
         hosting.view.frame = frame
         return hosting.view.screenShot(afterScreenUpdates: afterScreenUpdates)
     }
+#endif
     
     // MARK: Notifications
     @MainActor @inlinable
@@ -38,6 +42,7 @@ public extension View
         onReceive(NotificationCenter.default.publisher(for: notificationName), perform: action)
     }
     
+#if canImport(UIKit)
     @MainActor @inlinable
     func onDidEnterBackgroundNotification(perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
     {
@@ -82,6 +87,7 @@ public extension View
             perform: action
         )
     }
+#endif
     
     // MARK: Modifiers
     /// Conditionaly executes closure.
@@ -129,12 +135,14 @@ public extension View
             .shadow(color: color, radius: radius / 2)
     }
     
+#if canImport(UIKit)
     /// Clears background on modal views. Applies ``ClearBackgroundViewModifier``.
     @inlinable
     func clearModalBackground() -> some View
     {
         self.modifier(ClearBackgroundViewModifier())
     }
+#endif
     
     /// Applies `.hidden()` to view on provided condition
     @inlinable
@@ -200,6 +208,7 @@ public extension View
             .shadow(color: data.color, radius: data.radius, x: data.x, y: data.y)
     }
     
+#if canImport(UIKit)
     /// Applies `defersSystemGestures` on given `edges` if `iOS >= 16.0`
     @inlinable
     @ViewBuilder func defersSystemGesturesIfAvailable(on edges: Edge.Set = .all) -> some View
@@ -265,6 +274,7 @@ public extension View
                 .hidden()
         }
     }
+#endif
     
     // MARK: Compatibility - DEPRECATED
     /// Backwards compatible `task` call.

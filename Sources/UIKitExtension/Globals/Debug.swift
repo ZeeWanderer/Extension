@@ -5,6 +5,7 @@
 //  Created by Maksym Kulyk on 05.04.2022.
 //
 
+#if canImport(UIKit)
 import SwiftExtension
 import UIKit
 
@@ -22,3 +23,4 @@ public func debug_rect(_ rect: CGRect, color: CGColor = UIColor.white.cgColor)
         }
     }
 }
+#endif

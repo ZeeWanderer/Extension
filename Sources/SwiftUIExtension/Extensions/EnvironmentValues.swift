@@ -9,6 +9,7 @@ import SwiftUI
 
 public extension EnvironmentValues
 {
+#if canImport(UIKit)
     /// The current SafeArea EdgeInsets of the scene
     ///
     /// This value is set to provide observable EdgeInsets
@@ -18,4 +19,5 @@ public extension EnvironmentValues
     {
         self[SafeAreaInsetsKey.self]
     }
+#endif
 }
