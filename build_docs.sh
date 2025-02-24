@@ -9,6 +9,10 @@ echo "Using Xcode at: $DEVELOPER_DIR"
 DERIVED_DATA_PATH="build"
 
 echo "Building documentation..."
+xcodebuild docbuild -showdestinations -scheme Extension \
+    -skipMacroValidation \
+    -derivedDataPath "$DERIVED_DATA_PATH"
+    
 xcodebuild docbuild -scheme Extension \
     -skipMacroValidation \
     -derivedDataPath "$DERIVED_DATA_PATH"
