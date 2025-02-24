@@ -10,7 +10,6 @@ DERIVED_DATA_PATH="build"
 
 echo "Building documentation..."
 xcodebuild docbuild -scheme Extension \
-    -destination 'generic/platform=iOS' \
     -skipMacroValidation \
     -derivedDataPath "$DERIVED_DATA_PATH"
 
