@@ -12,3 +12,9 @@ public macro FlatEnum() =
   #externalMacro(
     module: "Macros", type: "FlatEnumMacro"
   )
+
+@attached(extension, names: arbitrary)
+public macro CustomStringConvertibleEnum() =
+  #externalMacro(
+    module: "Macros", type: "CustomStringConvertibleEnumMacro"
+  )

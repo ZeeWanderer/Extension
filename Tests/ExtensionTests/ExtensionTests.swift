@@ -20,6 +20,7 @@ import Macros
 
 let testMacros: [String: Macro.Type] = [
     "FlatEnum": FlatEnumMacro.self,
+    "CustomStringConvertibleEnum": CustomStringConvertibleEnumMacro.self
 ]
 #endif
 
@@ -133,7 +134,7 @@ final class ExtensionTests: XCTestCase
         XCTAssertEqual(r0, r6)
     }
 #endif
-    func testMacro() throws {
+    func testFlatEnumMacro() throws {
         #if canImport(Macros)
         assertMacroExpansion(
             """
@@ -151,7 +152,7 @@ final class ExtensionTests: XCTestCase
                     case test1
                 }
 
-                var flat: FlatTest {
+                public var flat: FlatTest {
                     switch self {
                     case .test0:
                         return .test0
@@ -168,37 +169,45 @@ final class ExtensionTests: XCTestCase
         #endif
     }
     
-    func testMacroCustomStringConvertible() throws {
+    func testCustomStringConvertibleEnumMacro() throws {
         #if canImport(Macros)
         assertMacroExpansion(
             """
-            @FlatEnum
-            enum Test: Hashable, CustomStringConvertible {
-            var description: String { "\\(self)" }
-            case test0(Bool)
-            case test1 // TMP
+            @CustomStringConvertibleEnum
+            enum Test: Hashable {
+                case test0(Bool)
+                case test1 // TMP
             }
             """,
             expandedSource: """
-            enum Test: Hashable, CustomStringConvertible {
-            var description: String { "\\(self)" }
-            case test0(Bool)
-            case test1 // TMP
+            enum Test: Hashable {
+                case test0(Bool)
+                case test1 // TMP
+            }
 
-                public enum FlatTest: CustomStringConvertible {
-                    case test0
-                    case test1
-                    public var description: String {
-                        "\\(self)"
+            extension Test: CustomStringConvertible, CustomDebugStringConvertible, CustomTestStringConvertible {
+                public var description: String {
+                    switch self {
+                    case .test0(let value0):
+                        return "test0(\\(value0))"
+                    case .test1:
+                        return "test1"
                     }
                 }
-
-                var flat: FlatTest {
+                public var debugDescription: String {
                     switch self {
-                    case .test0:
-                        return .test0
+                    case .test0(let value0):
+                        return "test0(\\(value0))"
                     case .test1:
-                        return .test1
+                        return "test1"
+                    }
+                }
+                public var testDescription: String {
+                    switch self {
+                    case .test0(let value0):
+                        return "test0(\\(value0))"
+                    case .test1:
+                        return "test1"
                     }
                 }
             }
@@ -209,4 +218,55 @@ final class ExtensionTests: XCTestCase
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
+    
+    func testCustomStringConvertibleEnumMacro_FlatEnumMacro() throws {
+        #if canImport(Macros)
+        assertMacroExpansion(
+            """
+            @FlatEnum @CustomStringConvertibleEnum
+            enum Test: Hashable {
+                case test0(Bool)
+                case test1 // TMP
+            }
+            """,
+            expandedSource: """
+            enum Test: Hashable {
+                case test0(Bool)
+                case test1 // TMP
+            }
+
+            extension Test: CustomStringConvertible, CustomDebugStringConvertible, CustomTestStringConvertible {
+                public var description: String {
+                    switch self {
+                    case .test0(let value0):
+                        return "test0(\\(value0))"
+                    case .test1:
+                        return "test1"
+                    }
+                }
+                public var debugDescription: String {
+                    switch self {
+                    case .test0(let value0):
+                        return "test0(\\(value0))"
+                    case .test1:
+                        return "test1"
+                    }
+                }
+                public var testDescription: String {
+                    switch self {
+                    case .test0(let value0):
+                        return "test0(\\(value0))"
+                    case .test1:
+                        return "test1"
+                    }
+                }
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
 }
