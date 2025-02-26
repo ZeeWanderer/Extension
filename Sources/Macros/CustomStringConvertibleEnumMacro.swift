@@ -62,7 +62,7 @@ extension CustomStringConvertibleEnumMacro: ExtensionMacro {
         let computedProperties: [(name: String, protocolName: String)] = [
             ("description", "CustomStringConvertible"),
             ("debugDescription", "CustomDebugStringConvertible"),
-            ("testDescription", "CustomTestStringConvertible")
+//            ("testDescription", "CustomTestStringConvertible"),
         ]
         
         let memberItems = computedProperties.map { (propName, _) in
@@ -78,8 +78,8 @@ extension CustomStringConvertibleEnumMacro: ExtensionMacro {
         let inheritanceClause = InheritanceClauseSyntax(
             inheritedTypes: [
                 InheritedTypeSyntax(type: IdentifierTypeSyntax(name: .identifier("CustomStringConvertible")), trailingComma: .commaToken()),
-                InheritedTypeSyntax(type: IdentifierTypeSyntax(name: .identifier("CustomDebugStringConvertible")), trailingComma: .commaToken()),
-                InheritedTypeSyntax(type: IdentifierTypeSyntax(name: .identifier("CustomTestStringConvertible")))
+                InheritedTypeSyntax(type: IdentifierTypeSyntax(name: .identifier("CustomDebugStringConvertible"))/*, trailingComma: .commaToken()*/),
+                //InheritedTypeSyntax(type: IdentifierTypeSyntax(name: .identifier("CustomTestStringConvertible"))),
             ]
         )
         

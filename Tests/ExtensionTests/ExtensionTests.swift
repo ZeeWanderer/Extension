@@ -185,7 +185,7 @@ final class ExtensionTests: XCTestCase
                 case test1 // TMP
             }
 
-            extension Test: CustomStringConvertible, CustomDebugStringConvertible, CustomTestStringConvertible {
+            extension Test: CustomStringConvertible, CustomDebugStringConvertible {
                 public var description: String {
                     switch self {
                     case .test0(let value0):
@@ -195,14 +195,6 @@ final class ExtensionTests: XCTestCase
                     }
                 }
                 public var debugDescription: String {
-                    switch self {
-                    case .test0(let value0):
-                        return "test0(\\(value0))"
-                    case .test1:
-                        return "test1"
-                    }
-                }
-                public var testDescription: String {
                     switch self {
                     case .test0(let value0):
                         return "test0(\\(value0))"
@@ -233,9 +225,42 @@ final class ExtensionTests: XCTestCase
             enum Test: Hashable {
                 case test0(Bool)
                 case test1 // TMP
+
+                public enum FlatTest {
+                    case test0
+                    case test1
+                }
+
+                public var flat: FlatTest {
+                    switch self {
+                    case .test0:
+                        return .test0
+                    case .test1:
+                        return .test1
+                    }
+                }
             }
 
-            extension Test: CustomStringConvertible, CustomDebugStringConvertible, CustomTestStringConvertible {
+            extension FlatTest: CustomStringConvertible, CustomDebugStringConvertible {
+                public var description: String {
+                    switch self {
+                    case .test0:
+                        return "test0"
+                    case .test1:
+                        return "test1"
+                    }
+                }
+                public var debugDescription: String {
+                    switch self {
+                    case .test0:
+                        return "test0"
+                    case .test1:
+                        return "test1"
+                    }
+                }
+            }
+
+            extension Test: CustomStringConvertible, CustomDebugStringConvertible {
                 public var description: String {
                     switch self {
                     case .test0(let value0):
@@ -245,14 +270,6 @@ final class ExtensionTests: XCTestCase
                     }
                 }
                 public var debugDescription: String {
-                    switch self {
-                    case .test0(let value0):
-                        return "test0(\\(value0))"
-                    case .test1:
-                        return "test1"
-                    }
-                }
-                public var testDescription: String {
                     switch self {
                     case .test0(let value0):
                         return "test0(\\(value0))"
