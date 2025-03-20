@@ -6,13 +6,14 @@
 //
 
 import Foundation
+import Accelerate
 
 // MARK: - BinaryRepresentable
 
 /// Streamlines transformation to and from Data for conforming types.
 public protocol BinaryRepresentable
-{
-    associatedtype BinaryRepresentableType = Self
+{   
+    init?(data: Data)
     
     /// Generates Data representation
     var data: Data { get }
@@ -21,10 +22,33 @@ public protocol BinaryRepresentable
 public extension BinaryRepresentable
 {
     @inlinable
+    init?(data: Data)
+    {
+        self = data.load(as: Self.self)
+    }
+    
+    @inlinable
     var data: Data
     {
         return withUnsafePointer(to: self) { pointer in
-            return Data(bytes: pointer, count: MemoryLayout<BinaryRepresentableType>.size)
+            return Data(bytes: pointer, count: MemoryLayout<Self>.size)
+        }
+    }
+}
+
+public extension BinaryRepresentable where Self: BinaryRepresentableCollection
+{
+    @inlinable
+    init?(data: Data)
+    {
+        self = data.load(as: Self.self)
+    }
+    
+    @inlinable
+    var data: Data
+    {
+        return self.withUnsafeBufferPointer { buffer in
+            return Data(buffer: buffer)
         }
     }
 }

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Accelerate
 
 // MARK: - Data
 public extension Data

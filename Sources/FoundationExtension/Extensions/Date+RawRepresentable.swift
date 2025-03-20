@@ -7,22 +7,19 @@
 
 import Foundation
 
-extension Date: RawRepresentable
+extension Date: @retroactive RawRepresentable
 {
-    @usableFromInline
-    internal static var formatter: ISO8601DateFormatter {
-        ISO8601DateFormatter()
+    @inlinable
+    public var rawValue: TimeInterval
+    {
+        Date.timeIntervalSinceReferenceDate
     }
     
     @inlinable
-    public var rawValue: String
+    public init?(rawValue: TimeInterval)
     {
-        Date.formatter.string(from: self)
-    }
-    
-    @inlinable
-    public init?(rawValue: String)
-    {
-        self = Date.formatter.date(from: rawValue) ?? Date()
+        self = Date(timeIntervalSinceReferenceDate: rawValue)
     }
 }
+
+

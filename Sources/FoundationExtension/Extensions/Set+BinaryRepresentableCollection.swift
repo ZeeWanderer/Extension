@@ -6,5 +6,12 @@
 //
 
 import Foundation
+import Accelerate
 
-extension Set: BinaryRepresentableCollection where Element: Hashable, Element: BinaryRepresentable {}
+extension Set: @retroactive AccelerateBuffer {
+    public func withUnsafeBufferPointer<R>(_ body: (UnsafeBufferPointer<Element>) throws -> R) rethrows -> R {
+        try Array(self).withUnsafeBufferPointer(body)
+    }
+}
+extension Set: BinaryRepresentable { }
+extension Set: BinaryRepresentableCollection { }

@@ -6,5 +6,7 @@
 //
 
 import Foundation
+import Accelerate
 
-extension Array: BinaryRepresentableCollection where Element: BinaryRepresentable {}
+extension Array: BinaryRepresentable { }
+extension Array: BinaryRepresentableCollection { }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Array: RawRepresentable where Element: Codable
+extension Array: @retroactive RawRepresentable where Element: Codable
 {
     @inlinable
     public init?(rawValue: String)
