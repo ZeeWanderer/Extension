@@ -142,11 +142,15 @@ final class ExtensionTests: XCTestCase
         let r1d = r1.data
         let r1c = Array<Int>(data: r1d)
         
-        struct Test0: Equatable, BinaryRepresentable
+        struct Test0: Equatable, SafeBinaryRepresentable
         {
             let int0: Int
             let int1: Int
         }
+        
+        let t0: Test0 = .init(int0: 0, int1: 1)
+        let t0r: Data = t0.data
+        let t0r1 = Test0(data: t0r)
         
         let r2 = Array<Test0>([.init(int0: 0, int1: 1), .init(int0: 2, int1: 3)])
         let r2d = r2.data
@@ -154,6 +158,7 @@ final class ExtensionTests: XCTestCase
         
         XCTAssertEqual(r1, r1c)
         XCTAssertEqual(r2, r2c)
+        XCTAssertEqual(t0, t0r1)
     }
 #endif
     

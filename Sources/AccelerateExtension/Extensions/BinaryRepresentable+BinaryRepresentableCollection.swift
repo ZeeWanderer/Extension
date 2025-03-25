@@ -12,7 +12,7 @@ import Accelerate
 public extension BinaryRepresentable where Self: BinaryRepresentableCollection
 {
     @inlinable
-    init?(data: Data)
+    init(data: Data)
     {
         self = data.load(as: Self.self)
     }
