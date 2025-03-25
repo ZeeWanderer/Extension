@@ -2,12 +2,12 @@
 //  Set+RawRepresentable.swift
 //
 //
-//  Created by Maksym Kulyk on 20.05.2024.
+//  Created by zeewanderer on 20.05.2024.
 //
 
 import Foundation
 
-extension Set: RawRepresentable where Element: Codable
+extension Set: @retroactive RawRepresentable where Element: Codable
 {
     @inlinable
     public init?(rawValue: String)

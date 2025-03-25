@@ -2,12 +2,12 @@
 //  Dictionary+RawRepresentable.swift
 //
 //
-//  Created by Maksym Kulyk on 20.05.2024.
+//  Created by zeewanderer on 20.05.2024.
 //
 
 import Foundation
 
-extension Dictionary: RawRepresentable where Key: Codable, Value: Codable
+extension Dictionary: @retroactive RawRepresentable where Key: Codable, Value: Codable
 {
     @inlinable
     public init?(rawValue: String)

@@ -2,7 +2,7 @@
 //  Coding.swift
 //  
 //
-//  Created by Maksym Kulyk on 19.11.2021.
+//  Created by zeewanderer on 19.11.2021.
 //
 
 import Foundation

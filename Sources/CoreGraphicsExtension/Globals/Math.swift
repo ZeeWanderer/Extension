@@ -2,7 +2,7 @@
 //  Math.swift
 //  
 //
-//  Created by Maksym Kulyk on 19.04.2022.
+//  Created by zeewanderer on 19.04.2022.
 //
 
 

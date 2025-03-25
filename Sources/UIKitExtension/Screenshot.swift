@@ -2,7 +2,7 @@
 //  Screenshot.swift
 //  Extension
 //
-//  Created by Maksym Kulyk on 8/26/20.
+//  Created by zeewanderer on 8/26/20.
 //  Copyright © 2020 max. All rights reserved.
 //
 

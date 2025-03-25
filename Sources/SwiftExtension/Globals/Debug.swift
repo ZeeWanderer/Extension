@@ -2,7 +2,7 @@
 //  Debug.swift
 //  
 //
-//  Created by Maksym Kulyk on 05.04.2022.
+//  Created by zeewanderer on 05.04.2022.
 //
 
 /// Helper function that executes given closure only if DEBUG is true

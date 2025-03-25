@@ -2,7 +2,7 @@
 //  Basic.swift
 //  Extension
 //
-//  Created by Maksym Kulyk on 9/16/20.
+//  Created by zeewanderer on 9/16/20.
 //  Copyright © 2020 max. All rights reserved.
 //
 

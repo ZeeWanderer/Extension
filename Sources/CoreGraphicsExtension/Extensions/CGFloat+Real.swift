@@ -2,7 +2,7 @@
 //  File.swift
 //  
 //
-//  Created by Maksym Kulyk on 06.06.2022.
+//  Created by zeewanderer on 06.06.2022.
 //
 
 import CoreGraphics

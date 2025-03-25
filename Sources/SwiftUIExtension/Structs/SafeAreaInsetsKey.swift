@@ -2,7 +2,7 @@
 //  SafeAreaInsetsKey.swift
 //  
 //
-//  Created by Maksym Kulyk on 20.05.2024.
+//  Created by zeewanderer on 20.05.2024.
 //
 
 #if canImport(UIKit)

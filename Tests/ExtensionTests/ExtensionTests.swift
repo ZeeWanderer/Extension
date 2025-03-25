@@ -8,6 +8,7 @@ import SwiftSyntaxMacrosTestSupport
 #if canImport(UIKit)
 @testable import SwiftExtension
 @testable import FoundationExtension
+@testable import AccelerateExtension
 @testable import CoreGraphicsExtension
 @testable import UIKitExtension
 @testable import SpriteKitExtension
@@ -137,19 +138,19 @@ final class ExtensionTests: XCTestCase
     
     func testBinaryRepresentable()
     {
-        let r1 = Set([0, 1, 2, 3])
+        let r1 = Array<Int>([0, 1, 2, 3])
         let r1d = r1.data
-        let r1c = Set<Int>(data: r1d)
+        let r1c = Array<Int>(data: r1d)
         
-        struct Test0: Hashable
+        struct Test0: Equatable, BinaryRepresentable
         {
             let int0: Int
             let int1: Int
         }
         
-        let r2 = Set<Test0>([.init(int0: 0, int1: 1), .init(int0: 2, int1: 3)])
+        let r2 = Array<Test0>([.init(int0: 0, int1: 1), .init(int0: 2, int1: 3)])
         let r2d = r2.data
-        let r2c = Set<Test0>(data: r2d)
+        let r2c = Array<Test0>(data: r2d)
         
         XCTAssertEqual(r1, r1c)
         XCTAssertEqual(r2, r2c)

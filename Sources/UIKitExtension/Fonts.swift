@@ -2,7 +2,7 @@
 //  Fonts.swift
 //  Extension
 //
-//  Created by Maksym Kulyk on 11/6/20.
+//  Created by zeewanderer on 11/6/20.
 //  Copyright © 2020 max. All rights reserved.
 //
 

@@ -2,7 +2,7 @@
 //  Stack.swift
 //  
 //
-//  Created by Maksym Kulyk on 20.05.2024.
+//  Created by zeewanderer on 20.05.2024.
 //
 
 public struct Stack<Element>: StackProtocol where Element: Equatable

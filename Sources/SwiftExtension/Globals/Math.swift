@@ -2,7 +2,7 @@
 //  Math.swift
 //  
 //
-//  Created by Maksym Kulyk on 18.03.2022.
+//  Created by zeewanderer on 18.03.2022.
 //
 
 import RealModule

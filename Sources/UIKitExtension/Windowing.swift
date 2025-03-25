@@ -2,7 +2,7 @@
 //  Windowing.swift
 //  
 //
-//  Created by Maksym Kulyk on 31.10.2021.
+//  Created by zeewanderer on 31.10.2021.
 //
 
 #if canImport(UIKit)

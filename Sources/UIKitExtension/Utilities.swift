@@ -2,7 +2,7 @@
 //  Utilities.swift
 //
 //
-//  Created by Maksym Kulyk on 09.08.2023.
+//  Created by zeewanderer on 09.08.2023.
 //
 
 #if canImport(UIKit)

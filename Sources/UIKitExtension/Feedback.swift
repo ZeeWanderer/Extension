@@ -2,7 +2,7 @@
 //  Feedback.swift
 //  
 //
-//  Created by Maksym Kulyk on 13.04.2022.
+//  Created by zeewanderer on 13.04.2022.
 //
 
 #if canImport(UIKit)

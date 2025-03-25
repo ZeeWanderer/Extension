@@ -2,7 +2,7 @@
 //  Screenshot.swift
 //  
 //
-//  Created by Maksym Kulyk on 09.03.2022.
+//  Created by zeewanderer on 09.03.2022.
 //
 
 #if canImport(UIKit)

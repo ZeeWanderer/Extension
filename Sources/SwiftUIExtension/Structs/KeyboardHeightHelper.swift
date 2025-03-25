@@ -2,7 +2,7 @@
 //  KeyboardHeightHelper.swift
 //
 //
-//  Created by Maksym Kulyk on 21.05.2024.
+//  Created by zeewanderer on 21.05.2024.
 //
 
 #if canImport(UIKit)

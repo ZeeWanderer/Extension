@@ -2,7 +2,7 @@
 //  Config.swift
 //  
 //
-//  Created by Maksym Kulyk on 29.03.2022.
+//  Created by zeewanderer on 29.03.2022.
 //
 
 import Foundation
