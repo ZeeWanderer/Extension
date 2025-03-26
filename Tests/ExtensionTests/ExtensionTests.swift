@@ -152,13 +152,33 @@ final class ExtensionTests: XCTestCase
         let t0r: Data = t0.data
         let t0r1 = Test0(data: t0r)
         
+        let t1: CGRect = .init(x: 1, y: 2, width: 4, height: 5)
+        let t1r: Data = t1.data
+        let t1r1 = CGRect(data: t1r)
+        
+        let t2: [Double] = [1, 2, 4, 5]
+        let t2r: Data = t2.data
+        let t2r1 = CGRect(data: t2r)
+        
+        let t3: [Double] = [1, 2, 4]
+        let t3r: Data = t3.data
+        let t3r1 = CGRect(validating: t3r)
+        
         let r2 = Array<Test0>([.init(int0: 0, int1: 1), .init(int0: 2, int1: 3)])
         let r2d = r2.data
         let r2c = Array<Test0>(data: r2d)
         
+        let r3 = Set<Int>([1,2,3])
+        let r3d = r3.data
+        let r3c = Set<Int>(data: r3d)
+        
         XCTAssertEqual(r1, r1c)
         XCTAssertEqual(r2, r2c)
+        XCTAssertEqual(r3, r3c)
         XCTAssertEqual(t0, t0r1)
+        XCTAssertEqual(t1, t1r1)
+        XCTAssertEqual(t1, t2r1)
+        XCTAssertEqual(nil, t3r1)
     }
 #endif
     

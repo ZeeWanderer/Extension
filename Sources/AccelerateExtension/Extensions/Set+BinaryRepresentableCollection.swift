@@ -14,7 +14,8 @@ extension Set: @retroactive AccelerateBuffer where Element: BinaryRepresentable
     @inlinable
     public func withUnsafeBufferPointer<R>(_ body: (UnsafeBufferPointer<Element>) throws -> R) rethrows -> R
     {
-        try Array(self).withUnsafeBufferPointer(body)
+        let contiguous = ContiguousArray(self)
+        return try contiguous.withUnsafeBufferPointer(body)
     }
 }
 extension Set: BinaryRepresentable where Element: BinaryRepresentable  { }

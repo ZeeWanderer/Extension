@@ -13,7 +13,7 @@ import Foundation
 /// - Warning: Ensure that the conforming Type is BitwiseCopyable. Use ``SafeBinaryRepresentable`` when conforming your own type for compile time verification.
 public protocol BinaryRepresentable
 {
-    init(data: Data)
+    init?(data: Data)
     
     /// Generates Data representation
     var data: Data { get }
@@ -29,6 +29,15 @@ public extension BinaryRepresentable
     init(data: Data)
     {
         self = data.load(as: Self.self)
+    }
+    
+    /// Validates data as much as it can before loading
+    @inlinable
+    init?(validating data: Data)
+    {
+        guard let newSelf = data.saferLoad(as: Self.self)
+        else { return nil }
+        self = newSelf
     }
     
     @inlinable

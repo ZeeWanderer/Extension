@@ -17,6 +17,15 @@ public extension BinaryRepresentable where Self: BinaryRepresentableCollection
         self = data.load(as: Self.self)
     }
     
+    /// Validates data as much as it can before loading
+    @inlinable
+    init?(validating data: Data)
+    {
+        guard let newSelf = data.saferLoad(as: Self.self)
+        else { return nil }
+        self = newSelf
+    }
+    
     @inlinable
     var data: Data
     {
