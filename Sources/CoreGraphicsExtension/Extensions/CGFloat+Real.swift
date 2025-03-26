@@ -8,7 +8,7 @@
 import CoreGraphics
 import RealModule
 
-extension CGFloat: Real
+extension CGFloat: @retroactive Real
 {
     @_transparent
     public static func atan2(y: CGFloat, x: CGFloat) -> CGFloat {
