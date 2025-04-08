@@ -53,6 +53,16 @@ let package = Package(
             swiftSettings: []
         ),
         .target(
+            name: "osExtension",
+            dependencies: ["FoundationExtension"],
+            swiftSettings: []
+        ),
+        .target(
+            name: "ObservationExtension",
+            dependencies: ["FoundationExtension"],
+            swiftSettings: []
+        ),
+        .target(
             name: "AccelerateExtension",
             dependencies: ["FoundationExtension"],
             swiftSettings: []
@@ -84,13 +94,13 @@ let package = Package(
         ),
         .target(
             name: "Extension",
-            dependencies: ["MacrosExtension", "SwiftExtension", "FoundationExtension", "AccelerateExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions"],
+            dependencies: ["MacrosExtension", "SwiftExtension", "FoundationExtension", "osExtension", "ObservationExtension", "AccelerateExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions"],
             swiftSettings: []
         ),
         .testTarget(
             name: "ExtensionTests",
             dependencies: [
-                "Macros","MacrosExtension", "SwiftExtension", "FoundationExtension", "AccelerateExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions", "Extension",
+                "Macros","MacrosExtension", "SwiftExtension", "FoundationExtension", "osExtension", "ObservationExtension", "AccelerateExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions", "Extension",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
             ]),
     ],

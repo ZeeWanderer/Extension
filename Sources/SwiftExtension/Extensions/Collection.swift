@@ -7,8 +7,7 @@
 
 public extension Collection
 {
-    @inlinable
-    @inline(__always)
+    @_transparent
     var isNotEmpty: Bool {
         return !self.isEmpty
     }

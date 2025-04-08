@@ -25,7 +25,9 @@ public func debug_print(_ items: Any..., separator: String = " ", terminator: St
 @inlinable
 public func debug_print_async(_ items: any Sendable..., separator: String = " ", terminator: String = "\n")
 {
-    Task { @MainActor in
-        debug_action { print(items, separator: separator, terminator: terminator) }
+    debug_action {
+        Task { @MainActor in
+             print(items, separator: separator, terminator: terminator)
+        }
     }
 }
