@@ -13,7 +13,9 @@ import Foundation
 /// - Warning: Ensure that the conforming Type is BitwiseCopyable. Use ``SafeBinaryRepresentable`` when conforming your own type for compile time verification.
 public protocol BinaryRepresentable
 {
-    init?(data: Data)
+    init(data: Data)
+    
+    init?(validating data: Data)
     
     /// Generates Data representation
     var data: Data { get }

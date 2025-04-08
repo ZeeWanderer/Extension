@@ -12,7 +12,7 @@ import Accelerate
 public extension Data
 {
     @inlinable
-    func load<T>(as type: T.Type) -> T where T: BinaryRepresentableCollection
+    func load<T: BinaryRepresentableCollection>(as type: T.Type) -> T
     {
         return self.withUnsafeBytes { (bytes: UnsafeRawBufferPointer) in
             return T(bytes.bindMemory(to: type.Element.self))
@@ -21,13 +21,13 @@ public extension Data
     
     @inlinable
     @inline(__always)
-    func load<T>() -> T where T: BinaryRepresentableCollection
+    func load<T: BinaryRepresentableCollection>() -> T
     {
         load(as: T.self)
     }
     
     @inlinable
-    func safeLoad<T>(as type: T.Type) -> T? where T: BinaryRepresentableCollection
+    func saferLoad<T: BinaryRepresentableCollection>(as type: T.Type) -> T?
     {
         let elementStride = MemoryLayout<T.Element>.stride
         
@@ -62,8 +62,8 @@ public extension Data
     
     @inlinable
     @inline(__always)
-    func safeLoad<T>() -> T? where T: BinaryRepresentableCollection
+    func saferLoad<T>() -> T? where T: BinaryRepresentableCollection
     {
-        safeLoad(as: T.self)
+        saferLoad(as: T.self)
     }
 }
