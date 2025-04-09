@@ -19,7 +19,28 @@ public struct Config
         case AppStore
     }
     
-    public static let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+    public static let isTestFlight: Bool = {
+#if targetEnvironment(macCatalyst)
+        var staticCode: SecStaticCode?
+        let status = SecStaticCodeCreateWithPath(Bundle.main.bundleURL as CFURL, [], &staticCode)
+        guard status == errSecSuccess, let code = staticCode else {
+            return false
+        }
+        
+        var requirement: SecRequirement?
+        let reqString = "anchor apple generic and certificate leaf[field.1.2.840.113635.100.6.1.25.1]" as CFString
+        let reqStatus = SecRequirementCreateWithString(reqString, [], &requirement)
+        guard reqStatus == errSecSuccess, let req = requirement else {
+            return false
+        }
+        
+        let checkStatus = SecStaticCodeCheckValidity(code, [], req)
+        return checkStatus == errSecSuccess
+        
+#else
+        return Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+#endif
+    }()
     
     @inlinable
     public static var isDebug: Bool
