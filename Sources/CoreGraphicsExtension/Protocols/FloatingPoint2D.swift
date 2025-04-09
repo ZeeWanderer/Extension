@@ -28,15 +28,13 @@ public protocol FloatingPoint2D: SignedNumeric2D, Hashable2D where Magnitude: Fl
 
 public extension FloatingPoint2D
 {
-    @inlinable
-    @inline(__always)
+    @_transparent
     static func / (_ lhs: Self, _ rhs: Magnitude) -> Self
     {
         return .init(xMagnitude:  lhs.xMagnitude / rhs, yMagnitude: lhs.yMagnitude / rhs)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     static func ./ <T>(lhs: Self, rhs: T) -> Self where T: Numeric2D, T.Magnitude == Self.Magnitude
     {
         return .init(xMagnitude: lhs.xMagnitude / rhs.xMagnitude, yMagnitude: lhs.yMagnitude / rhs.yMagnitude)

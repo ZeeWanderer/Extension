@@ -6,7 +6,7 @@
 //
 
 /// Helper function that executes given closure only if DEBUG is true
-@inlinable
+@_transparent
 public func debug_action(_ closure: () -> Void)
 {
 #if DEBUG
@@ -15,14 +15,14 @@ public func debug_action(_ closure: () -> Void)
 }
 
 /// Helper function that prints only if DEBUG is true
-@inlinable
+@_transparent
 public func debug_print(_ items: Any..., separator: String = " ", terminator: String = "\n")
 {
     debug_action { print(items, separator: separator, terminator: terminator) }
 }
 
 /// Helper function that prints only if DEBUG is true, spawns a task for MainActor
-@inlinable
+@_transparent
 public func debug_print_async(_ items: any Sendable..., separator: String = " ", terminator: String = "\n")
 {
     debug_action {

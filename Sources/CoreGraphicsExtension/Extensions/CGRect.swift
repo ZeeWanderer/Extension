@@ -12,39 +12,34 @@ import FoundationExtension
 
 public extension CGRect
 {
-    @inlinable
-    @inline(__always)
+    @_transparent
     init(origin: CGPoint, side: CGFloat)
     {
         self.init(origin: origin, size: .init(side: side))
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     init(x: CGFloat, y: CGFloat, side: CGFloat)
     {
         self.init(x: x, y: y, width: side, height: side)
     }
     
     /// Translate CGRect by a given ammount
-    @inlinable
-    @inline(__always)
+    @_transparent
     func translatedBy(dx: CGFloat, dy: CGFloat) -> CGRect
     {
         return .init(origin: self.origin.translatedBy(dx: dx, dy: dy), size: self.size)
     }
     
     /// Translate CGRect by a vector defined as ((0,0), point)
-    @inlinable
-    @inline(__always)
+    @_transparent
     func translated(by point: CGPoint) -> CGRect
     {
         return .init(origin: self.origin.translated(by: point), size: self.size)
     }
     
     /// Translate CGRect by a vector defined as ((0,0), size)
-    @inlinable
-    @inline(__always)
+    @_transparent
     func translated(by size: CGSize) -> CGRect
     {
         return .init(origin: self.origin.translated(by: size), size: self.size)
@@ -53,23 +48,20 @@ public extension CGRect
     // Includes origin into scaling because CGSize describes
     // an are without position, but CGRect describes an area
     // with position.
-    @inlinable
-    @inline(__always)
+    @_transparent
     static func * (lhs: CGRect, rhs: CGFloat) -> CGRect
     {
         return .init(origin: lhs.origin * rhs, size: lhs.size * rhs)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     static func .* <T>(lhs: Self, rhs: T) -> Self where T: Numeric2D, T.Magnitude == CGFloat
     {
         return .init(origin: lhs.origin .* rhs, size: lhs.size .* rhs)
     }
     
     /// `width * height`
-    @inlinable
-    @inline(__always)
+    @_transparent
     var square: CGFloat
     {
         return self.size.square
@@ -77,43 +69,37 @@ public extension CGRect
     
     /// Center point of the `CGRect`
     /// - Note: With respect to origin
-    @inlinable
-    @inline(__always)
+    @_transparent
     var center: CGPoint
     {
         return .init(x: self.midX, y: self.midY)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     var diagonal: CGFloat
     {
         self.size.diagonal
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     func scaled(x scaleX: CGFloat, y scaleY: CGFloat) -> CGRect
     {
         return .init(origin: origin.scaled(x: scaleX, y: scaleY), size: size.scaled(x: scaleX, y: scaleY))
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     func scaled(x scaleX: CGFloat) -> CGRect
     {
         return .init(origin: origin.scaled(x: scaleX), size: size.scaled(x: scaleX))
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     func scaled(y scaleY: CGFloat) -> CGRect
     {
         return .init(origin: origin.scaled(y: scaleY), size: size.scaled(y: scaleY))
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     func scaled(_ scale: CGFloat) -> CGRect
     {
         return self * scale

@@ -17,15 +17,13 @@ public protocol SignedNumeric2D: Numeric2D where Magnitude: SignedNumeric
 
 public extension SignedNumeric2D
 {
-    @inlinable
-    @inline(__always)
+    @_transparent
     static prefix func - (operand: Self) -> Self
     {
         return Self(xMagnitude: -operand.xMagnitude, yMagnitude: -operand.yMagnitude)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     mutating func negate()
     {
         return self = -self

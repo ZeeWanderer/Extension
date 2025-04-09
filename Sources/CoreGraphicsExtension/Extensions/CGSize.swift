@@ -20,23 +20,20 @@ public extension CGSize
     }
     
     /// `width * height`
-    @inlinable
-    @inline(__always)
+    @_transparent
     var square: CGFloat
     {
         return self.height * self.width
     }
     
     /// Center point of the rectange area defined by `CGSize`
-    @inlinable
-    @inline(__always)
+    @_transparent
     var center: CGPoint
     {
         return .init(x: self.width/2.0, y: self.height/2.0)
     }
     
-    @inlinable
-    @inline(__always)
+    @_transparent
     var diagonal: CGFloat
     {
         // Opt for squares
@@ -47,8 +44,7 @@ public extension CGSize
     }
     
     /// See ``clamp(_:width:)``
-    @inlinable
-    @inline(__always)
+    @_transparent
     @available(*, deprecated, renamed: "clamped(x:)")
     func clamped(width range: ClosedRange<CGFloat>) -> CGSize
     {
@@ -56,8 +52,7 @@ public extension CGSize
     }
     
     /// See ``clamp(_:height:)``
-    @inlinable
-    @inline(__always)
+    @_transparent
     @available(*, deprecated, renamed: "clamped(y:)")
     func clamped(height range: ClosedRange<CGFloat>) -> CGSize
     {
@@ -65,8 +60,7 @@ public extension CGSize
     }
     
     /// See ``clamp(_:width:height:)``
-    @inlinable
-    @inline(__always)
+    @_transparent
     @available(*, deprecated, renamed: "clamped(x:y:)")
     func clamped(width rangeWidth: ClosedRange<CGFloat>, height rangeHeight: ClosedRange<CGFloat>) -> CGSize
     {

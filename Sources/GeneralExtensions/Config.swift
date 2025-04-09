@@ -42,7 +42,7 @@ public struct Config
 #endif
     }()
     
-    @inlinable
+    @_transparent
     public static var isDebug: Bool
     {
 #if DEBUG
@@ -61,11 +61,10 @@ public struct Config
     @inlinable
     public static var appConfiguration: AppConfiguration
     {
-        if isDebug
-        {
-            return .Debug
-        }
-        else if isTestFlight
+#if DEBUG
+        return .Debug
+#else
+        if isTestFlight
         {
             return .TestFlight
         }
@@ -73,5 +72,6 @@ public struct Config
         {
             return .AppStore
         }
+#endif
     }
 }

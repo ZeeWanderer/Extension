@@ -17,11 +17,13 @@ public protocol Equatable2D: Uniform2D where Magnitude: Equatable
 
 public extension Equatable2D
 {
+    @_transparent
     static func == <T>(lhs: Self, rhs: T) -> Bool where T: Equatable2D, T.Magnitude == Self.Magnitude
     {
         return lhs.xMagnitude == rhs.xMagnitude && lhs.yMagnitude == rhs.yMagnitude
     }
     
+    @_transparent
     static func != <T>(lhs: Self, rhs: T) -> Bool where T: Equatable2D, T.Magnitude == Self.Magnitude
     {
         return lhs.xMagnitude != rhs.xMagnitude || lhs.yMagnitude != rhs.yMagnitude
