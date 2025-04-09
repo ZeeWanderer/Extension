@@ -13,7 +13,9 @@ public protocol LogProtocol
     nonisolated static var signposter: OSSignposter { get }
     nonisolated static func makeLogger() -> Logger
     nonisolated static func makeSignposter() -> OSSignposter
+    @available(*, deprecated, renamed: "logScope")
     nonisolated static var messagePrefix: String { get }
+    nonisolated static var logScope: String { get }
 }
 
 public extension LogProtocol

@@ -8,6 +8,7 @@ import SwiftSyntaxMacrosTestSupport
 #if canImport(UIKit)
 @testable import SwiftExtension
 @testable import FoundationExtension
+@testable import osExtension
 @testable import ObservationExtension
 @testable import AccelerateExtension
 @testable import CoreGraphicsExtension
