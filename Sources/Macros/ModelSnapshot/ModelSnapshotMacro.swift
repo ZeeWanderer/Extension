@@ -55,7 +55,7 @@ extension ModelSnapshotMacro: MemberMacro {
                     if attrName == "SnapshotIgnore" {
                         ignore = true
                     }
-                    if attrName == "ShallowSnapshotRepresentation" {
+                    if attrName == "SnapshotShallow" {
                         useShallow = true
                     }
                 }
@@ -128,7 +128,7 @@ extension ModelSnapshotMacro: MemberMacro {
         }
         
         let persistentIDDecl = """
-        let persistentModelID: PersistentIdentifier
+        public let persistentModelID: PersistentIdentifier
         """
         let persistentIDInit = """
         self.persistentModelID = model.persistentModelID
