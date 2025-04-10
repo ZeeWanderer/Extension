@@ -4,12 +4,13 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
+import SwiftData
 @testable import MacrosExtension
+@testable import ObservationExtension
 #if canImport(UIKit)
 @testable import SwiftExtension
 @testable import FoundationExtension
 @testable import osExtension
-@testable import ObservationExtension
 @testable import AccelerateExtension
 @testable import CoreGraphicsExtension
 @testable import UIKitExtension
@@ -23,9 +24,39 @@ import Macros
 
 let testMacros: [String: Macro.Type] = [
     "FlatEnum": FlatEnumMacro.self,
-    "CustomStringConvertibleEnum": CustomStringConvertibleEnumMacro.self
+    "CustomStringConvertibleEnum": CustomStringConvertibleEnumMacro.self,
+    "ModelSnapshot": ModelSnapshotMacro.self
 ]
 #endif
+
+@ModelSnapshot
+@Model
+class Test1 {
+    var int: Int = 0
+
+    @SnapshotIgnore
+    @Relationship
+    var test0: Test0? = nil
+    
+    init(int: Int, test0: Test0? = nil) {
+        self.int = int
+        self.test0 = test0
+    }
+}
+
+@ModelSnapshot
+@Model
+class Test0 {
+    var int: Int = 0
+
+    @Relationship
+    var tests: [Test1] = []
+    
+    init(int: Int, tests: [Test1]) {
+        self.int = int
+        self.tests = tests
+    }
+}
 
 final class ExtensionTests: XCTestCase
 {
@@ -361,6 +392,159 @@ final class ExtensionTests: XCTestCase
                     case .test1:
                         return "test1"
                     }
+                }
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+    
+    @ModelSnapshot
+    @Model
+    class Test1 {
+        var int: Int = 0
+
+        @SnapshotIgnore
+        @Relationship
+        var test0: Test0? = nil
+        
+        init(int: Int, test0: Test0? = nil) {
+            self.int = int
+            self.test0 = test0
+        }
+    }
+
+    @ModelSnapshot
+    @Model
+    class Test0 {
+        var int: Int = 0
+
+        @Relationship
+        var tests: [Test1] = []
+        
+        init(int: Int, tests: [Test1]) {
+            self.int = int
+            self.tests = tests
+        }
+    }
+    
+    func testModelSnapshotMacro() throws {
+        #if canImport(Macros)
+        assertMacroExpansion(
+            """
+            import SwiftData
+            
+            @ModelSnapshot
+            @Model
+            class Test1 {
+                var int: Int = 0
+                
+                @SnapshotIgnore
+                @Relationship
+                var test0: Test0? = nil
+                
+                init(int: Int, test0: Test0? = nil) {
+                    self.int = int
+                    self.test0 = test0
+                }
+            }
+            
+            @ModelSnapshot
+            @Model
+            class Test0 {
+                var int: Int = 0
+                
+                @Relationship
+                var tests: [Test1] = []
+                
+                init(int: Int, tests: [Test1]) {
+                    self.int = int
+                    self.tests = tests
+                }
+            }
+            """,
+            expandedSource: """
+            import SwiftData
+            @Model
+            class Test1 {
+                var int: Int = 0
+                
+                @SnapshotIgnore
+                @Relationship
+                var test0: Test0? = nil
+                
+                init(int: Int, test0: Test0? = nil) {
+                    self.int = int
+                    self.test0 = test0
+                }
+
+                public struct Snapshot: Sendable {
+                    let persistentModelID: PersistentIdentifier
+                    public let int: Int
+                    public init(from model: Test1) {
+                        self.persistentModelID = model.persistentModelID
+                        self.int = model.int
+                    }
+                }
+
+                public struct ShallowSnapshot: Sendable {
+                    let persistentModelID: PersistentIdentifier
+                    public let int: Int
+                    public init(from model: Test1) {
+                        self.persistentModelID = model.persistentModelID
+                        self.int = model.int
+                    }
+                }
+
+                public var snapshot: Snapshot {
+                    return Snapshot(from: self)
+                }
+                public var shallowSnapshot: ShallowSnapshot {
+                    return ShallowSnapshot(from: self)
+                }
+            }
+            @Model
+            class Test0 {
+                var int: Int = 0
+                
+                @Relationship
+                var tests: [Test1] = []
+                
+                init(int: Int, tests: [Test1]) {
+                    self.int = int
+                    self.tests = tests
+                }
+
+                public struct Snapshot: Sendable {
+                    let persistentModelID: PersistentIdentifier
+                    public let int: Int
+                    public let tests: [Test1.Snapshot]
+                    public init(from model: Test0) {
+                        self.persistentModelID = model.persistentModelID
+                        self.int = model.int
+                        self.tests = model.tests.map {
+                            Test1.Snapshot(from: $0)
+                        }
+                    }
+                }
+
+                public struct ShallowSnapshot: Sendable {
+                    let persistentModelID: PersistentIdentifier
+                    public let int: Int
+                    public init(from model: Test0) {
+                        self.persistentModelID = model.persistentModelID
+                        self.int = model.int
+                    }
+                }
+
+                public var snapshot: Snapshot {
+                    return Snapshot(from: self)
+                }
+                public var shallowSnapshot: ShallowSnapshot {
+                    return ShallowSnapshot(from: self)
                 }
             }
             """,

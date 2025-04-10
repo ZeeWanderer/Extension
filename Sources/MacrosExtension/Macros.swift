@@ -13,8 +13,22 @@ public macro FlatEnum() =
     module: "Macros", type: "FlatEnumMacro"
   )
 
+@attached(member, names: arbitrary)
+public macro ModelSnapshot() =
+  #externalMacro(
+    module: "Macros", type: "ModelSnapshotMacro"
+  )
+
 @attached(extension, names: arbitrary)
 public macro CustomStringConvertibleEnum() =
   #externalMacro(
     module: "Macros", type: "CustomStringConvertibleEnumMacro"
   )
+
+
+
+@attached(peer)
+public macro SnapshotIgnore() = #externalMacro(module: "Macros", type: "SnapshotIgnoreMacro")
+
+@attached(peer)
+public macro SnapshotShallow() = #externalMacro(module: "Macros", type: "SnapshotShallowMacro")

@@ -55,4 +55,10 @@ public extension String
         if end < startIndex { return "" }
         return self[startIndex..<end]
     }
+    
+    @inlinable
+    func indent(by spaces: Int) -> String {
+        let pad = String(repeating: " ", count: spaces)
+        return self.split(separator: "\n").map { pad + $0 }.joined(separator: "\n")
+    }
 }

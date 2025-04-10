@@ -13,12 +13,15 @@ import SwiftDiagnostics
 
 enum MacroDiagnostic<M: MacroDiagnosticProtocol>: String, DiagnosticMessage {
   case onlyApplicableToEnum
+    case onlyApplicableToClass
   
   var severity: DiagnosticSeverity { .error }
   var message: String {
       switch self {
       case .onlyApplicableToEnum:
           "@\(M.userFacingName) can only be applied to an enum."
+      case .onlyApplicableToClass:
+          "@\(M.userFacingName) can only be applied to a class."
       }
   }
   var diagnosticID: MessageID {

@@ -12,6 +12,9 @@ import SwiftSyntaxMacros
 struct MacrosPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
         FlatEnumMacro.self,
-        CustomStringConvertibleEnumMacro.self
+        CustomStringConvertibleEnumMacro.self,
+        ModelSnapshotMacro.self,
+        SnapshotIgnoreMacro.self,
+        SnapshotShallowMacro.self,
     ]
 }
