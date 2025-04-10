@@ -406,6 +406,7 @@ final class ExtensionTests: XCTestCase
     @Model
     class Test1 {
         var int: Int = 0
+        var intArray: [Int] = []
 
         @SnapshotIgnore
         @Relationship
@@ -414,6 +415,7 @@ final class ExtensionTests: XCTestCase
         init(int: Int, test0: Test0? = nil) {
             self.int = int
             self.test0 = test0
+            self.intArray = []
         }
     }
 
@@ -441,6 +443,7 @@ final class ExtensionTests: XCTestCase
             @Model
             class Test1 {
                 var int: Int = 0
+                var intArray: [Int] = []
                 
                 @SnapshotIgnore
                 @Relationship
@@ -449,6 +452,7 @@ final class ExtensionTests: XCTestCase
                 init(int: Int, test0: Test0? = nil) {
                     self.int = int
                     self.test0 = test0
+                    self.intArray = []
                 }
             }
             
@@ -471,6 +475,7 @@ final class ExtensionTests: XCTestCase
             @Model
             class Test1 {
                 var int: Int = 0
+                var intArray: [Int] = []
                 
                 @SnapshotIgnore
                 @Relationship
@@ -479,23 +484,28 @@ final class ExtensionTests: XCTestCase
                 init(int: Int, test0: Test0? = nil) {
                     self.int = int
                     self.test0 = test0
+                    self.intArray = []
                 }
 
                 public struct Snapshot: Sendable {
-                    let persistentModelID: PersistentIdentifier
+                    public let persistentModelID: PersistentIdentifier
                     public let int: Int
+                    public let intArray: [Int]
                     public init(from model: Test1) {
                         self.persistentModelID = model.persistentModelID
                         self.int = model.int
+                        self.intArray = model.intArray
                     }
                 }
 
                 public struct ShallowSnapshot: Sendable {
-                    let persistentModelID: PersistentIdentifier
+                    public let persistentModelID: PersistentIdentifier
                     public let int: Int
+                    public let intArray: [Int]
                     public init(from model: Test1) {
                         self.persistentModelID = model.persistentModelID
                         self.int = model.int
+                        self.intArray = model.intArray
                     }
                 }
 
@@ -519,7 +529,7 @@ final class ExtensionTests: XCTestCase
                 }
 
                 public struct Snapshot: Sendable {
-                    let persistentModelID: PersistentIdentifier
+                    public let persistentModelID: PersistentIdentifier
                     public let int: Int
                     public let tests: [Test1.Snapshot]
                     public init(from model: Test0) {
@@ -532,7 +542,7 @@ final class ExtensionTests: XCTestCase
                 }
 
                 public struct ShallowSnapshot: Sendable {
-                    let persistentModelID: PersistentIdentifier
+                    public let persistentModelID: PersistentIdentifier
                     public let int: Int
                     public init(from model: Test0) {
                         self.persistentModelID = model.persistentModelID

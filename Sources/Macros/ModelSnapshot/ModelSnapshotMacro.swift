@@ -64,16 +64,11 @@ extension ModelSnapshotMacro: MemberMacro {
             if ignore { continue }
             
             var isRelationship = false
-            if typeString.hasPrefix("[") {
-                isRelationship = true
-            } else {
-                let attributes = varDecl.attributes
-                for attr in attributes {
-                    if let simpleAttr = attr.as(AttributeSyntax.self),
-                       simpleAttr.attributeName.description.trimmingCharacters(in: .whitespacesAndNewlines) == "Relationship" {
-                        isRelationship = true
-                        break
-                    }
+            for attr in attributes {
+                if let simpleAttr = attr.as(AttributeSyntax.self),
+                   simpleAttr.attributeName.description.trimmingCharacters(in: .whitespacesAndNewlines) == "Relationship" {
+                    isRelationship = true
+                    break
                 }
             }
             
