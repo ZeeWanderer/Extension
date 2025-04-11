@@ -485,7 +485,11 @@ final class ExtensionTests: XCTestCase
                     self.intArray = []
                 }
 
+                /// A protocol to streamline usage of ``Snapshot`` and ``ShallowSnapshot``
                 public protocol SnapshotProtocol: Sendable {
+                    var persistentModelID: PersistentIdentifier {
+                        get
+                    }
                     var int: Int {
                         get
                     }
@@ -516,6 +520,8 @@ final class ExtensionTests: XCTestCase
                     }
                 }
 
+                /// - Important: This version snapshots all the relationships that are not not marked by `SnapshotIgnore`
+                /// If you need just the snapshot of the current object use ``shallowSnapshot`` instead
                 public var snapshot: Snapshot {
                     return Snapshot(from: self)
                 }
@@ -535,7 +541,11 @@ final class ExtensionTests: XCTestCase
                     self.tests = tests
                 }
 
+                /// A protocol to streamline usage of ``Snapshot`` and ``ShallowSnapshot``
                 public protocol SnapshotProtocol: Sendable {
+                    var persistentModelID: PersistentIdentifier {
+                        get
+                    }
                     var int: Int {
                         get
                     }
@@ -561,6 +571,8 @@ final class ExtensionTests: XCTestCase
                     }
                 }
 
+                /// - Important: This version snapshots all the relationships that are not not marked by `SnapshotIgnore`
+                /// If you need just the snapshot of the current object use ``shallowSnapshot`` instead
                 public var snapshot: Snapshot {
                     return Snapshot(from: self)
                 }

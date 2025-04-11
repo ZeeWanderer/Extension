@@ -75,12 +75,20 @@ extension ModelSnapshotMacro: MemberMacro {
             properties.append((name: propName, type: typeString, isRelationship: isRelationship, useShallow: useShallow))
         }
         
+        var protocolFields = ""
+        var shallowFields = ""
+        var shallowInitBody = ""
         var snapshotFields = ""
         var snapshotInitBody = ""
         for prop in properties {
             if !prop.isRelationship {
+                protocolFields += "var \(prop.name): \(prop.type) { get }"
+                
                 snapshotFields += "public let \(prop.name): \(prop.type)\n"
                 snapshotInitBody += "self.\(prop.name) = model.\(prop.name)\n"
+                
+                shallowFields += "public let \(prop.name): \(prop.type)\n"
+                shallowInitBody += "self.\(prop.name) = model.\(prop.name)\n"
             } else {
                 if prop.type.hasPrefix("[") {
                     let trimmed = prop.type.dropFirst().dropLast()
@@ -115,15 +123,6 @@ extension ModelSnapshotMacro: MemberMacro {
             }
         }
         
-        var protocolFields = ""
-        var shallowFields = ""
-        var shallowInitBody = ""
-        for prop in properties where !prop.isRelationship {
-            protocolFields += "var \(prop.name): \(prop.type) { get }"
-            shallowFields += "public let \(prop.name): \(prop.type)\n"
-            shallowInitBody += "self.\(prop.name) = model.\(prop.name)\n"
-        }
-        
         let persistentIDDecl = """
         public let persistentModelID: PersistentIdentifier
         """
@@ -133,7 +132,9 @@ extension ModelSnapshotMacro: MemberMacro {
         
         let fullSource = """
                
+               /// A protocol to streamline usage of ``Snapshot`` and ``ShallowSnapshot``
                public protocol SnapshotProtocol: Sendable {
+                   var persistentModelID: PersistentIdentifier { get }
                \(protocolFields.indent(by: 4))
                }
                
@@ -155,6 +156,8 @@ extension ModelSnapshotMacro: MemberMacro {
                    }
                }
                
+               /// - Important: This version snapshots all the relationships that are not not marked by `SnapshotIgnore`
+               /// If you need just the snapshot of the current object use ``shallowSnapshot`` instead
                public var snapshot: Snapshot {
                    return Snapshot(from: self)
                }
