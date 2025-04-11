@@ -6,18 +6,16 @@ import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import SwiftData
 @testable import MacrosExtension
-@testable import ObservationExtension
-#if canImport(UIKit)
 @testable import SwiftExtension
 @testable import FoundationExtension
 @testable import osExtension
+@testable import ObservationExtension
 @testable import AccelerateExtension
 @testable import CoreGraphicsExtension
 @testable import UIKitExtension
 @testable import SpriteKitExtension
 @testable import SwiftUIExtension
 @testable import GeneralExtensions
-#endif
 
 #if canImport(Macros)
 import Macros
