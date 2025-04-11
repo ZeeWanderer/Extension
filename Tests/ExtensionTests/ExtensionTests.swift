@@ -487,7 +487,16 @@ final class ExtensionTests: XCTestCase
                     self.intArray = []
                 }
 
-                public struct Snapshot: Sendable {
+                public protocol SnapshotProtocol: Sendable {
+                    var int: Int {
+                        get
+                    }
+                    var intArray: [Int] {
+                        get
+                    }
+                }
+
+                public struct Snapshot: SnapshotProtocol, Sendable {
                     public let persistentModelID: PersistentIdentifier
                     public let int: Int
                     public let intArray: [Int]
@@ -498,7 +507,7 @@ final class ExtensionTests: XCTestCase
                     }
                 }
 
-                public struct ShallowSnapshot: Sendable {
+                public struct ShallowSnapshot: SnapshotProtocol, Sendable {
                     public let persistentModelID: PersistentIdentifier
                     public let int: Int
                     public let intArray: [Int]
@@ -528,20 +537,24 @@ final class ExtensionTests: XCTestCase
                     self.tests = tests
                 }
 
-                public struct Snapshot: Sendable {
+                public protocol SnapshotProtocol: Sendable {
+                    var int: Int {
+                        get
+                    }
+                }
+
+                public struct Snapshot: SnapshotProtocol, Sendable {
                     public let persistentModelID: PersistentIdentifier
                     public let int: Int
                     public let tests: [Test1.Snapshot]
                     public init(from model: Test0) {
                         self.persistentModelID = model.persistentModelID
                         self.int = model.int
-                        self.tests = model.tests.map {
-                            Test1.Snapshot(from: $0)
-                        }
+                        self.tests = model.tests.map { Test1.Snapshot(from: $0) }
                     }
                 }
 
-                public struct ShallowSnapshot: Sendable {
+                public struct ShallowSnapshot: SnapshotProtocol, Sendable {
                     public let persistentModelID: PersistentIdentifier
                     public let int: Int
                     public init(from model: Test0) {

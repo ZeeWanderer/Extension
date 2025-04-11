@@ -21,7 +21,7 @@ extension ModelSnapshotMacro: MemberMacro {
         providingMembersOf declaration: some DeclGroupSyntax,
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
-        guard let identifiedDecl = declaration.asProtocol(NamedDeclSyntax.self)
+        guard let classDecl = declaration.as(ClassDeclSyntax.self)
         else {
             let diag = Diagnostic(
                 node: node,
@@ -31,11 +31,11 @@ extension ModelSnapshotMacro: MemberMacro {
             return []
         }
         
-        let typeName = identifiedDecl.name.text
+        let typeName = classDecl.name.text
         
         var properties: [(name: String, type: String, isRelationship: Bool, useShallow: Bool)] = []
         
-        for member in declaration.memberBlock.members {
+        for member in classDecl.memberBlock.members {
             guard let varDecl = member.decl.as(VariableDeclSyntax.self),
                   let binding = varDecl.bindings.first,
                   let pattern = binding.pattern.as(IdentifierPatternSyntax.self),
@@ -115,9 +115,11 @@ extension ModelSnapshotMacro: MemberMacro {
             }
         }
         
+        var protocolFields = ""
         var shallowFields = ""
         var shallowInitBody = ""
         for prop in properties where !prop.isRelationship {
+            protocolFields += "var \(prop.name): \(prop.type) { get }"
             shallowFields += "public let \(prop.name): \(prop.type)\n"
             shallowInitBody += "self.\(prop.name) = model.\(prop.name)\n"
         }
@@ -129,17 +131,13 @@ extension ModelSnapshotMacro: MemberMacro {
         self.persistentModelID = model.persistentModelID
         """
         
-        let computedPropertiesSource = """
-               public var snapshot: Snapshot {
-                   return Snapshot(from: self)
-               }
-               public var shallowSnapshot: ShallowSnapshot {
-                   return ShallowSnapshot(from: self)
-               }
-               """
-        
         let fullSource = """
-               public struct Snapshot: Sendable {
+               
+               public protocol SnapshotProtocol: Sendable {
+               \(protocolFields.indent(by: 4))
+               }
+               
+               public struct Snapshot: SnapshotProtocol, Sendable {
                \(persistentIDDecl.indent(by: 4))
                \(snapshotFields.indent(by: 4))
                    public init(from model: \(typeName)) {
@@ -148,7 +146,7 @@ extension ModelSnapshotMacro: MemberMacro {
                    }
                }
                
-               public struct ShallowSnapshot: Sendable {
+               public struct ShallowSnapshot: SnapshotProtocol, Sendable {
                \(persistentIDDecl.indent(by: 4))
                \(shallowFields.indent(by: 4))
                    public init(from model: \(typeName)) {
@@ -157,7 +155,13 @@ extension ModelSnapshotMacro: MemberMacro {
                    }
                }
                
-               \(computedPropertiesSource.indent(by: 0))
+               public var snapshot: Snapshot {
+                   return Snapshot(from: self)
+               }
+               public var shallowSnapshot: ShallowSnapshot {
+                   return ShallowSnapshot(from: self)
+               }
+               
                """
         
         return [DeclSyntax(stringLiteral: fullSource)]
