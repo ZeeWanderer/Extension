@@ -18,7 +18,7 @@ public struct Observe_<V: Sendable>: AsyncSequence, AsyncIteratorProtocol
     internal let castApply: (@Sendable () -> V)?
     
     @inlinable
-    init(of apply: @isolated(any) @escaping () -> V) {
+    public init(of apply: @isolated(any) @escaping () -> V) {
         self.apply = apply
         let apply = self.apply as () -> V
         
@@ -56,7 +56,7 @@ public struct MainActorObserve_<V: Sendable>: AsyncSequence, AsyncIteratorProtoc
     internal let apply: @MainActor () -> V
     
     @inlinable
-    init(of apply: @MainActor @escaping () -> V) {
+    public init(of apply: @MainActor @escaping () -> V) {
         self.apply = apply
     }
     
