@@ -10,7 +10,6 @@ import SwiftSyntax
 import SwiftSyntaxMacros
 import SwiftDiagnostics
 import SwiftSyntaxBuilder
-import SwiftExtension
 
 public struct ModelSnapshotMacro: MacroDiagnosticProtocol {
 }
