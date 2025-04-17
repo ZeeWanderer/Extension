@@ -10,11 +10,14 @@ import Observation
 /// Allows to continually observe a tracked property on an Observed class.
 /// Eventually will be replaced by `Observe` from [`SE-0475`](https://github.com/phausler/swift-evolution/blob/80d70e41fb932f414505437bd78fa2ea216d46d8/proposals/0475-observed.md)
 @available(iOS 17.0, macCatalyst 17.0, macOS 14.0, *)
-struct Observe_<V: Sendable>: AsyncSequence, AsyncIteratorProtocol
+public struct Observe_<V: Sendable>: AsyncSequence, AsyncIteratorProtocol
 {
-    let apply: @isolated(any) () -> V
-    private let castApply: (@Sendable () -> V)?
+    @usableFromInline
+    internal let apply: @isolated(any) () -> V
+    @usableFromInline
+    internal let castApply: (@Sendable () -> V)?
     
+    @inlinable
     init(of apply: @isolated(any) @escaping () -> V) {
         self.apply = apply
         let apply = self.apply as () -> V
@@ -22,7 +25,8 @@ struct Observe_<V: Sendable>: AsyncSequence, AsyncIteratorProtocol
         castApply = unsafeBitCast(apply, to: (@Sendable () -> V).self)
     }
     
-    mutating func next() async  -> Bool?
+    @inlinable
+    public mutating func next() async  -> Bool?
     {
         guard let castApply else {
             return nil
@@ -39,22 +43,25 @@ struct Observe_<V: Sendable>: AsyncSequence, AsyncIteratorProtocol
         return true
     }
     
-    func makeAsyncIterator() -> Self {
+    @inlinable
+    public func makeAsyncIterator() -> Self {
         self
     }
 }
 
 @available(iOS 17.0, macCatalyst 17.0, macOS 14.0, *)
-struct MainActorObserve_<V: Sendable>: AsyncSequence, AsyncIteratorProtocol
+public struct MainActorObserve_<V: Sendable>: AsyncSequence, AsyncIteratorProtocol
 {
-    let apply: @MainActor () -> V
+    @usableFromInline
+    internal let apply: @MainActor () -> V
     
+    @inlinable
     init(of apply: @MainActor @escaping () -> V) {
         self.apply = apply
     }
     
-    @MainActor
-    mutating func next() async  -> Bool?
+    @MainActor @inlinable
+    public mutating func next() async  -> Bool?
     {
         await withCheckedContinuation { continuation in
             withObservationTracking {
@@ -67,7 +74,8 @@ struct MainActorObserve_<V: Sendable>: AsyncSequence, AsyncIteratorProtocol
         return true
     }
     
-    func makeAsyncIterator() -> Self {
+    @inlinable
+    public func makeAsyncIterator() -> Self {
         self
     }
 }
