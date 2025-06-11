@@ -15,7 +15,7 @@ public extension Task where Success == Never, Failure == Never
     static func sleep(seconds duration: TimeInterval) async throws
     {
         
-        if #available(iOS 16, *)
+        if #available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, visionOS 1.0, *)
         {
             try await Task.sleep(until: .now + .seconds(duration), clock: .continuous)
         }
