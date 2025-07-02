@@ -622,7 +622,7 @@ final class ExtensionTests: XCTestCase
 
             public protocol ActorDataService: Sendable {
                 var context: Int {
-                    get async
+                    get
                 }
                 func fetchUser(id: UUID) async throws -> String
                 func save(_ user: String) async

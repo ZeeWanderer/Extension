@@ -44,7 +44,8 @@ extension ActorProtocolMacro: PeerMacro {
                             if newAccessor.effectSpecifiers?.asyncSpecifier == nil {
                                 var newEffectSpecs = accessor.effectSpecifiers ?? AccessorEffectSpecifiersSyntax()
                                 newEffectSpecs.asyncSpecifier = .keyword(.async)
-                                newAccessor.effectSpecifiers = newEffectSpecs
+                                // TODO: figure this out
+                                // newAccessor.effectSpecifiers = newEffectSpecs
                             }
                             return newAccessor
                         } ?? []
