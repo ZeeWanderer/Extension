@@ -82,7 +82,15 @@ extension ActorProtocolMacro: PeerMacro {
                 return newFn
             }
 
-        let peerProtocol = ProtocolDeclSyntax(modifiers: protocolDecl.modifiers ,name: .identifier(actorProtoName), inheritanceClause: protocolDecl.inheritanceClause) {
+        var newInheritanceClause = protocolDecl.inheritanceClause ?? InheritanceClauseSyntax(inheritedTypes: InheritedTypeListSyntax())
+        var newInheritedTypes = protocolDecl.inheritanceClause?.inheritedTypes.map { $0.trimmed as InheritedTypeSyntax } ?? []
+        
+        newInheritedTypes.append(.init(type: TypeSyntax("Actor")))
+        newInheritanceClause.inheritedTypes = .init {
+            newInheritedTypes
+        }
+        
+        let peerProtocol = ProtocolDeclSyntax(modifiers: protocolDecl.modifiers ,name: .identifier(actorProtoName), inheritanceClause: newInheritanceClause) {
             MemberBlockItemListSyntax {
                 vars
                 methods
