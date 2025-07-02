@@ -31,6 +31,12 @@ public macro ActorProtocol() =
     module: "Macros", type: "ActorProtocolMacro"
   )
 
+@attached(peer, names: prefixed(Actor))
+public macro ActorProtocolExtension() =
+  #externalMacro(
+    module: "Macros", type: "ActorProtocolExtensionMacro"
+  )
+
 @attached(peer)
 public macro SnapshotIgnore() = #externalMacro(module: "Macros", type: "SnapshotIgnoreMacro")
 

@@ -25,6 +25,7 @@ let testMacros: [String: Macro.Type] = [
     "CustomStringConvertibleEnum": CustomStringConvertibleEnumMacro.self,
     "ModelSnapshot": ModelSnapshotMacro.self,
     "ActorProtocol": ActorProtocolMacro.self,
+    "ActorProtocolExtension": ActorProtocolExtensionMacro.self,
 ]
 #endif
 
@@ -603,6 +604,11 @@ final class ExtensionTests: XCTestCase
                 func save(_ user: String)
                 func delete(id: UUID)
             }
+            
+            @ActorProtocolExtension
+            extension DataService {
+                var context: Int { 0 }
+            }
             """,
             expandedSource: """
             import SwiftUI
@@ -621,6 +627,15 @@ final class ExtensionTests: XCTestCase
                 func fetchUser(id: UUID) async throws -> String
                 func save(_ user: String) async
                 func delete(id: UUID) async
+            }
+            extension DataService {
+                var context: Int { 0 }
+            }
+
+            extension ActorDataService {
+                var context: Int {
+                    0
+                }
             }
             """,
             macros: testMacros

@@ -13,6 +13,7 @@ import SwiftDiagnostics
 
 enum MacroDiagnostic<M: MacroDiagnosticProtocol>: String, DiagnosticMessage {
     case onlyApplicableToEnum
+    case onlyApplicableToExtension
     case onlyApplicableToClass
     case onlyApplicableToProtocol
     
@@ -24,7 +25,9 @@ enum MacroDiagnostic<M: MacroDiagnosticProtocol>: String, DiagnosticMessage {
         case .onlyApplicableToClass:
             "@\(M.userFacingName) can only be applied to a class."
         case .onlyApplicableToProtocol:
-            "@\(M.userFacingName) can only be applied to a class."
+            "@\(M.userFacingName) can only be applied to a protocol."
+        case .onlyApplicableToExtension:
+            "@\(M.userFacingName) can only be applied to an extension."
         }
     }
     var diagnosticID: MessageID {
