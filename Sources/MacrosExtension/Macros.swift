@@ -25,7 +25,11 @@ public macro CustomStringConvertibleEnum() =
     module: "Macros", type: "CustomStringConvertibleEnumMacro"
   )
 
-
+@attached(peer, names: arbitrary)
+public macro ActorProtocol() =
+  #externalMacro(
+    module: "Macros", type: "ActorProtocolMacro"
+  )
 
 @attached(peer)
 public macro SnapshotIgnore() = #externalMacro(module: "Macros", type: "SnapshotIgnoreMacro")

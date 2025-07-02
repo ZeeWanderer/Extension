@@ -23,7 +23,8 @@ import Macros
 let testMacros: [String: Macro.Type] = [
     "FlatEnum": FlatEnumMacro.self,
     "CustomStringConvertibleEnum": CustomStringConvertibleEnumMacro.self,
-    "ModelSnapshot": ModelSnapshotMacro.self
+    "ModelSnapshot": ModelSnapshotMacro.self,
+    "ActorProtocol": ActorProtocolMacro.self,
 ]
 #endif
 
@@ -579,6 +580,47 @@ final class ExtensionTests: XCTestCase
                 public var shallowSnapshot: ShallowSnapshot {
                     return ShallowSnapshot(from: self)
                 }
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+    
+    func testActorProtocolMacro() throws {
+        #if canImport(Macros)
+        assertMacroExpansion(
+            """
+            import SwiftUI
+            import SwiftData
+
+            @ActorProtocol
+            public protocol DataService: Sendable {
+                var context: Int { get }
+                func fetchUser(id: UUID) throws -> String
+                func save(_ user: String)
+                func delete(id: UUID)
+            }
+            """,
+            expandedSource: """
+            import SwiftUI
+            import SwiftData
+            public protocol DataService: Sendable {
+                var context: Int { get }
+                func fetchUser(id: UUID) throws -> String
+                func save(_ user: String)
+                func delete(id: UUID)
+            }
+
+            public protocol ActorDataService: Sendable {
+                var context: Int {
+                    get async
+                }
+                func fetchUser(id: UUID) async throws -> String
+                func save(_ user: String) async
+                func delete(id: UUID) async
             }
             """,
             macros: testMacros

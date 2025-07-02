@@ -16,5 +16,6 @@ struct MacrosPlugin: CompilerPlugin {
         ModelSnapshotMacro.self,
         SnapshotIgnoreMacro.self,
         SnapshotShallowMacro.self,
+        ActorProtocolMacro.self,
     ]
 }
