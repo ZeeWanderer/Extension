@@ -25,7 +25,7 @@ public macro CustomStringConvertibleEnum() =
     module: "Macros", type: "CustomStringConvertibleEnumMacro"
   )
 
-@attached(peer, names: arbitrary)
+@attached(peer, names: prefixed(Actor))
 public macro ActorProtocol() =
   #externalMacro(
     module: "Macros", type: "ActorProtocolMacro"
