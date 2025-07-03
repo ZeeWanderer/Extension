@@ -620,7 +620,7 @@ final class ExtensionTests: XCTestCase
                 func delete(id: UUID)
             }
 
-            public protocol ActorDataService: Sendable, Actor {
+            public protocol DataServiceActor: Sendable, Actor {
                 var context: Int {
                     get
                 }
@@ -632,7 +632,7 @@ final class ExtensionTests: XCTestCase
                 var context: Int { 0 }
             }
 
-            extension ActorDataService {
+            extension DataServiceActor {
                 var context: Int {
                     0
                 }

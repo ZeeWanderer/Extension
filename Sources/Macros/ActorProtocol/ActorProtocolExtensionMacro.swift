@@ -37,7 +37,7 @@ extension ActorProtocolExtensionMacro: PeerMacro {
         newExtensionDecl.attributes = AttributeListSyntax {
             newAttributes
         }
-        newExtensionDecl.extendedType = "Actor\(raw: extensionDecl.extendedType.description.trimmingCharacters(in: .whitespacesAndNewlines))"
+        newExtensionDecl.extendedType = "\(raw: extensionDecl.extendedType.description.trimmingCharacters(in: .whitespacesAndNewlines))Actor"
 
         return [DeclSyntax(newExtensionDecl)]
     }

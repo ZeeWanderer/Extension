@@ -25,13 +25,13 @@ public macro CustomStringConvertibleEnum() =
     module: "Macros", type: "CustomStringConvertibleEnumMacro"
   )
 
-@attached(peer, names: prefixed(Actor))
+@attached(peer, names: suffixed(Actor))
 public macro ActorProtocol() =
   #externalMacro(
     module: "Macros", type: "ActorProtocolMacro"
   )
 
-@attached(extension, names: prefixed(Actor))
+@attached(extension, names: suffixed(Actor))
 public macro ActorProtocolExtension() =
   #externalMacro(
     module: "Macros", type: "ActorProtocolExtensionMacro"

@@ -25,7 +25,7 @@ extension ActorProtocolMacro: PeerMacro {
         }
 
         let protoName = protocolDecl.name.text
-        let actorProtoName = "Actor\(protoName)"
+        let actorProtoName = "\(protoName)Actor"
 
         let vars = protocolDecl.memberBlock.members
             .compactMap { $0.decl.as(VariableDeclSyntax.self) }
