@@ -31,7 +31,7 @@ public macro ActorProtocol() =
     module: "Macros", type: "ActorProtocolMacro"
   )
 
-@attached(extension, names: suffixed(Actor))
+@attached(peer, names: suffixed(Actor))
 public macro ActorProtocolExtension() =
   #externalMacro(
     module: "Macros", type: "ActorProtocolExtensionMacro"
