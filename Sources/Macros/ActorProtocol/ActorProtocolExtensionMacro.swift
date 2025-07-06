@@ -34,8 +34,8 @@ extension ActorProtocolExtensionMacro: ExtensionMacro {
             return []
         }
         
-        guard let classDecl = declaration.as(ClassDeclSyntax.self) else {
-            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.onlyApplicableToClass)
+        guard let classDecl = declaration.as(StructDeclSyntax.self) else {
+            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.onlyApplicableToStruct)
             context.diagnose(diag)
             return []
         }
