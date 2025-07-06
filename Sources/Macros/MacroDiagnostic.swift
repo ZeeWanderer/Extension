@@ -15,6 +15,7 @@ enum MacroDiagnostic<M: MacroDiagnosticProtocol>: Hashable, DiagnosticMessage {
     case onlyApplicableToEnum
     case onlyApplicableToExtension
     case onlyApplicableToClass
+    case onlyApplicableToStruct
     case onlyApplicableToProtocol
     case argumentMissing(String)
     
@@ -25,6 +26,8 @@ enum MacroDiagnostic<M: MacroDiagnosticProtocol>: Hashable, DiagnosticMessage {
             "@\(M.userFacingName) can only be applied to an enum."
         case .onlyApplicableToClass:
             "@\(M.userFacingName) can only be applied to a class."
+        case .onlyApplicableToStruct:
+            "@\(M.userFacingName) can only be applied to a struct."
         case .onlyApplicableToProtocol:
             "@\(M.userFacingName) can only be applied to a protocol."
         case .onlyApplicableToExtension:
