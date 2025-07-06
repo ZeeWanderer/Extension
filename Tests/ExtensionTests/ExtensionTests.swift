@@ -608,9 +608,9 @@ final class ExtensionTests: XCTestCase
             @ActorProtocolExtension(name: "DataService")
             class DataServiceImpl: DataService {
                 var context: Int { 0 }
-                func getContext0() -> Int { context }
+                override func getContext0() -> Int { context }
                 @ActorProtocolIgnore
-                func getContext1() -> Int { context }
+                override func getContext1() -> Int { context }
             }
             """,
             expandedSource: """
@@ -631,8 +631,8 @@ final class ExtensionTests: XCTestCase
             }
             class DataServiceImpl: DataService {
                 var context: Int { 0 }
-                func getContext0() -> Int { context }
-                func getContext1() -> Int { context }
+                override func getContext0() -> Int { context }
+                override func getContext1() -> Int { context }
             }
 
             extension DataService {

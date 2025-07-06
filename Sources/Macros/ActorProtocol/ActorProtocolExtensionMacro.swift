@@ -34,8 +34,8 @@ extension ActorProtocolExtensionMacro: ExtensionMacro {
             return []
         }
         
-        guard let classDecl = declaration.as(StructDeclSyntax.self) else {
-            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.onlyApplicableToStruct)
+        guard let classDecl = declaration.as(ClassDeclSyntax.self) else {
+            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.onlyApplicableToClass)
             context.diagnose(diag)
             return []
         }
@@ -55,6 +55,12 @@ extension ActorProtocolExtensionMacro: ExtensionMacro {
                         }
                     }
                     
+                    newFn.modifiers = DeclModifierListSyntax {
+                        let newModifiers: [DeclModifierSyntax] = fn.modifiers.filter { mod in
+                            mod.name.trimmed != TokenSyntax.keyword(.override)
+                        }
+                    }
+                    
                     return newFn
                 }
         }
@@ -63,7 +69,16 @@ extension ActorProtocolExtensionMacro: ExtensionMacro {
             classDecl.memberBlock.members.compactMap { $0.decl.as(FunctionDeclSyntax.self) }
                 .compactMap { fn in
                     let isIgnored: Bool = fn.attributes.compactMap{ $0.as(AttributeSyntax.self)?.attributeName.trimmed.description }.contains(ActorProtocolIgnoreMacro.userFacingName)
-                    return isIgnored ? nil : fn
+                    
+                    var newFn = fn
+                    
+                    newFn.modifiers = DeclModifierListSyntax {
+                        let newModifiers: [DeclModifierSyntax] = fn.modifiers.filter { mod in
+                            mod.name.trimmed != TokenSyntax.keyword(.override)
+                        }
+                    }
+                    
+                    return isIgnored ? nil : newFn
                 }
         }
 
