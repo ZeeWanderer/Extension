@@ -12,33 +12,61 @@ import SwiftSyntaxBuilder
 
 public struct ActorProtocolExtensionMacro: MacroDiagnosticProtocol {}
 
-extension ActorProtocolExtensionMacro: PeerMacro {
-    public static func expansion(
-        of node: AttributeSyntax,
-        providingPeersOf declaration: some DeclSyntaxProtocol,
-        in context: some MacroExpansionContext
-    ) throws -> [DeclSyntax] {
-        guard let extensionDecl = declaration.as(ExtensionDeclSyntax.self) else {
-            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.onlyApplicableToExtension)
+extension ActorProtocolExtensionMacro: ExtensionMacro {
+    public static func expansion(of node: AttributeSyntax,
+                                 attachedTo declaration: some DeclGroupSyntax,
+                                 providingExtensionsOf type: some TypeSyntaxProtocol,
+                                 conformingTo protocols: [TypeSyntax],
+                                 in context: some MacroExpansionContext)
+    throws -> [ExtensionDeclSyntax] {
+        
+        guard let arguments = node.arguments else {
+            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.argumentMissing("name"))
             context.diagnose(diag)
             return []
         }
-
-        var newExtensionDecl = extensionDecl
-        let newAttributes: [AttributeListSyntax.Element] = extensionDecl.attributes
-            .compactMap { attribute in
-                
-                guard let attributeS = attribute.as(AttributeSyntax.self), attributeS.attributeName.trimmed.description != "ActorProtocolExtension"
-                else { return nil }
-                
-                return attribute
+        
+        guard let labeledArguments = arguments.as(LabeledExprListSyntax.self),
+              let nameExpr = labeledArguments.first(where: { $0.label?.text == "name" })?.expression,
+              let name = nameExpr.as(StringLiteralExprSyntax.self)?.representedLiteralValue else {
+            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.argumentMissing("name"))
+            context.diagnose(diag)
+            return []
         }
         
-        newExtensionDecl.attributes = AttributeListSyntax {
-            newAttributes
+        guard let classDecl = declaration.as(ClassDeclSyntax.self) else {
+            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.onlyApplicableToClass)
+            context.diagnose(diag)
+            return []
         }
-        newExtensionDecl.extendedType = "\(raw: extensionDecl.extendedType.description.trimmingCharacters(in: .whitespacesAndNewlines))Actor"
+        
+        let newExtensionDeclDef = ExtensionDeclSyntax(extendedType: TypeSyntax(stringLiteral: name)) {
+            classDecl.memberBlock.members.compactMap { $0.decl.as(FunctionDeclSyntax.self) }
+                .map { fn in
+                    var newFn = fn
+                    
+                    newFn.attributes = AttributeListSyntax {
+                        let newAttrib: [AttributeSyntax] = fn.attributes.compactMap{ $0.as(AttributeSyntax.self)}.filter { fn in
+                            fn.attributeName.trimmed.description != ActorProtocolIgnoreMacro.userFacingName
+                        }
+                        
+                        for attribute in newAttrib {
+                            attribute
+                        }
+                    }
+                    
+                    return newFn
+                }
+        }
+  
+        let newExtensionDecl = ExtensionDeclSyntax(extendedType: TypeSyntax(stringLiteral: "\(name)Actor")) {
+            classDecl.memberBlock.members.compactMap { $0.decl.as(FunctionDeclSyntax.self) }
+                .compactMap { fn in
+                    let isIgnored: Bool = fn.attributes.compactMap{ $0.as(AttributeSyntax.self)?.attributeName.trimmed.description }.contains(ActorProtocolIgnoreMacro.userFacingName)
+                    return isIgnored ? nil : fn
+                }
+        }
 
-        return [DeclSyntax(newExtensionDecl)]
+        return [newExtensionDeclDef, newExtensionDecl]
     }
 }

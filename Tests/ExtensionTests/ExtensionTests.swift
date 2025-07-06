@@ -26,6 +26,7 @@ let testMacros: [String: Macro.Type] = [
     "ModelSnapshot": ModelSnapshotMacro.self,
     "ActorProtocol": ActorProtocolMacro.self,
     "ActorProtocolExtension": ActorProtocolExtensionMacro.self,
+    "ActorProtocolIgnore": ActorProtocolIgnoreMacro.self,
 ]
 #endif
 
@@ -600,14 +601,16 @@ final class ExtensionTests: XCTestCase
             @ActorProtocol
             public protocol DataService: Sendable {
                 var context: Int { get }
-                func fetchUser(id: UUID) throws -> String
-                func save(_ user: String)
-                func delete(id: UUID)
+                func getContext0() -> Int
+                func getContext1() -> Int
             }
             
-            @ActorProtocolExtension
-            extension DataService {
+            @ActorProtocolExtension(name: "DataService")
+            class DataServiceImpl: DataService {
                 var context: Int { 0 }
+                func getContext0() -> Int { context }
+                @ActorProtocolIgnore
+                func getContext1() -> Int { context }
             }
             """,
             expandedSource: """
@@ -615,26 +618,35 @@ final class ExtensionTests: XCTestCase
             import SwiftData
             public protocol DataService: Sendable {
                 var context: Int { get }
-                func fetchUser(id: UUID) throws -> String
-                func save(_ user: String)
-                func delete(id: UUID)
+                func getContext0() -> Int
+                func getContext1() -> Int
             }
 
             public protocol DataServiceActor: Sendable, Actor {
                 var context: Int {
                     get
                 }
-                func fetchUser(id: UUID) async throws -> String
-                func save(_ user: String) async
-                func delete(id: UUID) async
+                func getContext0() async -> Int
+                func getContext1() async -> Int
             }
-            extension DataService {
+            class DataServiceImpl: DataService {
                 var context: Int { 0 }
+                func getContext0() -> Int { context }
+                func getContext1() -> Int { context }
+            }
+
+            extension DataService {
+                func getContext0() -> Int {
+                    context
+                }
+                func getContext1() -> Int {
+                    context
+                }
             }
 
             extension DataServiceActor {
-                var context: Int {
-                    0
+                func getContext0() -> Int {
+                    context
                 }
             }
             """,

@@ -11,11 +11,12 @@ import SwiftSyntaxBuilder
 import SwiftDiagnostics
 
 
-enum MacroDiagnostic<M: MacroDiagnosticProtocol>: String, DiagnosticMessage {
+enum MacroDiagnostic<M: MacroDiagnosticProtocol>: Hashable, DiagnosticMessage {
     case onlyApplicableToEnum
     case onlyApplicableToExtension
     case onlyApplicableToClass
     case onlyApplicableToProtocol
+    case argumentMissing(String)
     
     var severity: DiagnosticSeverity { .error }
     var message: String {
@@ -28,9 +29,11 @@ enum MacroDiagnostic<M: MacroDiagnosticProtocol>: String, DiagnosticMessage {
             "@\(M.userFacingName) can only be applied to a protocol."
         case .onlyApplicableToExtension:
             "@\(M.userFacingName) can only be applied to an extension."
+        case .argumentMissing(let argName):
+            "@\(M.userFacingName) extpects \(argName) to be present"
         }
     }
     var diagnosticID: MessageID {
-        MessageID(domain: "\(M.self)", id: rawValue)
+        MessageID(domain: "\(M.self)", id: "\(self.hashValue)")
     }
 }

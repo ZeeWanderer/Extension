@@ -19,6 +19,12 @@ public macro ModelSnapshot() =
     module: "Macros", type: "ModelSnapshotMacro"
   )
 
+@attached(peer)
+public macro SnapshotIgnore() = #externalMacro(module: "Macros", type: "SnapshotIgnoreMacro")
+
+@attached(peer)
+public macro SnapshotShallow() = #externalMacro(module: "Macros", type: "SnapshotShallowMacro")
+
 @attached(extension, names: arbitrary)
 public macro CustomStringConvertibleEnum() =
   #externalMacro(
@@ -31,14 +37,11 @@ public macro ActorProtocol() =
     module: "Macros", type: "ActorProtocolMacro"
   )
 
-@attached(peer, names: suffixed(Actor))
-public macro ActorProtocolExtension() =
+@attached(extension, names: arbitrary)
+public macro ActorProtocolExtension(name: String) =
   #externalMacro(
     module: "Macros", type: "ActorProtocolExtensionMacro"
   )
 
 @attached(peer)
-public macro SnapshotIgnore() = #externalMacro(module: "Macros", type: "SnapshotIgnoreMacro")
-
-@attached(peer)
-public macro SnapshotShallow() = #externalMacro(module: "Macros", type: "SnapshotShallowMacro")
+public macro ActorProtocolIgnore() = #externalMacro(module: "Macros", type: "ActorProtocolIgnoreMacro")
