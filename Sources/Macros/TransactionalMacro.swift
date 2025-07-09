@@ -124,9 +124,13 @@ extension TransactionalMacro: BodyMacro {
                     expression: ExprSyntax(
                         FunctionCallExprSyntax(
                             calledExpression: MemberAccessExprSyntax(
-                                base: DeclReferenceExprSyntax(baseName: .identifier("TransactionContext")),
+                                base: MemberAccessExprSyntax(
+                                    base: DeclReferenceExprSyntax(baseName: .identifier("TransactionContext")),
+                                    period: .periodToken(),
+                                    name: .identifier("$isActive")
+                                ),
                                 period: .periodToken(),
-                                declName: DeclReferenceExprSyntax(baseName: .identifier("$isActive"))
+                                name: .identifier("withValue")
                             ),
                             leftParen: .leftParenToken(),
                             arguments: [
@@ -212,9 +216,13 @@ extension TransactionalMacro: BodyMacro {
                 CodeBlockItemSyntax(item: .expr(ExprSyntax(
                     FunctionCallExprSyntax(
                         calledExpression: MemberAccessExprSyntax(
-                            base: DeclReferenceExprSyntax(baseName: .identifier("TransactionContext")),
+                            base: MemberAccessExprSyntax(
+                                base: DeclReferenceExprSyntax(baseName: .identifier("TransactionContext")),
+                                period: .periodToken(),
+                                name: .identifier("$isActive")
+                            ),
                             period: .periodToken(),
-                            declName: DeclReferenceExprSyntax(baseName: .identifier("$isActive"))
+                            name: .identifier("withValue")
                         ),
                         leftParen: .leftParenToken(),
                         arguments: [

@@ -698,7 +698,7 @@ final class ExtensionTests: XCTestCase
                     if TransactionContext.isActive {
                         return __original_test0(int)
                     } else {
-                        return TransactionContext.$isActive(true) {
+                        return TransactionContext.$isActive.withValue(true) {
                             let retval: Int
                             try? modelContext.transaction() {
                                 retval = __original_test0(int)
@@ -715,7 +715,7 @@ final class ExtensionTests: XCTestCase
                     if TransactionContext.isActive {
                         __original_test1(int)
                     } else {
-                        TransactionContext.$isActive(true) {
+                        TransactionContext.$isActive.withValue(true) {
                             try? modelContext.transaction() {
                                 __original_test1(int)
                             }
