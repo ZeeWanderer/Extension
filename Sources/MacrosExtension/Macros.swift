@@ -11,15 +11,15 @@ import SwiftData
 /// and provides mapping from original to flat enum for case identification purposes.
 @attached(member, names: arbitrary)
 public macro FlatEnum() =
-  #externalMacro(
+#externalMacro(
     module: "Macros", type: "FlatEnumMacro"
-  )
+)
 
 @attached(member, names: arbitrary)
 public macro ModelSnapshot() =
-  #externalMacro(
+#externalMacro(
     module: "Macros", type: "ModelSnapshotMacro"
-  )
+)
 
 @attached(peer)
 public macro SnapshotIgnore() = #externalMacro(module: "Macros", type: "SnapshotIgnoreMacro")
@@ -29,27 +29,26 @@ public macro SnapshotShallow() = #externalMacro(module: "Macros", type: "Snapsho
 
 @attached(extension, names: arbitrary)
 public macro CustomStringConvertibleEnum() =
-  #externalMacro(
+#externalMacro(
     module: "Macros", type: "CustomStringConvertibleEnumMacro"
-  )
+)
 
 @attached(peer, names: suffixed(Actor))
 public macro ActorProtocol() =
-  #externalMacro(
+#externalMacro(
     module: "Macros", type: "ActorProtocolMacro"
-  )
+)
 
 @attached(extension, names: arbitrary)
 public macro ActorProtocolExtension(name: String) =
-  #externalMacro(
+#externalMacro(
     module: "Macros", type: "ActorProtocolExtensionMacro"
-  )
+)
 
 @attached(peer)
 public macro ActorProtocolIgnore() = #externalMacro(module: "Macros", type: "ActorProtocolIgnoreMacro")
 
 @attached(body)
-public macro Transactional(ctx: ModelContext) = #externalMacro(
-    module: "Macros",
-    type: "TransactionalMacro"
+public macro Transactional(ctx: ModelContext? = nil) = #externalMacro(
+    module: "Macros", type: "TransactionalMacro"
 )

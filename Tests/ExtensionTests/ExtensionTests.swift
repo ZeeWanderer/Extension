@@ -669,14 +669,14 @@ final class ExtensionTests: XCTestCase
             struct Test {
                 let modelContext: ModelContext
             
-                @Transactional(ctx: modelContext)
+                @Transactional
                 func test0(_ int: Int) -> Int 
                 {
                     let newInt = 7 + int
                     return newInt
                 }
             
-                @Transactional(ctx: modelContext)
+                @Transactional
                 func test1(_ int: Int)
                 {
                     let newInt = 7 + int

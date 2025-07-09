@@ -22,7 +22,7 @@ extension TransactionalMacro: BodyMacro {
         guard let function = declaration.as(FunctionDeclSyntax.self) else {
             let diag = Diagnostic(
                 node: node,
-                message: MacroDiagnostic<Self>.onlyApplicableToFunction
+                message: MacroDiagnostic<Self>.error("@Transactional can only be applied to functions")
             )
             context.diagnose(diag)
             return []
@@ -34,9 +34,14 @@ extension TransactionalMacro: BodyMacro {
         let funcName = function.name.trimmed
         
         var ctxExpr: ExprSyntax?
-        if let arguments = node.arguments?.as(LabeledExprListSyntax.self),
-           let ctxArgument = arguments.first(where: { $0.label?.text == "ctx" }) {
-            ctxExpr = ctxArgument.expression
+        
+        if let arguments = node.arguments?.as(LabeledExprListSyntax.self) {
+            for argument in arguments {
+                if argument.label?.text == "ctx" {
+                    ctxExpr = argument.expression
+                    break
+                }
+            }
         }
         
         if ctxExpr == nil {
@@ -49,13 +54,8 @@ extension TransactionalMacro: BodyMacro {
             }
         }
         
-        guard let ctxExpr = ctxExpr else {
-            let diag0 = Diagnostic(node: node, message: MacroDiagnostic<Self>.argumentMissing("ctx"))
-            let diag1 = Diagnostic(node: declaration, message: MacroDiagnostic<Self>.argumentMissing("ModelContext"))
-            
-            context.diagnose(diag0)
-            context.diagnose(diag1)
-            return []
+        if ctxExpr == nil {
+            ctxExpr = ExprSyntax(DeclReferenceExprSyntax(baseName: .identifier("modelContext")))
         }
         
         let originalFuncName = "__original_\(funcName)"
@@ -151,7 +151,7 @@ extension TransactionalMacro: BodyMacro {
                                     
                                     let transactionCall = FunctionCallExprSyntax(
                                         calledExpression: MemberAccessExprSyntax(
-                                            base: ctxExpr,
+                                            base: ctxExpr!,
                                             period: .periodToken(),
                                             declName: DeclReferenceExprSyntax(baseName: .identifier("transaction"))
                                         ),
@@ -177,6 +177,7 @@ extension TransactionalMacro: BodyMacro {
                                             }
                                         )
                                     )
+                                    
                                     
                                     if isThrowing {
                                         CodeBlockItemSyntax(item: .expr(ExprSyntax(
@@ -225,7 +226,7 @@ extension TransactionalMacro: BodyMacro {
                             statements: CodeBlockItemListSyntax {
                                 let transactionCall = FunctionCallExprSyntax(
                                     calledExpression: MemberAccessExprSyntax(
-                                        base: ctxExpr,
+                                        base: ctxExpr!,
                                         period: .periodToken(),
                                         declName: DeclReferenceExprSyntax(baseName: .identifier("transaction"))
                                     ),
