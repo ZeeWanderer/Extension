@@ -19,5 +19,6 @@ struct MacrosPlugin: CompilerPlugin {
         ActorProtocolMacro.self,
         ActorProtocolExtensionMacro.self,
         ActorProtocolIgnoreMacro.self,
+        TransactionalMacro.self,
     ]
 }
