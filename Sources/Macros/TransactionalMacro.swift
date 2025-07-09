@@ -30,6 +30,7 @@ extension TransactionalMacro: BodyMacro {
         let funcName = function.name.trimmed.text
 
         var ctxExpr: ExprSyntax?
+        var ctxIsOptional = false
         var retvalExpr: ExprSyntax?
         if let args = node.arguments?.as(LabeledExprListSyntax.self) {
             for arg in args {
@@ -42,12 +43,16 @@ extension TransactionalMacro: BodyMacro {
         }
         if ctxExpr == nil {
             for param in function.signature.parameterClause.parameters {
-                if let type = param.type.as(IdentifierTypeSyntax.self),
-                   type.name.trimmed.text == "ModelContext" {
+                if let typeId = param.type.as(IdentifierTypeSyntax.self), typeId.name.trimmed.text == "ModelContext" {
                     let name = param.secondName?.trimmed ?? param.firstName.trimmed
                     ctxExpr = ExprSyntax(DeclReferenceExprSyntax(baseName: name))
-                    break
+                } else if let opt = param.type.as(OptionalTypeSyntax.self),
+                          let wrapped = opt.wrappedType.as(IdentifierTypeSyntax.self), wrapped.name.trimmed.text == "ModelContext" {
+                    let name = param.secondName?.trimmed ?? param.firstName.trimmed
+                    ctxExpr = ExprSyntax(DeclReferenceExprSyntax(baseName: name))
+                    ctxIsOptional = true
                 }
+                if ctxExpr != nil { break }
             }
         }
         if ctxExpr == nil {
@@ -55,8 +60,8 @@ extension TransactionalMacro: BodyMacro {
         }
 
         if hasReturn {
-            let isOptional = returnType!.is(OptionalTypeSyntax.self)
-            if retvalExpr == nil && !isOptional {
+            let isOptionalReturn = returnType!.is(OptionalTypeSyntax.self)
+            if retvalExpr == nil && !isOptionalReturn {
                 let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.argumentMissing("retval"))
                 context.diagnose(diag)
                 return []
@@ -83,57 +88,89 @@ extension TransactionalMacro: BodyMacro {
             ))
         }
 
-        let originalCall = FunctionCallExprSyntax(
+        let originalCallExpr = FunctionCallExprSyntax(
             calledExpression: DeclReferenceExprSyntax(baseName: .identifier(originalName)),
             leftParen: .leftParenToken(),
             arguments: callArgs,
             rightParen: .rightParenToken()
         )
-        let tryCall: ExprSyntax = isThrowing ?
-            ExprSyntax(TryExprSyntax(tryKeyword: .keyword(.try), expression: originalCall)) :
-            ExprSyntax(originalCall)
+        let tryOriginal = isThrowing
+            ? ExprSyntax(TryExprSyntax(tryKeyword: .keyword(.try), expression: originalCallExpr))
+            : ExprSyntax(originalCallExpr)
 
-        let condition = ConditionElementSyntax(
-            condition: .expression(
-                ExprSyntax(
-                    MemberAccessExprSyntax(
-                        base: DeclReferenceExprSyntax(baseName: .identifier("TransactionContext")),
-                        period: .periodToken(),
-                        name: .identifier("isActive")
-                    )
-                )
-            )
+        let transactionIf = makeTransactionIf(
+            hasReturn: hasReturn,
+            isThrowing: isThrowing,
+            returnType: returnType,
+            ctxExpr: ctxExpr!,
+            retvalExpr: retvalExpr,
+            tryCall: tryOriginal
         )
 
-        let ifBranch: CodeBlockItemListSyntax = {
-            if hasReturn {
-                return CodeBlockItemListSyntax {
-                    ReturnStmtSyntax(returnKeyword: .keyword(.return), expression: tryCall)
-                }
-            } else {
-                return CodeBlockItemListSyntax {
-                    CodeBlockItemSyntax(item: .expr(tryCall))
-                }
-            }
-        }()
+        let finalExpr: ExprSyntax
+        if ctxIsOptional {
+            
+            let unwrapCondition = OptionalBindingConditionSyntax(
+                bindingSpecifier: .keyword(.let),
+                pattern: PatternSyntax(IdentifierPatternSyntax(identifier: ctxExpr!.as(DeclReferenceExprSyntax.self)!.baseName))
+            )
+            let unwrappedIf = IfExprSyntax(
+                ifKeyword: .keyword(.if),
+                conditions: ConditionElementListSyntax([ConditionElementSyntax(condition: .optionalBinding(unwrapCondition))]),
+                body: CodeBlockSyntax(
+                    leftBrace: .leftBraceToken(),
+                    statements: CodeBlockItemListSyntax { CodeBlockItemSyntax(item: .expr(transactionIf)) },
+                    rightBrace: .rightBraceToken()
+                ),
+                elseKeyword: .keyword(.else),
+                elseBody: .codeBlock(CodeBlockSyntax(
+                    leftBrace: .leftBraceToken(),
+                    statements: CodeBlockItemListSyntax { CodeBlockItemSyntax(item: .expr(tryOriginal)) },
+                    rightBrace: .rightBraceToken()
+                ))
+            )
+            finalExpr = ExprSyntax(unwrappedIf)
+        } else {
+            finalExpr = transactionIf
+        }
 
-        let elseBranch: CodeBlockItemListSyntax = {
-            let initExpr: ExprSyntax = retvalExpr ?? ExprSyntax(NilLiteralExprSyntax())
-            if hasReturn {
-                return CodeBlockItemListSyntax {
-                    ReturnStmtSyntax(
-                        returnKeyword: .keyword(.return),
-                        expression: buildElseWithReturn(ctxExpr: ctxExpr!, retvalInit: initExpr, tryCall: tryCall, returnType: returnType!, isThrowing: isThrowing)
-                    )
-                }
-            } else {
-                return CodeBlockItemListSyntax {
-                    CodeBlockItemSyntax(item: .expr(
-                        buildElseNoReturn(ctxExpr: ctxExpr!, tryCall: tryCall, isThrowing: isThrowing)
-                    ))
-                }
+        return [
+            CodeBlockItemSyntax(item: .decl(DeclSyntax(originalFunction))),
+            CodeBlockItemSyntax(item: .expr(finalExpr))
+        ]
+    }
+
+    private static func makeTransactionIf(
+        hasReturn: Bool,
+        isThrowing: Bool,
+        returnType: TypeSyntax?,
+        ctxExpr: ExprSyntax,
+        retvalExpr: ExprSyntax?,
+        tryCall: ExprSyntax
+    ) -> ExprSyntax {
+        let condition = ConditionElementSyntax(condition: .expression(
+            ExprSyntax(MemberAccessExprSyntax(
+                base: DeclReferenceExprSyntax(baseName: .identifier("TransactionContext")),
+                period: .periodToken(),
+                name: .identifier("isActive")
+            ))
+        ))
+
+        let ifBranch = hasReturn
+            ? CodeBlockItemListSyntax { ReturnStmtSyntax(returnKeyword: .keyword(.return), expression: tryCall) }
+            : CodeBlockItemListSyntax { CodeBlockItemSyntax(item: .expr(tryCall)) }
+
+        let elseBranch = hasReturn
+            ? CodeBlockItemListSyntax {
+                let initExpr = retvalExpr ?? ExprSyntax(NilLiteralExprSyntax())
+                ReturnStmtSyntax(
+                    returnKeyword: .keyword(.return),
+                    expression: buildElseWithReturn(ctxExpr: ctxExpr, retvalInit: initExpr, tryCall: tryCall, returnType: returnType!, isThrowing: isThrowing)
+                )
             }
-        }()
+            : CodeBlockItemListSyntax {
+                CodeBlockItemSyntax(item: .expr(buildElseNoReturn(ctxExpr: ctxExpr, tryCall: tryCall, isThrowing: isThrowing)))
+            }
 
         let ifStmt = IfExprSyntax(
             ifKeyword: .keyword(.if),
@@ -143,11 +180,16 @@ extension TransactionalMacro: BodyMacro {
             elseBody: .codeBlock(CodeBlockSyntax(leftBrace: .leftBraceToken(), statements: elseBranch, rightBrace: .rightBraceToken()))
         )
 
-        return [CodeBlockItemSyntax(item: .decl(DeclSyntax(originalFunction))),
-                CodeBlockItemSyntax(item: .expr(ExprSyntax(ifStmt)))]
+        return ExprSyntax(ifStmt)
     }
-    
-    private static func buildElseWithReturn(ctxExpr: ExprSyntax, retvalInit: ExprSyntax, tryCall: ExprSyntax, returnType: TypeSyntax, isThrowing: Bool) -> ExprSyntax {
+
+    private static func buildElseWithReturn(
+        ctxExpr: ExprSyntax,
+        retvalInit: ExprSyntax,
+        tryCall: ExprSyntax,
+        returnType: TypeSyntax,
+        isThrowing: Bool
+    ) -> ExprSyntax {
         return ExprSyntax(
             FunctionCallExprSyntax(
                 calledExpression: MemberAccessExprSyntax(
@@ -170,14 +212,8 @@ extension TransactionalMacro: BodyMacro {
                             bindings: PatternBindingListSyntax {
                                 PatternBindingSyntax(
                                     pattern: IdentifierPatternSyntax(identifier: .identifier("retval")),
-                                    typeAnnotation: TypeAnnotationSyntax(
-                                        colon: .colonToken(),
-                                        type: returnType
-                                    ),
-                                    initializer: InitializerClauseSyntax(
-                                        equal: .equalToken(),
-                                        value: retvalInit
-                                    )
+                                    typeAnnotation: TypeAnnotationSyntax(colon: .colonToken(), type: returnType),
+                                    initializer: InitializerClauseSyntax(equal: .equalToken(), value: retvalInit)
                                 )
                             }
                         )
@@ -217,7 +253,11 @@ extension TransactionalMacro: BodyMacro {
         )
     }
 
-    private static func buildElseNoReturn(ctxExpr: ExprSyntax, tryCall: ExprSyntax, isThrowing: Bool) -> ExprSyntax {
+    private static func buildElseNoReturn(
+        ctxExpr: ExprSyntax,
+        tryCall: ExprSyntax,
+        isThrowing: Bool
+    ) -> ExprSyntax {
         return ExprSyntax(
             FunctionCallExprSyntax(
                 calledExpression: MemberAccessExprSyntax(
@@ -246,9 +286,7 @@ extension TransactionalMacro: BodyMacro {
                             rightParen: .rightParenToken(),
                             trailingClosure: ClosureExprSyntax(
                                 leftBrace: .leftBraceToken(),
-                                statements: CodeBlockItemListSyntax {
-                                    CodeBlockItemSyntax(item: .expr(tryCall))
-                                },
+                                statements: CodeBlockItemListSyntax { CodeBlockItemSyntax(item: .expr(tryCall)) },
                                 rightBrace: .rightBraceToken()
                             )
                         )
