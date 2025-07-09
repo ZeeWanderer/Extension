@@ -125,7 +125,13 @@ extension TransactionalMacro: BodyMacro {
                 elseKeyword: .keyword(.else),
                 elseBody: .codeBlock(CodeBlockSyntax(
                     leftBrace: .leftBraceToken(),
-                    statements: CodeBlockItemListSyntax { CodeBlockItemSyntax(item: .expr(tryOriginal)) },
+                    statements: hasReturn
+                    ? CodeBlockItemListSyntax {
+                        ReturnStmtSyntax(returnKeyword: .keyword(.return), expression: tryOriginal)
+                    }
+                    : CodeBlockItemListSyntax {
+                        CodeBlockItemSyntax(item: .expr(tryOriginal))
+                    },
                     rightBrace: .rightBraceToken()
                 ))
             )
