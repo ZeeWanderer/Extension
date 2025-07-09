@@ -69,9 +69,7 @@ extension TransactionalMacro: BodyMacro {
         originalFunction.attributes = function.attributes.filter({ attr in
             attr.as(AttributeSyntax.self)?.attributeName.trimmed.description != "Transactional"
         })
-        originalFunction.modifiers = originalFunction.modifiers.filter { modifier in
-            modifier.name.tokenKind != .keyword(.static)
-        }
+        originalFunction.modifiers = DeclModifierListSyntax()
         
         var callArguments = LabeledExprListSyntax()
         for param in function.signature.parameterClause.parameters {

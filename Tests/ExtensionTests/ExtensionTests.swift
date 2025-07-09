@@ -689,7 +689,7 @@ final class ExtensionTests: XCTestCase
                 }
             
                 @Transactional
-                static func test3(_ ctx: ModelContext, _ int: Int)
+                public static func test3(_ ctx: ModelContext, _ int: Int)
                 {
                     let newInt = 7 + int
                 }
@@ -749,7 +749,7 @@ final class ExtensionTests: XCTestCase
                         }
                     }
                 }
-                static func test3(_ ctx: ModelContext, _ int: Int){
+                public static func test3(_ ctx: ModelContext, _ int: Int){
                     func __original_test3(_ ctx: ModelContext, _ int: Int)
                         {
                             let newInt = 7 + int
