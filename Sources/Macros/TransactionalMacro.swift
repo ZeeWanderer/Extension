@@ -22,7 +22,7 @@ extension TransactionalMacro: BodyMacro {
         guard let function = declaration.as(FunctionDeclSyntax.self) else {
             let diag = Diagnostic(
                 node: node,
-                message: MacroDiagnostic<Self>.error("@Transactional can only be applied to functions")
+                message: MacroDiagnostic<Self>.onlyApplicableToFunction
             )
             context.diagnose(diag)
             return []
