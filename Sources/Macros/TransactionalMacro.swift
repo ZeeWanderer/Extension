@@ -141,7 +141,7 @@ extension TransactionalMacro: BodyMacro {
                                 leftBrace: .leftBraceToken(),
                                 statements: CodeBlockItemListSyntax {
                                     VariableDeclSyntax(
-                                        bindingSpecifier: .keyword(.let),
+                                        bindingSpecifier: .keyword(.var),
                                         bindings: PatternBindingListSyntax {
                                             PatternBindingSyntax(
                                                 pattern: IdentifierPatternSyntax(identifier: .identifier("retval")),

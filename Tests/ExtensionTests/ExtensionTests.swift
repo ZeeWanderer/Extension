@@ -699,7 +699,7 @@ final class ExtensionTests: XCTestCase
                         return __original_test0(int)
                     } else {
                         return TransactionContext.$isActive.withValue(true) {
-                            let retval: Int
+                            var retval: Int
                             try? modelContext.transaction() {
                                 retval = __original_test0(int)
                             }
