@@ -50,7 +50,10 @@ extension TransactionalMacro: BodyMacro {
             for param in function.signature.parameterClause.parameters {
                 if let type = param.type.as(IdentifierTypeSyntax.self),
                    type.name.trimmed.text == "ModelContext" {
-                    ctxExpr = ExprSyntax(DeclReferenceExprSyntax(baseName: param.firstName.trimmed))
+                    let name: TokenSyntax
+                    if let name_ = param.secondName?.trimmed { name = name_ }
+                    else { name = param.firstName.trimmed }
+                    ctxExpr = ExprSyntax(DeclReferenceExprSyntax(baseName: name))
                     break
                 }
             }

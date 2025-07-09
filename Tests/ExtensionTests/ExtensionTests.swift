@@ -681,6 +681,12 @@ final class ExtensionTests: XCTestCase
                 {
                     let newInt = 7 + int
                 }
+            
+                @Transactional
+                func test2(_ ctx: ModelContext, _ int: Int)
+                {
+                    let newInt = 7 + int
+                }
             }
             """,
             expandedSource: """
@@ -718,6 +724,21 @@ final class ExtensionTests: XCTestCase
                         TransactionContext.$isActive.withValue(true) {
                             try? modelContext.transaction() {
                                 __original_test1(int)
+                            }
+                        }
+                    }
+                }
+                func test2(_ ctx: ModelContext, _ int: Int){
+                    func __original_test2(_ ctx: ModelContext, _ int: Int)
+                        {
+                            let newInt = 7 + int
+                        }
+                    if TransactionContext.isActive {
+                        __original_test2(ctx, int)
+                    } else {
+                        TransactionContext.$isActive.withValue(true) {
+                            try? ctx.transaction() {
+                                __original_test2(ctx, int)
                             }
                         }
                     }
