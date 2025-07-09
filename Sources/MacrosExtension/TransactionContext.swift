@@ -8,5 +8,5 @@
 
 public enum TransactionContext
 {
-    @TaskLocal static var isActive: Bool = false
+    @TaskLocal public static var isActive: Bool = false
 }
