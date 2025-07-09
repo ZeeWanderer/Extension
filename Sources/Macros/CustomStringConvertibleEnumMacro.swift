@@ -13,7 +13,6 @@ extension CustomStringConvertibleEnumMacro: ExtensionMacro {
         conformingTo protocols: [TypeSyntax],
         in context: some MacroExpansionContext
     ) throws -> [ExtensionDeclSyntax] {
-        // This macro is only applicable to enums.
         guard let enumDecl = declaration.as(EnumDeclSyntax.self) else {
             let diag = Diagnostic(
                 node: node,
@@ -47,7 +46,6 @@ extension CustomStringConvertibleEnumMacro: ExtensionMacro {
                         let returnString = "\"\(caseName)(\(interpolatedValues.joined(separator: ", ")))\""
                         switchCases.append("\(pattern): return \(returnString)")
                     } else {
-                        // For cases without associated values.
                         let pattern = "case .\(caseName)"
                         let returnString = "\"\(caseName)\""
                         switchCases.append("\(pattern): return \(returnString)")
@@ -58,7 +56,6 @@ extension CustomStringConvertibleEnumMacro: ExtensionMacro {
         
         let switchBody = switchCases.joined(separator: "\n")
         
-        // Define the computed properties that will mimic String(describing:).
         let computedProperties: [(name: String, protocolName: String)] = [
             ("description", "CustomStringConvertible"),
             ("debugDescription", "CustomDebugStringConvertible"),

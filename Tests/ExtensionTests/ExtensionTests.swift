@@ -27,6 +27,7 @@ let testMacros: [String: Macro.Type] = [
     "ActorProtocol": ActorProtocolMacro.self,
     "ActorProtocolExtension": ActorProtocolExtensionMacro.self,
     "ActorProtocolIgnore": ActorProtocolIgnoreMacro.self,
+    "Transactional": TransactionalMacro.self,
 ]
 #endif
 
@@ -657,4 +658,76 @@ final class ExtensionTests: XCTestCase
         #endif
     }
 
+    
+    func testTransactionalMacro() throws {
+        #if canImport(Macros)
+        assertMacroExpansion(
+            """
+            import SwiftUI
+            import SwiftData
+
+            struct Test {
+                let modelContext: ModelContext
+            
+                @Transactional(ctx: modelContext)
+                func test0(_ int: Int) -> Int 
+                {
+                    let newInt = 7 + int
+                    return newInt
+                }
+            
+                @Transactional(ctx: modelContext)
+                func test1(_ int: Int)
+                {
+                    let newInt = 7 + int
+                }
+            }
+            """,
+            expandedSource: """
+            import SwiftUI
+            import SwiftData
+
+            struct Test {
+                let modelContext: ModelContext
+                func test0(_ int: Int) -> Int {
+                    func __original_test0(_ int: Int) -> Int
+                        {
+                            let newInt = 7 + int
+                            return newInt
+                        }
+                    if TransactionContext.isActive {
+                        return __original_test0(int)
+                    } else {
+                        return TransactionContext.$isActive(true) {
+                            let retval: Int
+                            try? modelContext.transaction() {
+                                retval = __original_test0(int)
+                            }
+                            return retval
+                        }
+                    }
+                }
+                func test1(_ int: Int){
+                    func __original_test1(_ int: Int)
+                        {
+                            let newInt = 7 + int
+                        }
+                    if TransactionContext.isActive {
+                        __original_test1(int)
+                    } else {
+                        TransactionContext.$isActive(true) {
+                            try? modelContext.transaction() {
+                                __original_test1(int)
+                            }
+                        }
+                    }
+                }
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
 }

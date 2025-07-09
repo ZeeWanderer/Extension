@@ -12,16 +12,20 @@ import SwiftDiagnostics
 
 
 enum MacroDiagnostic<M: MacroDiagnosticProtocol>: Hashable, DiagnosticMessage {
+    case error(String)
     case onlyApplicableToEnum
     case onlyApplicableToExtension
     case onlyApplicableToClass
     case onlyApplicableToStruct
     case onlyApplicableToProtocol
+    case onlyApplicableToFunction
     case argumentMissing(String)
     
     var severity: DiagnosticSeverity { .error }
     var message: String {
         switch self {
+        case .error(let msg):
+            "@\(M.userFacingName): \(msg)"
         case .onlyApplicableToEnum:
             "@\(M.userFacingName) can only be applied to an enum."
         case .onlyApplicableToClass:
@@ -32,8 +36,10 @@ enum MacroDiagnostic<M: MacroDiagnosticProtocol>: Hashable, DiagnosticMessage {
             "@\(M.userFacingName) can only be applied to a protocol."
         case .onlyApplicableToExtension:
             "@\(M.userFacingName) can only be applied to an extension."
+        case .onlyApplicableToFunction:
+            "@\(M.userFacingName) can only be applied to a function."
         case .argumentMissing(let argName):
-            "@\(M.userFacingName) extpects \(argName) to be present"
+            "@\(M.userFacingName) expects \(argName) to be present"
         }
     }
     var diagnosticID: MessageID {

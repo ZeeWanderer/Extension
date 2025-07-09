@@ -5,6 +5,8 @@
 //  Created by zee wanderer on 29.10.2024.
 //
 
+import SwiftData
+
 /// A macro that generates encapsulated flat version of the enum by excluding associated values
 /// and provides mapping from original to flat enum for case identification purposes.
 @attached(member, names: arbitrary)
@@ -45,3 +47,9 @@ public macro ActorProtocolExtension(name: String) =
 
 @attached(peer)
 public macro ActorProtocolIgnore() = #externalMacro(module: "Macros", type: "ActorProtocolIgnoreMacro")
+
+@attached(body)
+public macro Transactional(ctx: ModelContext) = #externalMacro(
+    module: "Macros",
+    type: "TransactionalMacro"
+)
