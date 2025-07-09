@@ -7,8 +7,8 @@ import CompilerPluginSupport
 let package = Package(
     name: "Extension",
     platforms: [
-        .iOS(.v16),
-        .macCatalyst(.v16),
+        .iOS(.v17),
+        .macCatalyst(.v17),
         .macOS(.v14),
     ],
     products: [
