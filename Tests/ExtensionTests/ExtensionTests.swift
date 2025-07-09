@@ -669,7 +669,7 @@ final class ExtensionTests: XCTestCase
             struct Test {
                 let modelContext: ModelContext
             
-                @Transactional
+                @Transactional(retval: 0)
                 func test0(_ int: Int) -> Int 
                 {
                     let newInt = 7 + int
@@ -699,7 +699,7 @@ final class ExtensionTests: XCTestCase
                         return __original_test0(int)
                     } else {
                         return TransactionContext.$isActive.withValue(true) {
-                            var retval: Int
+                            var retval: Int = 0
                             try? modelContext.transaction() {
                                 retval = __original_test0(int)
                             }

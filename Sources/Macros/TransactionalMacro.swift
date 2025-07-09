@@ -34,12 +34,14 @@ extension TransactionalMacro: BodyMacro {
         let funcName = function.name.trimmed
         
         var ctxExpr: ExprSyntax?
+        var retvalExpr: ExprSyntax?
         
         if let arguments = node.arguments?.as(LabeledExprListSyntax.self) {
             for argument in arguments {
                 if argument.label?.text == "ctx" {
                     ctxExpr = argument.expression
-                    break
+                } else if argument.label?.text == "retval" {
+                    retvalExpr = argument.expression
                 }
             }
         }
@@ -118,6 +120,8 @@ extension TransactionalMacro: BodyMacro {
         
         let elseBranch: CodeBlockItemListSyntax
         if hasReturn {
+            let retvalInitializer = retvalExpr ?? ExprSyntax(NilLiteralExprSyntax())
+            
             elseBranch = CodeBlockItemListSyntax {
                 ReturnStmtSyntax(
                     returnKeyword: .keyword(.return),
@@ -148,6 +152,10 @@ extension TransactionalMacro: BodyMacro {
                                                 typeAnnotation: TypeAnnotationSyntax(
                                                     colon: .colonToken(),
                                                     type: returnType!
+                                                ),
+                                                initializer: InitializerClauseSyntax(
+                                                    equal: .equalToken(),
+                                                    value: retvalInitializer
                                                 )
                                             )
                                         }
