@@ -666,7 +666,7 @@ final class ExtensionTests: XCTestCase
             import SwiftUI
             import SwiftData
 
-            struct Test {
+            class Test {
                 let modelContext: ModelContext
             
                 @Transactional(retval: 0)
@@ -706,13 +706,34 @@ final class ExtensionTests: XCTestCase
                     let newInt = 7 + int
                     return newInt
                 }
+            
+                @Transactional(ctx: \\.modelContext?, retval: 0)
+                public static func test6(_ int: Int) -> Int
+                {
+                    let newInt = 7 + int
+                    return newInt
+                }
+            
+                @Transactional(ctx: \\.modelContext?, retval: 0)
+                public static func test7(_ ctx: ModelContext?, _ int: Int) -> Int
+                {
+                    let newInt = 7 + int
+                    return newInt
+                }
+            
+                @Transactional(ctx: \\.modelContext, retval: 0)
+                public static func test8(_ ctx: ModelContext?, _ int: Int) -> Int
+                {
+                    let newInt = 7 + int
+                    return newInt
+                }
             }
             """,
             expandedSource: """
             import SwiftUI
             import SwiftData
 
-            struct Test {
+            class Test {
                 let modelContext: ModelContext
                 func test0(_ int: Int) -> Int {
                     func __original_test0(_ int: Int) -> Int
@@ -782,12 +803,12 @@ final class ExtensionTests: XCTestCase
                         {
                             let newInt = 7 + int
                         }
-                    if let ctx {
+                    if let context = ctx {
                         if TransactionContext.isActive {
                             __original_test4(ctx, int)
                         } else {
                             TransactionContext.$isActive.withValue(true) {
-                                try? ctx.transaction() {
+                                try? context.transaction() {
                                     __original_test4(ctx, int)
                                 }
                             }
@@ -802,13 +823,13 @@ final class ExtensionTests: XCTestCase
                             let newInt = 7 + int
                             return newInt
                         }
-                    if let ctx {
+                    if let context = ctx {
                         if TransactionContext.isActive {
                             return __original_test5(ctx, int)
                         } else {
                             return TransactionContext.$isActive.withValue(true) {
                                 var retval: Int = 0
-                                try? ctx.transaction() {
+                                try? context.transaction() {
                                     retval = __original_test5(ctx, int)
                                 }
                                 return retval
@@ -816,6 +837,68 @@ final class ExtensionTests: XCTestCase
                         }
                     } else {
                         return __original_test5(ctx, int)
+                    }
+                }
+                public static func test6(_ int: Int) -> Int{
+                    func __original_test6(_ int: Int) -> Int
+                        {
+                            let newInt = 7 + int
+                            return newInt
+                        }
+                    if let context = self[keyPath: \\.modelContext?] {
+                        if TransactionContext.isActive {
+                            return __original_test6(int)
+                        } else {
+                            return TransactionContext.$isActive.withValue(true) {
+                                var retval: Int = 0
+                                try? context.transaction() {
+                                    retval = __original_test6(int)
+                                }
+                                return retval
+                            }
+                        }
+                    } else {
+                        return __original_test6(int)
+                    }
+                }
+                public static func test7(_ ctx: ModelContext?, _ int: Int) -> Int{
+                    func __original_test7(_ ctx: ModelContext?, _ int: Int) -> Int
+                        {
+                            let newInt = 7 + int
+                            return newInt
+                        }
+                    if let context = self[keyPath: \\.modelContext?] {
+                        if TransactionContext.isActive {
+                            return __original_test7(ctx, int)
+                        } else {
+                            return TransactionContext.$isActive.withValue(true) {
+                                var retval: Int = 0
+                                try? context.transaction() {
+                                    retval = __original_test7(ctx, int)
+                                }
+                                return retval
+                            }
+                        }
+                    } else {
+                        return __original_test7(ctx, int)
+                    }
+                }
+                public static func test8(_ ctx: ModelContext?, _ int: Int) -> Int{
+                    func __original_test8(_ ctx: ModelContext?, _ int: Int) -> Int
+                        {
+                            let newInt = 7 + int
+                            return newInt
+                        }
+                    if TransactionContext.isActive {
+                        return __original_test8(ctx, int)
+                    } else {
+                        return TransactionContext.$isActive.withValue(true) {
+                            var retval: Int = 0
+                            try? self[keyPath: \\.modelContext].transaction() {
+                                retval = __original_test8(ctx, int)
+                            }
+                            return retval
+                        }
                     }
                 }
             }

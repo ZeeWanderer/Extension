@@ -25,7 +25,8 @@ extension TransactionalMacro: BodyMacro {
 
         let funcName = function.name.trimmed.text
         let originalName = "__original_\(funcName)"
-        let (ctxExpr, ctxIsOptional) = extractModelContext(from: function, node: node)
+        let (ctxExprOpt, ctxIsOptional) = extractModelContext(from: function, node: node)
+        let ctxExpr = ctxExprOpt ?? ExprSyntax(DeclReferenceExprSyntax(baseName: .identifier("modelContext")))
         let returnType = function.signature.returnClause?.type
         let hasReturn = returnType != nil
         let isThrowing = function.signature.effectSpecifiers?.throwsClause != nil
@@ -54,10 +55,25 @@ extension TransactionalMacro: BodyMacro {
         ]
     }
 
-    private static func extractModelContext(from function: FunctionDeclSyntax, node: AttributeSyntax) -> (ExprSyntax, Bool) {
+    private static func extractModelContext(from function: FunctionDeclSyntax, node: AttributeSyntax) -> (ExprSyntax?, Bool) {
         if let args = node.arguments?.as(LabeledExprListSyntax.self),
            let ctxArg = args.first(where: { $0.label?.text == "ctx" }) {
-            return (ctxArg.expression, false)
+            let ctxExpr = ctxArg.expression
+            if let keyPathExpr = ctxExpr.as(KeyPathExprSyntax.self) {
+                let selfExpr = DeclReferenceExprSyntax(baseName: .keyword(.self))
+                let subscriptExpr = SubscriptCallExprSyntax(
+                    calledExpression: selfExpr,
+                    leftSquare: .leftSquareToken(),
+                    arguments: LabeledExprListSyntax {
+                        LabeledExprSyntax(label: .identifier("keyPath"), colon: .colonToken(), expression: ExprSyntax(keyPathExpr))
+                    },
+                    rightSquare: .rightSquareToken()
+                )
+                
+                let postfixQuestionMark = keyPathExpr.components.last?.component.as(KeyPathOptionalComponentSyntax.self)?.questionOrExclamationMark.trimmed
+                let isOptional = postfixQuestionMark != nil
+                return (ExprSyntax(subscriptExpr), isOptional)
+            }
         }
 
         for param in function.signature.parameterClause.parameters {
@@ -71,7 +87,7 @@ extension TransactionalMacro: BodyMacro {
             }
         }
 
-        return (ExprSyntax(DeclReferenceExprSyntax(baseName: .identifier("modelContext"))), false)
+        return (nil, false)
     }
 
     private static func buildOriginalFunction(_ function: FunctionDeclSyntax, _ originalName: String) -> FunctionDeclSyntax {
@@ -92,6 +108,9 @@ extension TransactionalMacro: BodyMacro {
         returnType: TypeSyntax?,
         retvalExpr: ExprSyntax?
     ) -> ExprSyntax {
+        let ctxExprInit = ctxExpr
+        var ctxExpr = ctxExpr
+        
         let callArgs = LabeledExprListSyntax {
             function.signature.parameterClause.parameters.map { param in
                 let paramName = param.secondName ?? param.firstName
@@ -111,14 +130,16 @@ extension TransactionalMacro: BodyMacro {
             rightParen: .rightParenToken()
         )
         let tryOriginal = isThrowing ? ExprSyntax(TryExprSyntax(tryKeyword: .keyword(.try), expression: originalCallExpr)) : ExprSyntax(originalCallExpr)
-        let transactionIf = makeTransactionIf(hasReturn: hasReturn, isThrowing: isThrowing, returnType: returnType, ctxExpr: ctxExpr, retvalExpr: retvalExpr, tryCall: tryOriginal)
 
         if ctxIsOptional {
+            ctxExpr = ExprSyntax(DeclReferenceExprSyntax(baseName: .identifier("context")))
             let unwrapCondition = OptionalBindingConditionSyntax(
                 bindingSpecifier: .keyword(.let),
-                pattern: PatternSyntax(IdentifierPatternSyntax(identifier: ctxExpr.as(DeclReferenceExprSyntax.self)!.baseName))
+                pattern: PatternSyntax(IdentifierPatternSyntax(identifier: .identifier("context"))),
+                initializer: InitializerClauseSyntax(value: ctxExprInit)
             )
-            return ExprSyntax(IfExprSyntax(
+            let transactionIf = makeTransactionIf(hasReturn: hasReturn, isThrowing: isThrowing, returnType: returnType, ctxExpr: ctxExpr, retvalExpr: retvalExpr, tryCall: tryOriginal)
+            let ifExpr = IfExprSyntax(
                 ifKeyword: .keyword(.if),
                 conditions: ConditionElementListSyntax([ConditionElementSyntax(condition: .optionalBinding(unwrapCondition))]),
                 body: CodeBlockSyntax(statements: CodeBlockItemListSyntax { CodeBlockItemSyntax(item: .expr(transactionIf)) }),
@@ -127,9 +148,11 @@ extension TransactionalMacro: BodyMacro {
                     ? CodeBlockItemListSyntax { ReturnStmtSyntax(returnKeyword: .keyword(.return), expression: tryOriginal) }
                     : CodeBlockItemListSyntax { CodeBlockItemSyntax(item: .expr(tryOriginal)) }
                 ))
-            ))
+            )
+            return ExprSyntax(ifExpr)
+        } else {
+            return makeTransactionIf(hasReturn: hasReturn, isThrowing: isThrowing, returnType: returnType, ctxExpr: ctxExpr, retvalExpr: retvalExpr, tryCall: tryOriginal)
         }
-        return transactionIf
     }
 
     private static func makeTransactionIf(

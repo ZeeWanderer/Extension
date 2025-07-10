@@ -52,3 +52,13 @@ public macro ActorProtocolIgnore() = #externalMacro(module: "Macros", type: "Act
 public macro Transactional(ctx: ModelContext? = nil, retval: Any? = nil) = #externalMacro(
     module: "Macros", type: "TransactionalMacro"
 )
+
+@attached(body)
+public macro Transactional(ctx: KeyPath<Any, ModelContext>, retval: Any? = nil) = #externalMacro(
+    module: "Macros", type: "TransactionalMacro"
+)
+
+@attached(body)
+public macro Transactional(ctx: KeyPath<Any, ModelContext?>, retval: Any? = nil) = #externalMacro(
+    module: "Macros", type: "TransactionalMacro"
+)
