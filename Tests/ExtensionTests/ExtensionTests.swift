@@ -707,21 +707,21 @@ final class ExtensionTests: XCTestCase
                     return newInt
                 }
             
-                @Transactional(ctx: \\.modelContext?, retval: 0)
+                @Transactional(keyPath: \\.modelContext?, retval: 0)
                 public static func test6(_ int: Int) -> Int
                 {
                     let newInt = 7 + int
                     return newInt
                 }
             
-                @Transactional(ctx: \\.modelContext?, retval: 0)
+                @Transactional(keyPath: \\.modelContext?, retval: 0)
                 public static func test7(_ ctx: ModelContext?, _ int: Int) -> Int
                 {
                     let newInt = 7 + int
                     return newInt
                 }
             
-                @Transactional(ctx: \\.modelContext, retval: 0)
+                @Transactional(keyPath: \\.modelContext, retval: 0)
                 public static func test8(_ ctx: ModelContext?, _ int: Int) -> Int
                 {
                     let newInt = 7 + int

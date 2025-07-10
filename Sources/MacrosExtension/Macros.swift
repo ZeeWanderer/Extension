@@ -55,11 +55,11 @@ public macro Transactional(ctx: ModelContext? = nil, retval: Any? = nil) = #exte
 )
 
 @attached(body)
-public macro Transactional<R>(ctx: any KeyPath<R, ModelContext> & Sendable, retval: Any? = nil) = #externalMacro(
+public macro Transactional<R>(keyPath: any KeyPath<R, ModelContext> & Sendable, retval: Any? = nil) = #externalMacro(
     module: "Macros", type: "TransactionalMacro"
 )
 
 @attached(body)
-public macro Transactional<R>(ctx: any KeyPath<R, ModelContext?> & Sendable, retval: Any? = nil) = #externalMacro(
+public macro Transactional<R>(keyPath: any KeyPath<R, ModelContext?> & Sendable, retval: Any? = nil) = #externalMacro(
     module: "Macros", type: "TransactionalMacro"
 )

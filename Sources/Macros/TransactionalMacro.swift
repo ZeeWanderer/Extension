@@ -56,23 +56,28 @@ extension TransactionalMacro: BodyMacro {
     }
 
     private static func extractModelContext(from function: FunctionDeclSyntax, node: AttributeSyntax) -> (ExprSyntax?, Bool) {
-        if let args = node.arguments?.as(LabeledExprListSyntax.self),
-           let ctxArg = args.first(where: { $0.label?.text == "ctx" }) {
-            let ctxExpr = ctxArg.expression
-            if let keyPathExpr = ctxExpr.as(KeyPathExprSyntax.self) {
-                let selfExpr = DeclReferenceExprSyntax(baseName: .keyword(.self))
-                let subscriptExpr = SubscriptCallExprSyntax(
-                    calledExpression: selfExpr,
-                    leftSquare: .leftSquareToken(),
-                    arguments: LabeledExprListSyntax {
-                        LabeledExprSyntax(label: .identifier("keyPath"), colon: .colonToken(), expression: ExprSyntax(keyPathExpr))
-                    },
-                    rightSquare: .rightSquareToken()
-                )
-                
-                let postfixQuestionMark = keyPathExpr.components.last?.component.as(KeyPathOptionalComponentSyntax.self)?.questionOrExclamationMark.trimmed
-                let isOptional = postfixQuestionMark != nil
-                return (ExprSyntax(subscriptExpr), isOptional)
+        if let args = node.arguments?.as(LabeledExprListSyntax.self) {
+            if let ctxArg = args.first(where: { $0.label?.text == "ctx" }) {
+                let ctxExpr = ctxArg.expression
+                let isOptional = ctxExpr.as(OptionalChainingExprSyntax.self) != nil
+                return (ctxExpr, isOptional)
+            } else if let keyPathArg = args.first(where: { $0.label?.text == "keyPath" }) {
+                let ctxExpr = keyPathArg.expression
+                if let keyPathExpr = ctxExpr.as(KeyPathExprSyntax.self) {
+                    let selfExpr = DeclReferenceExprSyntax(baseName: .keyword(.self))
+                    let subscriptExpr = SubscriptCallExprSyntax(
+                        calledExpression: selfExpr,
+                        leftSquare: .leftSquareToken(),
+                        arguments: LabeledExprListSyntax {
+                            LabeledExprSyntax(label: .identifier("keyPath"), colon: .colonToken(), expression: ExprSyntax(keyPathExpr))
+                        },
+                        rightSquare: .rightSquareToken()
+                    )
+                    
+                    let postfixQuestionMark = keyPathExpr.components.last?.component.as(KeyPathOptionalComponentSyntax.self)?.questionOrExclamationMark.trimmed
+                    let isOptional = postfixQuestionMark != nil
+                    return (ExprSyntax(subscriptExpr), isOptional)
+                }
             }
         }
 
