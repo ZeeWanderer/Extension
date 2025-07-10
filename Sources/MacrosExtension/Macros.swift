@@ -5,6 +5,7 @@
 //  Created by zee wanderer on 29.10.2024.
 //
 
+import SwiftUI
 import SwiftData
 
 /// A macro that generates encapsulated flat version of the enum by excluding associated values
@@ -54,11 +55,11 @@ public macro Transactional(ctx: ModelContext? = nil, retval: Any? = nil) = #exte
 )
 
 @attached(body)
-public macro Transactional(ctx: any KeyPath<Any, ModelContext> & Sendable, retval: Any? = nil) = #externalMacro(
+public macro Transactional<R>(ctx: any KeyPath<R, ModelContext> & Sendable, retval: Any? = nil) = #externalMacro(
     module: "Macros", type: "TransactionalMacro"
 )
 
 @attached(body)
-public macro Transactional(ctx: any KeyPath<Any, ModelContext?> & Sendable, retval: Any? = nil) = #externalMacro(
+public macro Transactional<R>(ctx: any KeyPath<R, ModelContext?> & Sendable, retval: Any? = nil) = #externalMacro(
     module: "Macros", type: "TransactionalMacro"
 )
