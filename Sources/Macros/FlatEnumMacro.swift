@@ -54,6 +54,13 @@ extension FlatEnumMacro: MemberMacro {
             },
             modifiers: [DeclModifierSyntax(name: .identifier("public"))],
             name: .identifier(flatEnumName),
+            inheritanceClause: InheritanceClauseSyntax(
+                inheritedTypes: InheritedTypeListSyntax {
+                    InheritedTypeSyntax(
+                        type: IdentifierTypeSyntax(name: .identifier("Hashable"))
+                    )
+                }
+            ),
             memberBlock: MemberBlockSyntax {
                 for caseElement in cases {
                     MemberBlockItemSyntax(decl: EnumCaseDeclSyntax(

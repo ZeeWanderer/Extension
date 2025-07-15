@@ -265,7 +265,7 @@ final class ExtensionTests: XCTestCase
             enum Test {
                 case test0(Bool), test1(Int)
 
-                public enum FlatTest {
+                public enum FlatTest: Hashable {
                     case test0
                     case test1
                 }
