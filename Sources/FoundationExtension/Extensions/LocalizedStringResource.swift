@@ -10,6 +10,7 @@ import Foundation
 public extension LocalizedStringResource
 {
     @inlinable
+    @inline(__always)
     func locale(_ locale: Locale) -> Self
     {
         var newSelf = self
