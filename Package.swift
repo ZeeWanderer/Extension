@@ -100,8 +100,15 @@ let package = Package(
         .testTarget(
             name: "ExtensionTests",
             dependencies: [
-                "Macros","MacrosExtension", "SwiftExtension", "FoundationExtension", "osExtension", "ObservationExtension", "AccelerateExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions", "Extension",
-                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+                "SwiftExtension", "FoundationExtension", "osExtension", "ObservationExtension", "AccelerateExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions", "Extension",
+            ]),
+        .testTarget(
+            name: "ExtensionMacroTests",
+            dependencies: [
+                .target(name: "Macros", condition: .when(platforms: [.macOS])),
+                .target(name: "MacrosExtension", condition: .when(platforms: [.macOS])),
+                "SwiftExtension", "FoundationExtension", "GeneralExtensions",
+                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax", condition: .when(platforms: [.macOS])),
             ]),
     ],
     swiftLanguageModes: [

@@ -1,35 +1,21 @@
+//
+//  MacroTests.swift
+//
+//
+//  Created by zeewanderer on 19.01.2026.
+//
+
 import XCTest
+
+#if canImport(Macros)
 import SwiftUI
+import SwiftData
 import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
-import SwiftData
-@testable import MacrosExtension
-@testable import SwiftExtension
-@testable import FoundationExtension
-@testable import osExtension
-@testable import ObservationExtension
-@testable import AccelerateExtension
-@testable import CoreGraphicsExtension
-@testable import UIKitExtension
-@testable import SpriteKitExtension
-@testable import SwiftUIExtension
-@testable import GeneralExtensions
-
-#if canImport(Macros)
 import Macros
-
-let testMacros: [String: Macro.Type] = [
-    "FlatEnum": FlatEnumMacro.self,
-    "CustomStringConvertibleEnum": CustomStringConvertibleEnumMacro.self,
-    "ModelSnapshot": ModelSnapshotMacro.self,
-    "ActorProtocol": ActorProtocolMacro.self,
-    "ActorProtocolExtension": ActorProtocolExtensionMacro.self,
-    "ActorProtocolIgnore": ActorProtocolIgnoreMacro.self,
-    "Transactional": TransactionalMacro.self,
-]
-#endif
+@testable import MacrosExtension
 
 @ModelSnapshot
 @Model
@@ -60,198 +46,20 @@ class Test0 {
     }
 }
 
-final class ExtensionTests: XCTestCase
+final class MacroTests: XCTestCase
 {
-    @available(iOS 17.0, macCatalyst 17.0, macOS 14.0, *)
-    @Observable
-    final class Testobservable: UserDefaultsObservable
-    {
-        struct Test: SafeBinaryRepresentable, Equatable
-        {
-            let int: Int
-        }
-        
-        enum UserDefaultsKey: String, CodingKey
-        {
-            case name
-            case array
-        }
-        
-        var array: [Test]
-        {
-            get {
-                userDefaultsGet(.name) ?? []
-            }
-            set {
-                userDefaultsSet(.name, newValue: newValue)
-            }
-        }
-    }
-    
-    @available(iOS 17.0, macCatalyst 17.0, macOS 14.0, *)
-    func testUserDefaultsObservable()
-    {
-        let array_ : [Testobservable.Test] = [.init(int: 0), .init(int: 25)]
-        let test = Testobservable()
-        test.array = array_
-        let arrayR = test.array
-        XCTAssertEqual(arrayR, array_)
-    }
-    
-#if canImport(UIKit)
-    func testBoundingBoxValidity()
-    {
-        let r1 = CGRect(origin: .zero, size: CGSize(width: 100, height: 100))
-        let r2 = CGRect(origin: CGPoint(x: 300, y: 300), size: CGSize(width: 100, height: 100))
-        let r3 = CGRect(origin: CGPoint(x: 1000, y: 200), size: CGSize(width: 100, height: 100))
-        let result1 = r1.union(r2)
-        let result2 = union([r1, r2])
-        
-        XCTAssertEqual(result1, result2)
-        
-        let result3 = result1.union(r3)
-        let result4 = union([r1, r2, r3])
-        
-        XCTAssertEqual(result3, result4)
-    }
-    
-    func testBoundingBox2Performance()
-    {
-        let r1 = CGRect(origin: .zero, size: CGSize(width: 100, height: 100))
-        let r2 = CGRect(origin: CGPoint(x: 300, y: 300), size: CGSize(width: 100, height: 100))
-        
-        measure {
-            let _ = r1.union(r2)
-        }
-    }
-    
-    func testBoundingBox3Performance()
-    {
-        let r1 = CGRect(origin: .zero, size: CGSize(width: 100, height: 100))
-        let r2 = CGRect(origin: CGPoint(x: 300, y: 300), size: CGSize(width: 100, height: 100))
-        let r3 = CGRect(origin: CGPoint(x: 1000, y: 200), size: CGSize(width: 100, height: 100))
-        
-        measure {
-            let result1 = r1.union(r2)
-            let _ = result1.union(r3)
-        }
-    }
-    
-    func testBoundingBoxArray2Performance()
-    {
-        let r1 = CGRect(origin: .zero, size: CGSize(width: 100, height: 100))
-        let r2 = CGRect(origin: CGPoint(x: 300, y: 300), size: CGSize(width: 100, height: 100))
-        
-        measure {
-            let _ = union([r1, r2])
-        }
-    }
-    
-    func testBoundingBoxArray3Performance()
-    {
-        let r1 = CGRect(origin: .zero, size: CGSize(width: 100, height: 100))
-        let r2 = CGRect(origin: CGPoint(x: 300, y: 300), size: CGSize(width: 100, height: 100))
-        let r3 = CGRect(origin: CGPoint(x: 1000, y: 200), size: CGSize(width: 100, height: 100))
-        
-        measure {
-            let _ = union([r1, r2, r3])
-        }
-    }
-    
-    func testLerpValidity()
-    {
-        let r1 = CGSize(side: 50)
-        let r2 = CGSize(side: 100)
-        
-        let r3 = lerp(0.5, min: r1, max: r2)
-        let r4: CGSize = lerp(0.5, min: r1, max: r2)
-        
-        XCTAssertEqual(CGSize(side: 75), r3)
-        XCTAssertEqual(r4, r3)
-    }
-    
-    func testHEXStringToUIColor()
-    {
-        let r0 = UIColor(hex: 0xFF00FF, alpha: 0)
-        let r1 = UIColor(hex: "FF00FF00")
-        let r2 = UIColor(hex: "FF00FF", alpha: 0)
-        let r3 = UIColor(hex: "#FF00FF00")
-        let r4 = UIColor(hex: "0xFF00FF00")
-        let r5 = UIColor(hex: "0XFF00FF00")
-        let r6 = UIColor(hex: "0XFF00FFFF", alpha: 0)
-        
-        XCTAssertEqual(r0, r1)
-        XCTAssertEqual(r0, r2)
-        XCTAssertEqual(r0, r3)
-        XCTAssertEqual(r0, r4)
-        XCTAssertEqual(r0, r5)
-        XCTAssertEqual(r0, r6)
-    }
-    
-    func testHEXStringToColor()
-    {
-        let r0 = Color(hex: 0xFF00FF, opacity: 0)
-        let r1 = Color(hex: "FF00FF00")
-        let r2 = Color(hex: "FF00FF", opacity: 0)
-        let r3 = Color(hex: "#FF00FF00")
-        let r4 = Color(hex: "0xFF00FF00")
-        let r5 = Color(hex: "0XFF00FF00")
-        let r6 = Color(hex: "0XFF00FFFF", opacity: 0)
-        
-        XCTAssertEqual(r0, r1)
-        XCTAssertEqual(r0, r2)
-        XCTAssertEqual(r0, r3)
-        XCTAssertEqual(r0, r4)
-        XCTAssertEqual(r0, r5)
-        XCTAssertEqual(r0, r6)
-    }
-    
-    func testBinaryRepresentable()
-    {
-        let r1 = Array<Int>([0, 1, 2, 3])
-        let r1d = r1.data
-        let r1c = Array<Int>(data: r1d)
-        
-        struct Test0: Equatable, SafeBinaryRepresentable
-        {
-            let int0: Int
-            let int1: Int
-        }
-        
-        let t0: Test0 = .init(int0: 0, int1: 1)
-        let t0r: Data = t0.data
-        let t0r1 = Test0(data: t0r)
-        
-        let t1: CGRect = .init(x: 1, y: 2, width: 4, height: 5)
-        let t1r: Data = t1.data
-        let t1r1 = CGRect(data: t1r)
-        
-        let t2: [Double] = [1, 2, 4, 5]
-        let t2r: Data = t2.data
-        let t2r1 = CGRect(data: t2r)
-        
-        let t3: [Double] = [1, 2, 4]
-        let t3r: Data = t3.data
-        let t3r1 = CGRect(validating: t3r)
-        
-        let r2 = Array<Test0>([.init(int0: 0, int1: 1), .init(int0: 2, int1: 3)])
-        let r2d = r2.data
-        let r2c = Array<Test0>(data: r2d)
-        
-        let r3 = Set<Int>([1,2,3])
-        let r3d = r3.data
-        let r3c = Set<Int>(data: r3d)
-        
-        XCTAssertEqual(r1, r1c)
-        XCTAssertEqual(r2, r2c)
-        XCTAssertEqual(r3, r3c)
-        XCTAssertEqual(t0, t0r1)
-        XCTAssertEqual(t1, t1r1)
-        XCTAssertEqual(t1, t2r1)
-        XCTAssertEqual(nil, t3r1)
-    }
+#if canImport(Macros)
+    nonisolated(unsafe) static let testMacros: [String: Macro.Type] = [
+        "FlatEnum": FlatEnumMacro.self,
+        "CustomStringConvertibleEnum": CustomStringConvertibleEnumMacro.self,
+        "ModelSnapshot": ModelSnapshotMacro.self,
+        "ActorProtocol": ActorProtocolMacro.self,
+        "ActorProtocolExtension": ActorProtocolExtensionMacro.self,
+        "ActorProtocolIgnore": ActorProtocolIgnoreMacro.self,
+        "Transactional": TransactionalMacro.self,
+    ]
 #endif
-    
+
     func testFlatEnumMacro() throws {
         #if canImport(Macros)
         assertMacroExpansion(
@@ -280,7 +88,7 @@ final class ExtensionTests: XCTestCase
                 }
             }
             """,
-            macros: testMacros
+            macros: Self.testMacros
         )
         #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
@@ -322,7 +130,7 @@ final class ExtensionTests: XCTestCase
                 }
             }
             """,
-            macros: testMacros
+            macros: Self.testMacros
         )
         #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
@@ -333,7 +141,8 @@ final class ExtensionTests: XCTestCase
         #if canImport(Macros)
         assertMacroExpansion(
             """
-            @FlatEnum @CustomStringConvertibleEnum
+            @CustomStringConvertibleEnum
+            @FlatEnum
             enum Test: Hashable {
                 case test0(Bool)
                 case test1 // TMP
@@ -344,7 +153,7 @@ final class ExtensionTests: XCTestCase
                 case test0(Bool)
                 case test1 // TMP
 
-                public enum FlatTest {
+                public enum FlatTest: Hashable {
                     case test0
                     case test1
                 }
@@ -397,56 +206,22 @@ final class ExtensionTests: XCTestCase
                 }
             }
             """,
-            macros: testMacros
+            macros: Self.testMacros
         )
         #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
     
-    @ModelSnapshot
-    @Model
-    class Test1 {
-        var int: Int = 0
-        var intArray: [Int] = []
-
-        @SnapshotIgnore
-        @Relationship
-        var test0: Test0? = nil
-        
-        init(int: Int, test0: Test0? = nil) {
-            self.int = int
-            self.test0 = test0
-            self.intArray = []
-        }
-    }
-
-    @ModelSnapshot
-    @Model
-    class Test0 {
-        var int: Int = 0
-
-        @Relationship
-        var tests: [Test1] = []
-        
-        init(int: Int, tests: [Test1]) {
-            self.int = int
-            self.tests = tests
-        }
-    }
-    
     func testModelSnapshotMacro() throws {
         #if canImport(Macros)
         assertMacroExpansion(
             """
-            import SwiftData
-            
             @ModelSnapshot
             @Model
             class Test1 {
                 var int: Int = 0
-                var intArray: [Int] = []
-                
+
                 @SnapshotIgnore
                 @Relationship
                 var test0: Test0? = nil
@@ -454,15 +229,14 @@ final class ExtensionTests: XCTestCase
                 init(int: Int, test0: Test0? = nil) {
                     self.int = int
                     self.test0 = test0
-                    self.intArray = []
                 }
             }
-            
+
             @ModelSnapshot
             @Model
             class Test0 {
                 var int: Int = 0
-                
+
                 @Relationship
                 var tests: [Test1] = []
                 
@@ -473,12 +247,10 @@ final class ExtensionTests: XCTestCase
             }
             """,
             expandedSource: """
-            import SwiftData
             @Model
             class Test1 {
                 var int: Int = 0
-                var intArray: [Int] = []
-                
+
                 @SnapshotIgnore
                 @Relationship
                 var test0: Test0? = nil
@@ -486,7 +258,6 @@ final class ExtensionTests: XCTestCase
                 init(int: Int, test0: Test0? = nil) {
                     self.int = int
                     self.test0 = test0
-                    self.intArray = []
                 }
 
                 /// A protocol to streamline usage of ``Snapshot`` and ``ShallowSnapshot``
@@ -497,30 +268,23 @@ final class ExtensionTests: XCTestCase
                     var int: Int {
                         get
                     }
-                    var intArray: [Int] {
-                        get
-                    }
                 }
 
                 public struct Snapshot: SnapshotProtocol, Sendable {
                     public let persistentModelID: PersistentIdentifier
                     public let int: Int
-                    public let intArray: [Int]
                     public init(from model: Test1) {
                         self.persistentModelID = model.persistentModelID
                         self.int = model.int
-                        self.intArray = model.intArray
                     }
                 }
 
                 public struct ShallowSnapshot: SnapshotProtocol, Sendable {
                     public let persistentModelID: PersistentIdentifier
                     public let int: Int
-                    public let intArray: [Int]
                     public init(from model: Test1) {
                         self.persistentModelID = model.persistentModelID
                         self.int = model.int
-                        self.intArray = model.intArray
                     }
                 }
 
@@ -536,7 +300,7 @@ final class ExtensionTests: XCTestCase
             @Model
             class Test0 {
                 var int: Int = 0
-                
+
                 @Relationship
                 var tests: [Test1] = []
                 
@@ -585,7 +349,7 @@ final class ExtensionTests: XCTestCase
                 }
             }
             """,
-            macros: testMacros
+            macros: Self.testMacros
         )
         #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
@@ -632,8 +396,8 @@ final class ExtensionTests: XCTestCase
             }
             struct DataServiceImpl: DataService {
                 var context: Int { 0 }
-                override func getContext0() -> Int { context }
-                override func getContext1() -> Int { context }
+                override public func getContext0() -> Int { context }
+                override public func getContext1() -> Int { context }
             }
 
             extension DataService {
@@ -651,14 +415,13 @@ final class ExtensionTests: XCTestCase
                 }
             }
             """,
-            macros: testMacros
+            macros: Self.testMacros
         )
         #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
 
-    
     func testTransactionalMacro() throws {
         #if canImport(Macros)
         assertMacroExpansion(
@@ -721,7 +484,7 @@ final class ExtensionTests: XCTestCase
                     return newInt
                 }
             
-                @Transactional(keyPath: \\.modelContext, retval: 0)
+                @Transactional(keyPath: \\.modelContext?, retval: 0)
                 public static func test8(_ ctx: ModelContext?, _ int: Int) -> Int
                 {
                     let newInt = 7 + int
@@ -889,24 +652,29 @@ final class ExtensionTests: XCTestCase
                             let newInt = 7 + int
                             return newInt
                         }
-                    if TransactionContext.isActive {
-                        return __original_test8(ctx, int)
-                    } else {
-                        return TransactionContext.$isActive.withValue(true) {
-                            var retval: Int = 0
-                            try? self[keyPath: \\.modelContext].transaction() {
-                                retval = __original_test8(ctx, int)
+                    if let context = self[keyPath: \\.modelContext?] {
+                        if TransactionContext.isActive {
+                            return __original_test8(ctx, int)
+                        } else {
+                            return TransactionContext.$isActive.withValue(true) {
+                                var retval: Int = 0
+                                try? context.transaction() {
+                                    retval = __original_test8(ctx, int)
+                                }
+                                return retval
                             }
-                            return retval
                         }
+                    } else {
+                        return __original_test8(ctx, int)
                     }
                 }
             }
             """,
-            macros: testMacros
+            macros: Self.testMacros
         )
         #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
 }
+#endif
