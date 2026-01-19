@@ -5,6 +5,7 @@
 //  Created by zee wanderer on 29.10.2024.
 //
 
+#if canImport(SwiftCompilerPlugin) && canImport(SwiftSyntaxMacros)
 import SwiftCompilerPlugin
 import SwiftSyntaxMacros
 
@@ -22,3 +23,5 @@ struct MacrosPlugin: CompilerPlugin {
         TransactionalMacro.self,
     ]
 }
+
+#endif

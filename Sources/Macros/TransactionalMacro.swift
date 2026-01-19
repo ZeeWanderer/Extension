@@ -5,6 +5,7 @@
 //  Created by zeewanderer on 09.07.2025.
 //
 
+#if canImport(SwiftSyntax) && canImport(SwiftSyntaxMacros) && canImport(SwiftSyntaxBuilder)
 import SwiftSyntax
 import SwiftSyntaxMacros
 import SwiftDiagnostics
@@ -245,3 +246,5 @@ extension TransactionalMacro: BodyMacro {
         ))
     }
 }
+
+#endif

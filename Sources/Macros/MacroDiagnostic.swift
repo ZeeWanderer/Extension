@@ -5,6 +5,7 @@
 //  Created by zee wanderer on 26.02.2025.
 //
 
+#if canImport(SwiftSyntax) && canImport(SwiftSyntaxMacros) && canImport(SwiftSyntaxBuilder)
 import SwiftSyntax
 import SwiftSyntaxMacros
 import SwiftSyntaxBuilder
@@ -46,3 +47,5 @@ enum MacroDiagnostic<M: MacroDiagnosticProtocol>: Hashable, DiagnosticMessage {
         MessageID(domain: "\(M.self)", id: "\(self.hashValue)")
     }
 }
+
+#endif

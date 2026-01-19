@@ -5,6 +5,7 @@
 //  Created by zeewanderer on 02.07.2025.
 //
 
+#if canImport(SwiftSyntax) && canImport(SwiftSyntaxMacros) && canImport(SwiftSyntaxBuilder)
 import SwiftSyntax
 import SwiftSyntaxMacros
 import SwiftDiagnostics
@@ -100,3 +101,5 @@ extension ActorProtocolMacro: PeerMacro {
         return [DeclSyntax(peerProtocol)]
     }
 }
+
+#endif

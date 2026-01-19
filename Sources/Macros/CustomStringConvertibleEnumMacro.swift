@@ -1,3 +1,4 @@
+#if canImport(SwiftSyntax) && canImport(SwiftSyntaxMacros) && canImport(SwiftSyntaxBuilder)
 import SwiftSyntax
 import SwiftSyntaxMacros
 import SwiftSyntaxBuilder
@@ -96,3 +97,5 @@ extension CustomStringConvertibleEnumMacro: ExtensionMacro {
 }
 
 
+
+#endif
