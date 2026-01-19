@@ -59,7 +59,19 @@ public extension KeyedDecodingContainer
     @inlinable
     func decode<T>(_ type: Lossy<T>.Type, forKey key: Key) throws -> Lossy<T> where T: Codable
     {
-        let d = try superDecoder(forKey: key)
-        return try .init(from: d)
+        do {
+            return .init(wrappedValue: try decode(T.self, forKey: key))
+        } catch {
+            let d = try superDecoder(forKey: key)
+            let path = P_LossyInspect.codingPath(error, from: d)
+            let raw = P_LossyInspect.rawString(from: d)
+            d.lossyReporter.recordLoss(
+                raw: raw,
+                codingPath: path,
+                message: "Failed to decode required value",
+                underlying: error
+            )
+            throw error
+        }
     }
 }
