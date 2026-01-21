@@ -9,6 +9,7 @@ ObservationExtension provides `Observe_` and `MainActorObserve_` to expose chang
 ## Example
 
 ```swift
+import Observation
 import ObservationExtension
 
 @Observable final class Counter
@@ -17,7 +18,7 @@ import ObservationExtension
 }
 
 let counter = Counter()
-for await next in Observe_(counter, keyPath: \.value) {
-    print("value =", next)
+for await _ in Observe_(of: { counter.value }) {
+    print("value =", counter.value)
 }
 ```

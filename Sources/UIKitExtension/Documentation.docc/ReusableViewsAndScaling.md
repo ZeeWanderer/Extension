@@ -13,7 +13,8 @@ import UIKitExtension
 
 final class HeroCell: UITableViewCell, ReusableView {}
 
-tableView.register(HeroCell.self, forCellReuseIdentifier: HeroCell.reuseIdentifier)
+tableView.register(HeroCell.self)
+let cell: HeroCell = tableView.dequeueReusableCell(for: indexPath)
 
 let cornerRadius = selectValue(universal: 8, pad: 16)
 ```
