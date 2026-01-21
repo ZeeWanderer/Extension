@@ -6,6 +6,7 @@
 //
 
 import SwiftExtension
+import RealModule
 import CoreGraphics
 
 /// Linear interpolate value in `[min,max]` for `parameter`.

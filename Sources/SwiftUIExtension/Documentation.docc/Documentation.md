@@ -1,4 +1,4 @@
-# SwiftUIExtension
+# ``SwiftUIExtension``
 
 SwiftUI utilities for layout, view modifiers, SpriteKit bridging, and environment helpers.
 

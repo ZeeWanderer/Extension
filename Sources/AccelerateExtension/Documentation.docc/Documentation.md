@@ -1,4 +1,4 @@
-# AccelerateExtension
+# ``AccelerateExtension``
 
 Binary buffer utilities for Accelerate-style workflows.
 

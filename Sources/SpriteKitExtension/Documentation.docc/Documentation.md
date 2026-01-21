@@ -1,4 +1,4 @@
-# SpriteKitExtension
+# ``SpriteKitExtension``
 
 SpriteKit scene capture helpers.
 

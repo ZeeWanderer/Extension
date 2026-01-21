@@ -7,6 +7,7 @@
 
 
 import SwiftExtension
+import RealModule
 import CoreGraphics
 
 public protocol Numeric2D: AdditiveArithmetic2D where Magnitude: Comparable, Magnitude: Numeric

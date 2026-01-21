@@ -1,4 +1,4 @@
-# SwiftExtension
+# ``SwiftExtension``
 
 Extensions to the Swift standard library plus core data structures and math utilities used by the rest of the package.
 

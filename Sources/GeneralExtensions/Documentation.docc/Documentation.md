@@ -1,4 +1,4 @@
-# GeneralExtensions
+# ``GeneralExtensions``
 
 Small, framework-agnostic utilities that don't belong in a specific module.
 

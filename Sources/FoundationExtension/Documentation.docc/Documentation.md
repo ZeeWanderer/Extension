@@ -1,4 +1,4 @@
-# FoundationExtension
+# ``FoundationExtension``
 
 Foundation-focused extensions covering decoding ergonomics, caching, and targeted type helpers.
 

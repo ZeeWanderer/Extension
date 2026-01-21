@@ -1,4 +1,4 @@
-# UIKitExtension
+# ``UIKitExtension``
 
 UIKit utilities for view reuse, layout scaling, feedback, and view capture.
 

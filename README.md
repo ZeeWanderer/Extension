@@ -7,4 +7,4 @@ Highlights:
 - Macro helpers in `MacrosExtension`
 - Convenience APIs across the supported frameworks
 
-See [Documentation](https://zeewanderer.github.io/Extension/documentation/extension/)
+See [Documentation](https://zeewanderer.github.io/Extension/documentation/)

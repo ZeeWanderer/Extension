@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreGraphicsExtension
 
 /// A struct that describes SwiftUi shadow
 public struct Shadow

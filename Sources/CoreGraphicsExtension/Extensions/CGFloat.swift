@@ -9,6 +9,7 @@ import Foundation
 import CoreGraphics
 import SwiftExtension
 import FoundationExtension
+import RealModule
 
 public extension CGFloat
 {

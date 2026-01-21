@@ -1,4 +1,4 @@
-# CoreGraphicsExtension
+# ``CoreGraphicsExtension``
 
 CoreGraphics-centric numerics, protocols, and geometry helpers.
 

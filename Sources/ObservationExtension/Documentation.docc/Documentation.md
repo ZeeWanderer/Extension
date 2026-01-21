@@ -1,4 +1,4 @@
-# ObservationExtension
+# ``ObservationExtension``
 
 Observation helpers for bridging state to async sequences and storage-backed updates.
 

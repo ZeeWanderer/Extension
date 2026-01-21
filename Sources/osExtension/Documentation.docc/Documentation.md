@@ -1,4 +1,4 @@
-# osExtension
+# ``osExtension``
 
 Protocols and helpers for structured OSLog usage.
 

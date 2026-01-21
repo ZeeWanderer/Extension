@@ -1,4 +1,4 @@
-# MacrosExtension
+# ``MacrosExtension``
 
 Macros and supporting types for generated boilerplate.
 
