@@ -4,3 +4,6 @@
 /*.xcodeproj
 xcuserdata/
 Package.resolved
+/build
+/docs
+build_docs.log

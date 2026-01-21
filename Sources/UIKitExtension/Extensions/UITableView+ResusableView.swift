@@ -91,10 +91,7 @@ public extension UITableView
     /**
      Dequeues ReusableView compliant Supplementary View.
      
-     - Parameter elementKind: The kind of supplementary view to retrieve. This value is defined by the layout object.
-     - Parameter indexPath: The index path specifying the location of the supplementary view in the collection view. The data source receives this information when it is asked for the view and should just pass it along. This method uses the information to perform additional configuration based on the view’s position in the collection view.
      - Returns: A valid UITableViewHeaderFooterView object.
-     
      - Important: View class must be registered first
      ```
      // dequeue supplementary view

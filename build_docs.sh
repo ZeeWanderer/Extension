@@ -12,7 +12,8 @@ echo "Building documentation..."
 xcodebuild docbuild -scheme Extension \
     -destination "generic/platform=iOS"\
     -skipMacroValidation \
-    -derivedDataPath "$DERIVED_DATA_PATH"
+    -derivedDataPath "$DERIVED_DATA_PATH" \
+    OTHER_DOCC_FLAGS="--enable-inherited-docs"
 
 echo "Locating .doccarchive..."
 DOCCARCHIVE_PATH="$(find "$DERIVED_DATA_PATH" -name 'Extension.doccarchive' | head -n 1)"

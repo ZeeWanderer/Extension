@@ -15,9 +15,9 @@ import os
 /// nonisolated static let logger = makeLogger()
 /// nonisolated static let signposter = makeSignposter()
 /// ```
-/// ``messagePrefix`` adds scope to message
+/// `logScope` adds scope to message
 /// ```
-/// Self.logger.log("\(Self.messagePrefix, privacy: .public)")
+/// Self.logger.log("\(Self.logScope, privacy: .public)")
 /// ```
 public protocol LogSubsystemProtocol: LogProtocol
 {

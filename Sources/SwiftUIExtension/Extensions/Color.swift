@@ -10,6 +10,11 @@ import SwiftUI
 
 public extension Color
 {
+    /// Creates a Color from a packed 0xRRGGBB hex value.
+    /// - Parameters:
+    ///   - colorSpace: RGB color space used to interpret the hex channels.
+    ///   - hex: 24-bit hex color in 0xRRGGBB format.
+    ///   - opacity: Alpha channel in [0, 1].
     @inlinable
     init(_ colorSpace: Color.RGBColorSpace = .sRGB, hex: UInt32, opacity: CGFloat = 1)
     {
@@ -19,8 +24,10 @@ public extension Color
         self.init(colorSpace, red: r, green: g, blue: b, opacity: opacity)
     }
     
-    /// - Parameter hex: a hex literal color representation, 4 bytes
-    /// in standard # format or any recognizable hex format
+    /// Creates a Color from a hex string with an embedded alpha channel.
+    /// - Parameters:
+    ///   - colorSpace: RGB color space used to interpret the hex channels.
+    ///   - hex: 4-byte hex in #RRGGBBAA or 0xRRGGBBAA format.
     @inlinable
     init?(_ colorSpace: Color.RGBColorSpace = .sRGB, hex: String)
     {
@@ -50,10 +57,12 @@ public extension Color
         return nil
     }
     
-    /// - Parameter hex: a hex literal color representation, 3 or 4 bytes
-    /// in standard # format or any recognizable hex format.
-    /// - Parameter opacity: color alpha
-    /// - Important: If 4 bytes are provided, `alpha` parameter overrides alpha from `hex`
+    /// Creates a Color from a hex string with an explicit opacity override.
+    /// - Parameters:
+    ///   - colorSpace: RGB color space used to interpret the hex channels.
+    ///   - hex: 3- or 4-byte hex in standard # or 0x formats.
+    ///   - opacity: Alpha override in [0, 1].
+    /// - Important: If 4 bytes are provided, `opacity` overrides alpha from `hex`.
     @inlinable
     init?(_ colorSpace: Color.RGBColorSpace = .sRGB, hex: String, opacity: CGFloat)
     {

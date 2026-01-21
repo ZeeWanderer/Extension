@@ -191,7 +191,9 @@ public extension View
     }
     
     /// Frames and postions view in a geven rect.
-    /// - Parameter rect: A rectangle to position View in. Must be specified in View's parent coordinate system.
+    /// - Parameters:
+    ///   - rect: A rectangle to position View in. Must be specified in View's parent coordinate system.
+    ///   - alignment: Alignment within the temporary frame before positioning.
     @inlinable
     func position(in rect: CGRect, alignment: Alignment = .center) -> some View
     {
@@ -230,7 +232,7 @@ public extension View
             .background {
                 GeometryReader { proxy in
                     Color.clear
-                        .onChange(of: trigger.wrappedValue, perform: { value in
+                        .onChange(of: trigger.wrappedValue) { _, _ in
                             @ViewBuilder
                             func envViewBuilder(_ view: Self) -> some View
                             {
@@ -243,9 +245,7 @@ public extension View
                             let image = view_.screenShot(frame: proxy.frame(in: .global), afterScreenUpdates: true)
                             
                             closure(image)
-                            
-                            return
-                        })
+                        }
                 }
             }
     }
@@ -253,26 +253,16 @@ public extension View
     // MARK: Navigation
     /// Navigate to `destination` using a `binding`. Destination is instantiated imideately and repeatedly on any state changes.
     @inlinable
-    func navigate<Destination>(using binding: Binding<Bool>, @ViewBuilder destination: () -> Destination, isDetailLink: Bool = true) -> some View where Destination : View
+    @ViewBuilder func navigate<Destination>(using binding: Binding<Bool>, @ViewBuilder destination: () -> Destination, isDetailLink: Bool = true) -> some View where Destination : View
     {
-        self.background
-        {
-            NavigationLink(destination: destination(), isActive: binding, label: EmptyView.init)
-                .isDetailLink(isDetailLink)
-                .hidden()
-        }
+        self.navigationDestination(isPresented: binding, destination: destination)
     }
     
     /// Navigate to `destination` using a `binding`. Destination is warapped into ``LazyView`` to avoid unnececery initis.
     @inlinable
-    func lazyNavigate(using binding: Binding<Bool>, @ViewBuilder destination: @escaping () -> some View, isDetailLink: Bool = true) -> some View
+    @ViewBuilder func lazyNavigate(using binding: Binding<Bool>, @ViewBuilder destination: @escaping () -> some View, isDetailLink: Bool = true) -> some View
     {
-        self.background
-        {
-            NavigationLink(destination: LazyView(destination), isActive: binding, label: EmptyView.init)
-                .isDetailLink(isDetailLink)
-                .hidden()
-        }
+        self.navigationDestination(isPresented: binding, destination: destination)
     }
 #endif
     

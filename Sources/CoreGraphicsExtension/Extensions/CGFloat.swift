@@ -12,7 +12,7 @@ import FoundationExtension
 
 public extension CGFloat
 {
-    /// linear intepolate a point between `min` and `max` with `self` as `parameter` (t).
+    /// Linear interpolate a point between `min` and `max` with `self` as `parameter` (t).
     /// See: ``lerp(_:min:max:)-2nn16``
     @_transparent
     func lerped<A: Numeric2D, B: Numeric2D, R: Numeric2D>(min: A, max: B) -> R
@@ -22,8 +22,8 @@ public extension CGFloat
         return lerp(self, min: min, max: max)
     }
     
-    /// linear intepolate a point between `min` and `max` with `self` as `parameter` (t).
-    /// See: ``lerp(_:min:max:)-lglu``
+    /// Linear interpolate a point between `min` and `max` with `self` as `parameter` (t).
+    /// See: ``lerp(_:min:max:)-4pww8``
     @_transparent
     func lerped<T: Numeric2D>(min: T, max: T) -> T
     where T.Magnitude: Real, T.Magnitude == Self
@@ -31,8 +31,8 @@ public extension CGFloat
         return lerp(self, min: min, max: max)
     }
     
-    /// inverse linear intepolate a point between `min` and `max` with `self` as `parameter` (t).
-    /// See:  ``ilerp(_:min:max:)-59add``
+    /// Inverse linear interpolate a point between `min` and `max` with `self` as `parameter` (t).
+    /// See:  ``ilerp(_:min:max:)-6yj3m``
     @_transparent
     func ilerped<A: Numeric2D, B: Numeric2D, R: Numeric2D>(min: A, max: B) -> R
     where A.Magnitude: Real, B.Magnitude : Real, R.Magnitude: Real,
@@ -41,8 +41,8 @@ public extension CGFloat
         return ilerp(self, min: min, max: max)
     }
     
-    /// inverse linear intepolate a point between `min` and `max` with `self` as `parameter` (t).
-    /// See:  ``ilerp(_:min:max:)-59add``
+    /// Inverse linear interpolate a point between `min` and `max` with `self` as `parameter` (t).
+    /// See:  ``ilerp(_:min:max:)-7y90m``
     @_transparent
     func ilerped<T: Numeric2D>(min: T, max: T) -> T
     where T.Magnitude: Real, T.Magnitude == Self
