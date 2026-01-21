@@ -46,7 +46,7 @@ jobs:
         #   xcodebuild-destination: "generic/platform=iOS"
         #   xcodebuild-scheme: "Extension"
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v6
         with:
           path: 'docs'
       - name: Deploy to GitHub Pages
