@@ -43,6 +43,12 @@ SwiftExtension provides a small, dependency-light baseline: container types, int
 - ``debug_print(_:separator:terminator:)``
 - ``debug_print_async(_:separator:terminator:)``
 
+
+### Ranges
+
+- ``ClosedRange``
+- ``Range``
+
 ### Guides
 
 - <doc:CollectionsAndBuilders>
