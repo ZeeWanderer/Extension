@@ -29,3 +29,7 @@ FoundationExtension adds higher-level helpers around decoding, caching, and comm
 - ``LocalizationDictionary``
 - ``LanguageCodeKey``
 - ``LocalizedStringValue``
+
+### Guides
+
+- <doc:LossyDecodingAndCaching>

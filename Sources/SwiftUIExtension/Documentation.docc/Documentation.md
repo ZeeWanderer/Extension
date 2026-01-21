@@ -28,3 +28,7 @@ SwiftUIExtension focuses on pragmatic UI plumbing: convenience views, timeline h
 ### SpriteKit Bridging
 
 - ``SKSceneSwiftUI``
+
+### Guides
+
+- <doc:ViewUtilities>

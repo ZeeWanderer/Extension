@@ -24,3 +24,7 @@ CoreGraphicsExtension defines 2D numeric protocols and adds convenience APIs to 
 - ``lerp(_:min:max:)-6esqb``
 - ``ilerp(_:min:max:)-53q91``
 - ``union(_:)``
+
+### Guides
+
+- <doc:Numeric2DMath>

@@ -11,4 +11,7 @@ AccelerateExtension defines `BinaryRepresentableCollection` and adds safe buffer
 ### Binary Buffers
 
 - ``BinaryRepresentableCollection``
-- ``BinaryRepresentable``
+
+### Guides
+
+- <doc:BinaryBufferIO>

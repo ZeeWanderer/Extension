@@ -17,3 +17,7 @@ ObservationExtension provides protocols and async utilities that integrate with 
 
 - ``Observe_``
 - ``MainActorObserve_``
+
+### Guides
+
+- <doc:ObservationStreams>

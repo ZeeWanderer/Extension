@@ -8,6 +8,6 @@ MacrosExtension exposes Swift macros for enum flattening, snapshot generation, a
 
 ## Topics
 
-### Macro Catalog
+### Guides
 
 - <doc:MacrosCatalog>

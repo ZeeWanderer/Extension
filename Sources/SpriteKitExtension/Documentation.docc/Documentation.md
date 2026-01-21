@@ -8,6 +8,6 @@ SpriteKitExtension adds screenshot utilities for `SKScene` when running under UI
 
 ## Topics
 
-### Scene Capture
+### Guides
 
 - <doc:SpriteKitSceneCapture>

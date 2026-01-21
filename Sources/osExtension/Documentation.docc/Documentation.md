@@ -13,3 +13,7 @@ osExtension defines a small protocol surface for logging categories and subsyste
 - ``LogProtocol``
 - ``LogSubsystemProtocol``
 - ``LogSubsystemCategoryProtocol``
+
+### Guides
+
+- <doc:TypedLogging>

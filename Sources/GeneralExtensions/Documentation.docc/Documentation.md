@@ -12,3 +12,7 @@ GeneralExtensions currently hosts configuration helpers that are safe to import 
 
 - ``Config``
 - ``Config/AppConfiguration-swift.enum``
+
+### Guides
+
+- <doc:RuntimeConfiguration>
