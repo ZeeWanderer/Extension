@@ -9,4 +9,5 @@ Highlights:
 
 See [Documentation](https://zeewanderer.github.io/Extension/documentation/)
 
+---
 License: Unlicense
