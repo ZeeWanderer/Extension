@@ -7,13 +7,14 @@
 
 #if canImport(UIKit)
 import SwiftUI
+import Observation
 
 /// Helper class that listens to keyboard notifications and provides observable keyboard height and a number of helper functions
 /// - Note: Does not use `withAnimation`, so animation needs to be set by end user via `animation`.
-@MainActor
-public final class KeyboardHeightHelper: ObservableObject
+@Observable @MainActor
+public final class KeyboardHeightHelper
 {
-    @MainActor @Published public var keyboardHeight: CGFloat = 0
+    @MainActor public var keyboardHeight: CGFloat = 0
     
     @usableFromInline internal var duration: CGFloat = 0.25
     @usableFromInline internal var curve: UIView.AnimationCurve = .easeOut
