@@ -14,12 +14,12 @@ import Observation
 @Observable @MainActor
 public final class KeyboardHeightHelper
 {
-    @MainActor public var keyboardHeight: CGFloat = 0
+    public var keyboardHeight: CGFloat = 0
     
-    @usableFromInline internal var duration: CGFloat = 0.25
-    @usableFromInline internal var curve: UIView.AnimationCurve = .easeOut
-    @usableFromInline internal var keyboardWillShowNotificationTask: Task<Void,Never>? = nil
-    @usableFromInline internal var keyboardWillHideNotificationTask: Task<Void,Never>? = nil
+    @ObservationIgnored @usableFromInline internal var duration: CGFloat = 0.25
+    @ObservationIgnored @usableFromInline internal var curve: UIView.AnimationCurve = .easeOut
+    @ObservationIgnored @usableFromInline internal var keyboardWillShowNotificationTask: Task<Void,Never>? = nil
+    @ObservationIgnored @usableFromInline internal var keyboardWillHideNotificationTask: Task<Void,Never>? = nil
     
     @inlinable
     public var isKeyboardActive: Bool
@@ -109,7 +109,7 @@ public final class KeyboardHeightHelper
     }
     
     @inlinable
-    deinit
+    isolated deinit
     {
         self.keyboardWillShowNotificationTask?.cancel()
         self.keyboardWillHideNotificationTask?.cancel()
