@@ -84,7 +84,7 @@ let package = Package(
         ),
         .target(
             name: "SwiftUIExtension",
-            dependencies: ["UIKitExtension", "CoreGraphicsExtension", "GeneralExtensions"],
+            dependencies: ["UIKitExtension", "CoreGraphicsExtension", "GeneralExtensions", "osExtension"],
             swiftSettings: []
         ),
         .target(

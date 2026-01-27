@@ -63,3 +63,15 @@ public macro Transactional<R>(keyPath: any KeyPath<R, ModelContext> & Sendable, 
 public macro Transactional<R>(keyPath: any KeyPath<R, ModelContext?> & Sendable, retval: Any? = nil) = #externalMacro(
     module: "Macros", type: "TransactionalMacro"
 )
+
+@attached(extension, names: arbitrary)
+public macro LogSubsystem() =
+#externalMacro(
+    module: "Macros", type: "LogSubsystemMacro"
+)
+
+@attached(extension, names: arbitrary)
+public macro LogCategory(subsystem: Any.Type) =
+#externalMacro(
+    module: "Macros", type: "LogCategoryMacro"
+)

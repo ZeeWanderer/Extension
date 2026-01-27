@@ -57,6 +57,8 @@ final class MacroTests: XCTestCase
         "ActorProtocolExtension": ActorProtocolExtensionMacro.self,
         "ActorProtocolIgnore": ActorProtocolIgnoreMacro.self,
         "Transactional": TransactionalMacro.self,
+        "LogSubsystem": LogSubsystemMacro.self,
+        "LogCategory": LogCategoryMacro.self,
     ]
 #endif
 
@@ -668,6 +670,51 @@ final class MacroTests: XCTestCase
                         return __original_test8(ctx, int)
                     }
                 }
+            }
+            """,
+            macros: Self.testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    func testLogSubsystemMacro() throws {
+        #if canImport(Macros)
+        assertMacroExpansion(
+            """
+            @LogSubsystem
+            enum AppLog {}
+            """,
+            expandedSource: """
+            enum AppLog {}
+
+            extension AppLog: LogSubsystemProtocol {
+                nonisolated static let logger = makeLogger()
+                nonisolated static let signposter = makeSignposter()
+            }
+            """,
+            macros: Self.testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    func testLogCategoryMacro() throws {
+        #if canImport(Macros)
+        assertMacroExpansion(
+            """
+            @LogCategory(subsystem: AppLog.self)
+            struct NetworkLog {}
+            """,
+            expandedSource: """
+            struct NetworkLog {}
+
+            extension NetworkLog: LogSubsystemCategoryProtocol {
+                typealias Subsystem = AppLog
+                nonisolated static let logger = makeLogger()
+                nonisolated static let signposter = makeSignposter()
             }
             """,
             macros: Self.testMacros

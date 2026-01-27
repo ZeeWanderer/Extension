@@ -19,6 +19,11 @@ MacrosExtension provides code generation helpers that live at compile time. They
 
 - `@Transactional` overloads for ModelContext-backed transactional work.
 
+### Logging Macros
+
+- `@LogSubsystem` to generate `LogSubsystemProtocol` conformance with logger/signposter.
+- `@LogCategory(subsystem:)` to generate `LogSubsystemCategoryProtocol` conformance and bind to a subsystem.
+
 ### Support Types
 
 - `TransactionContext` for transactional execution context.

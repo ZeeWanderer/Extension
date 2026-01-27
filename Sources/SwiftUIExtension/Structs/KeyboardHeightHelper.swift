@@ -8,12 +8,19 @@
 #if canImport(UIKit)
 import SwiftUI
 import Observation
+import osExtension
+import os
 
 /// Helper class that listens to keyboard notifications and provides observable keyboard height and a number of helper functions
 /// - Note: Does not use `withAnimation`, so animation needs to be set by end user via `animation`.
 @Observable @MainActor
-public final class KeyboardHeightHelper
+public final class KeyboardHeightHelper: LogSubsystemCategoryProtocol
 {
+    public typealias Subsystem = SwiftUIExtension
+    
+    nonisolated public static let logger = makeLogger()
+    nonisolated public static let signposter = makeSignposter()
+    
     public var keyboardHeight: CGFloat = 0
     
     @ObservationIgnored @usableFromInline internal var duration: CGFloat = 0.25
@@ -84,12 +91,14 @@ public final class KeyboardHeightHelper
                     return (curve, duration, keyboardRect.height)
                 })
             {
+                guard let self else { break }
                 let (curve, duration, height) = data
                 
-                self?.curve = curve
-                self?.duration = CGFloat(truncating: duration)
+                self.curve = curve
+                self.duration = CGFloat(truncating: duration)
+                Self.logger.debug("\(Self.logScope, privacy: .public) Keyboard will show: height=\(height, privacy: .public) duration=\(self.duration, privacy: .public) curve=\(curve.rawValue, privacy: .public)")
                 
-                await self?.set_keyboardHeight(height)
+                await self.set_keyboardHeight(height)
             }
         }
         
@@ -98,7 +107,9 @@ public final class KeyboardHeightHelper
             [weak self] in
             for await _ in NotificationCenter.default.notifications(named: UIResponder.keyboardWillHideNotification).map({ _ in true })
             {
-                await self?.set_keyboardHeight(0)
+                guard let self else { break }
+                Self.logger.debug("\(Self.logScope, privacy: .public) Keyboard will hide")
+                await self.set_keyboardHeight(0)
             }
         }
     }
