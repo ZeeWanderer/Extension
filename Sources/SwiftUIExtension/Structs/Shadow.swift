@@ -26,13 +26,13 @@ public struct Shadow
     }
     
     @inlinable
-    public static func * (lhs: Self, rhs: CGFloat) -> Self
+    public static func * (_ lhs: Self, _ rhs: CGFloat) -> Self
     {
         return Self(color: lhs.color, radius: lhs.radius * rhs, x: lhs.x * rhs, y: lhs.y * rhs)
     }
     
     @inlinable
-    public static func * <T>(lhs: Self, rhs: T) -> Self where T: Numeric2D, T.Magnitude == CGFloat
+    public static func * <T>(_ lhs: Self, _ rhs: T) -> Self where T: Numeric2D, T.Magnitude == CGFloat
     {
         let minScale = min(rhs.xMagnitude, rhs.yMagnitude)
         return Self(color: lhs.color, radius: lhs.radius * minScale, x: lhs.x * rhs.xMagnitude, y: lhs.y * rhs.yMagnitude)

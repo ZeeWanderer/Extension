@@ -74,7 +74,7 @@ public extension EdgeInsets
     
     @inlinable
     @inline(__always)
-    static func .* <T>(lhs: Self, rhs: T) -> Self where T: Numeric2D, T.Magnitude == CGFloat
+    static func .* <T>(_ lhs: Self, _ rhs: T) -> Self where T: Numeric2D, T.Magnitude == CGFloat
     {
         return .init(top: lhs.top * rhs.yMagnitude, leading: lhs.leading * rhs.xMagnitude, bottom: lhs.bottom * rhs.yMagnitude, trailing: lhs.trailing * rhs.xMagnitude)
     }
