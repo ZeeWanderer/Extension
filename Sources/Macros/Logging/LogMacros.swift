@@ -41,8 +41,8 @@ extension LogSubsystemMacro: ExtensionMacro {
                                  conformingTo protocols: [TypeSyntax],
                                  in context: some MacroExpansionContext)
     throws -> [ExtensionDeclSyntax] {
-        guard declaration.is(StructDeclSyntax.self) || declaration.is(ClassDeclSyntax.self) || declaration.is(EnumDeclSyntax.self) else {
-            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.error("can only be applied to a struct, class, or enum."))
+        guard declaration.is(StructDeclSyntax.self) || declaration.is(ClassDeclSyntax.self) || declaration.is(EnumDeclSyntax.self) || declaration.is(ActorDeclSyntax.self) else {
+            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.error("can only be applied to a struct, class, enum, or actor."))
             context.diagnose(diag)
             return []
         }
@@ -70,8 +70,8 @@ extension LogCategoryMacro: ExtensionMacro {
                                  conformingTo protocols: [TypeSyntax],
                                  in context: some MacroExpansionContext)
     throws -> [ExtensionDeclSyntax] {
-        guard declaration.is(StructDeclSyntax.self) || declaration.is(ClassDeclSyntax.self) || declaration.is(EnumDeclSyntax.self) else {
-            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.error("can only be applied to a struct, class, or enum."))
+        guard declaration.is(StructDeclSyntax.self) || declaration.is(ClassDeclSyntax.self) || declaration.is(EnumDeclSyntax.self) || declaration.is(ActorDeclSyntax.self) else {
+            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.error("can only be applied to a struct, class, enum, or actor."))
             context.diagnose(diag)
             return []
         }
