@@ -82,7 +82,6 @@ extension LogSubsystemMacro: ExtensionMacro {
         
         let access = accessLevel(for: declaration)
         let extensionDecl = ExtensionDeclSyntax(
-            modifiers: accessModifiers(access) ?? DeclModifierListSyntax(),
             extendedType: type,
             inheritanceClause: InheritanceClauseSyntax(
             inheritedTypes: InheritedTypeListSyntax {
@@ -136,7 +135,6 @@ extension LogCategoryMacro: ExtensionMacro {
         }
         
         let extensionDecl = ExtensionDeclSyntax(
-            modifiers: accessModifiers(access) ?? DeclModifierListSyntax(),
             extendedType: type,
             inheritanceClause: InheritanceClauseSyntax(
             inheritedTypes: InheritedTypeListSyntax {
