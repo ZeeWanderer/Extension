@@ -11,7 +11,7 @@ import CoreGraphics
 
 public protocol FloatingPoint2D: SignedNumeric2D, Hashable2D where Magnitude: FloatingPoint
 {
-    static func / (lhs: Self, rhs: Magnitude) -> Self
+    static func / (_ lhs: Self, _ rhs: Magnitude) -> Self
     
     static func ./ <T>(_ lhs: Self, _ rhs: T) -> Self where T: Numeric2D, T.Magnitude == Self.Magnitude
     
@@ -35,9 +35,15 @@ public extension FloatingPoint2D
     }
     
     @_transparent
-    static func ./ <T>(lhs: Self, rhs: T) -> Self where T: Numeric2D, T.Magnitude == Self.Magnitude
+    static func ./ <T>(_ lhs: Self, _ rhs: T) -> Self where T: Numeric2D, T.Magnitude == Self.Magnitude
     {
         return .init(xMagnitude: lhs.xMagnitude / rhs.xMagnitude, yMagnitude: lhs.yMagnitude / rhs.yMagnitude)
+    }
+
+    @_transparent
+    func hadamardDivide<T>(_ rhs: T) -> Self where T: Numeric2D, T.Magnitude == Self.Magnitude
+    {
+        return self ./ rhs
     }
     
     @inlinable

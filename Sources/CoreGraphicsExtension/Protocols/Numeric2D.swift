@@ -12,8 +12,8 @@ import CoreGraphics
 
 public protocol Numeric2D: AdditiveArithmetic2D where Magnitude: Comparable, Magnitude: Numeric
 {
-    static func * (lhs: Self, rhs: Magnitude) -> Self
-    static func * <T>(lhs: Self, rhs: T) -> Magnitude where T: Numeric2D, T.Magnitude == Self.Magnitude
+    static func * (_ lhs: Self, _ rhs: Magnitude) -> Self
+    static func * <T>(_ lhs: Self, _ rhs: T) -> Magnitude where T: Numeric2D, T.Magnitude == Self.Magnitude
     static func .* <T>(_ lhs: Self, _ rhs: T) -> Self where T: Numeric2D, T.Magnitude == Self.Magnitude
 }
 
@@ -26,15 +26,27 @@ public extension Numeric2D
     }
     
     @_transparent
-    static func * <T>(lhs: Self, rhs: T) -> Magnitude where T: Numeric2D, T.Magnitude == Self.Magnitude
+    static func * <T>(_ lhs: Self, _ rhs: T) -> Magnitude where T: Numeric2D, T.Magnitude == Self.Magnitude
     {
         return lhs.xMagnitude * rhs.xMagnitude + lhs.yMagnitude * rhs.yMagnitude
     }
     
     @_transparent
-    static func .* <T>(lhs: Self, rhs: T) -> Self where T: Numeric2D, T.Magnitude == Self.Magnitude
+    static func .* <T>(_ lhs: Self, _ rhs: T) -> Self where T: Numeric2D, T.Magnitude == Self.Magnitude
     {
         return .init(xMagnitude: lhs.xMagnitude * rhs.xMagnitude, yMagnitude: lhs.yMagnitude * rhs.yMagnitude)
+    }
+
+    @_transparent
+    func dot<T>(_ rhs: T) -> Magnitude where T: Numeric2D, T.Magnitude == Self.Magnitude
+    {
+        return self * rhs
+    }
+
+    @_transparent
+    func hadamard<T>(_ rhs: T) -> Self where T: Numeric2D, T.Magnitude == Self.Magnitude
+    {
+        return self .* rhs
     }
 }
 

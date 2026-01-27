@@ -49,13 +49,13 @@ public extension CGRect
     // an are without position, but CGRect describes an area
     // with position.
     @_transparent
-    static func * (lhs: CGRect, rhs: CGFloat) -> CGRect
+    static func * (_ lhs: CGRect, _ rhs: CGFloat) -> CGRect
     {
         return .init(origin: lhs.origin * rhs, size: lhs.size * rhs)
     }
     
     @_transparent
-    static func .* <T>(lhs: Self, rhs: T) -> Self where T: Numeric2D, T.Magnitude == CGFloat
+    static func .* <T>(_ lhs: Self, _ rhs: T) -> Self where T: Numeric2D, T.Magnitude == CGFloat
     {
         return .init(origin: lhs.origin .* rhs, size: lhs.size .* rhs)
     }
