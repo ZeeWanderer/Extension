@@ -14,24 +14,64 @@ import SwiftSyntaxBuilder
 public struct LogSubsystemMacro: MacroDiagnosticProtocol {}
 public struct LogCategoryMacro: MacroDiagnosticProtocol {}
 
-private func accessModifierPrefix(for declaration: some DeclGroupSyntax) -> String {
+private enum AccessLevel {
+    case `public`
+    case `package`
+    case `internal`
+    case `fileprivate`
+    case `private`
+    case none
+}
+
+private func accessLevel(for declaration: some DeclGroupSyntax) -> AccessLevel {
     for modifier in declaration.modifiers {
-        switch modifier.name.text {
-        case "public":
-            return "public "
-        case "open":
-            return "public "
-        case "internal":
-            return "internal "
-        case "fileprivate":
-            return "fileprivate "
-        case "private":
-            return "private "
+        switch modifier.name.tokenKind {
+        case .keyword(.public), .keyword(.open):
+            return .public
+        case .keyword(.package):
+            return .package
+        case .keyword(.internal):
+            return .internal
+        case .keyword(.fileprivate):
+            return .fileprivate
+        case .keyword(.private):
+            return .private
         default:
             continue
         }
     }
-    return ""
+    return .none
+}
+
+private func accessPrefix(_ level: AccessLevel) -> String {
+    switch level {
+    case .public: return "public "
+    case .package: return "package "
+    case .internal: return "internal "
+    case .fileprivate: return "fileprivate "
+    case .private: return "private "
+    case .none: return ""
+    }
+}
+
+private func accessModifiers(_ level: AccessLevel) -> DeclModifierListSyntax? {
+    let keyword: TokenSyntax?
+    switch level {
+    case .public:
+        keyword = .keyword(.public)
+    case .package:
+        keyword = .keyword(.package)
+    case .internal:
+        keyword = .keyword(.internal)
+    case .fileprivate:
+        keyword = .keyword(.fileprivate)
+    case .private:
+        keyword = .keyword(.private)
+    case .none:
+        keyword = nil
+    }
+    guard let keyword else { return nil }
+    return DeclModifierListSyntax { DeclModifierSyntax(name: keyword) }
 }
 
 extension LogSubsystemMacro: ExtensionMacro {
@@ -47,15 +87,18 @@ extension LogSubsystemMacro: ExtensionMacro {
             return []
         }
         
-        let access = accessModifierPrefix(for: declaration)
-        let extensionDecl = ExtensionDeclSyntax(extendedType: type, inheritanceClause: InheritanceClauseSyntax(
+        let access = accessLevel(for: declaration)
+        let extensionDecl = ExtensionDeclSyntax(
+            modifiers: accessModifiers(access) ?? DeclModifierListSyntax(),
+            extendedType: type,
+            inheritanceClause: InheritanceClauseSyntax(
             inheritedTypes: InheritedTypeListSyntax {
                 InheritedTypeSyntax(type: TypeSyntax(stringLiteral: "LogSubsystemProtocol"))
             }
         )) {
             DeclSyntax("""
-                nonisolated \(raw: access)static let logger = makeLogger()
-                nonisolated \(raw: access)static let signposter = makeSignposter()
+                nonisolated \(raw: accessPrefix(access))static let logger = makeLogger()
+                nonisolated \(raw: accessPrefix(access))static let signposter = makeSignposter()
             """)
         }
         
@@ -93,21 +136,24 @@ extension LogCategoryMacro: ExtensionMacro {
             return []
         }
         
-        let access = accessModifierPrefix(for: declaration)
+        let access = accessLevel(for: declaration)
         var subsystemName = subsystemExpr.trimmedDescription
         if subsystemName.hasSuffix(".self") {
             subsystemName = String(subsystemName.dropLast(5))
         }
         
-        let extensionDecl = ExtensionDeclSyntax(extendedType: type, inheritanceClause: InheritanceClauseSyntax(
+        let extensionDecl = ExtensionDeclSyntax(
+            modifiers: accessModifiers(access) ?? DeclModifierListSyntax(),
+            extendedType: type,
+            inheritanceClause: InheritanceClauseSyntax(
             inheritedTypes: InheritedTypeListSyntax {
                 InheritedTypeSyntax(type: TypeSyntax(stringLiteral: "LogSubsystemCategoryProtocol"))
             }
         )) {
             DeclSyntax("""
-                \(raw: access)typealias Subsystem = \(raw: subsystemName)
-                nonisolated \(raw: access)static let logger = makeLogger()
-                nonisolated \(raw: access)static let signposter = makeSignposter()
+                \(raw: accessPrefix(access))typealias Subsystem = \(raw: subsystemName)
+                nonisolated \(raw: accessPrefix(access))static let logger = makeLogger()
+                nonisolated \(raw: accessPrefix(access))static let signposter = makeSignposter()
             """)
         }
         
