@@ -723,5 +723,50 @@ final class MacroTests: XCTestCase
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
+
+    func testLogSubsystemMacro_Private() throws {
+        #if canImport(Macros)
+        assertMacroExpansion(
+            """
+            @LogSubsystem
+            private enum UIImageViewLog {}
+            """,
+            expandedSource: """
+            private enum UIImageViewLog {}
+
+            extension UIImageViewLog: LogSubsystemProtocol {
+                nonisolated static let logger = makeLogger()
+                nonisolated static let signposter = makeSignposter()
+            }
+            """,
+            macros: Self.testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    func testLogCategoryMacro_Private() throws {
+        #if canImport(Macros)
+        assertMacroExpansion(
+            """
+            @LogCategory(subsystem: Media.self)
+            private enum UIImageViewLog {}
+            """,
+            expandedSource: """
+            private enum UIImageViewLog {}
+
+            extension UIImageViewLog: LogSubsystemCategoryProtocol {
+                typealias Subsystem = Media
+                nonisolated static let logger = makeLogger()
+                nonisolated static let signposter = makeSignposter()
+            }
+            """,
+            macros: Self.testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
 }
 #endif

@@ -48,9 +48,8 @@ private func accessPrefix(_ level: AccessLevel) -> String {
     case .public: return "public "
     case .package: return "package "
     case .internal: return "internal "
-    case .fileprivate: return "fileprivate "
-    case .private: return "private "
-    case .none: return ""
+    case .fileprivate, .private, .none:
+        return ""
     }
 }
 
@@ -61,13 +60,7 @@ private func accessModifiers(_ level: AccessLevel) -> DeclModifierListSyntax? {
         keyword = .keyword(.public)
     case .package:
         keyword = .keyword(.package)
-    case .internal:
-        keyword = .keyword(.internal)
-    case .fileprivate:
-        keyword = .keyword(.fileprivate)
-    case .private:
-        keyword = .keyword(.private)
-    case .none:
+    case .internal, .fileprivate, .private, .none:
         keyword = nil
     }
     guard let keyword else { return nil }
