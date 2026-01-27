@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import osExtension
 
 /// A macro that generates encapsulated flat version of the enum by excluding associated values
 /// and provides mapping from original to flat enum for case identification purposes.

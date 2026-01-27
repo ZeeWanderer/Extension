@@ -37,7 +37,7 @@ let package = Package(
         ),
         .target(
             name: "MacrosExtension",
-            dependencies: ["Macros"],
+            dependencies: ["Macros", "osExtension"],
             swiftSettings: []
         ),
         .target(
