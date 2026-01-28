@@ -10,19 +10,25 @@ MacrosExtension provides code generation helpers that live at compile time. They
 
 - `@FlatEnum` for generating flat enum mirrors for case identification.
 - `@ModelSnapshot`, `@SnapshotIgnore`, and `@SnapshotShallow` for SwiftData snapshot generation and selective exclusion.
+- <doc:FlatEnumMacro>
+- <doc:CustomStringConvertibleEnumMacro>
+- <doc:ModelSnapshotMacro>
 
 ### Actor Protocol Macros
 
 - `@ActorProtocol`, `@ActorProtocolExtension(name:)`, and `@ActorProtocolIgnore` to standardize actor protocol surfaces and opt-out cases.
+- <doc:ActorProtocolMacros>
 
 ### Transaction Macros
 
 - `@Transactional` overloads for ModelContext-backed transactional work.
+- <doc:TransactionalMacros>
 
 ### Logging Macros
 
 - `@LogSubsystem` to generate `LogSubsystemProtocol` conformance with logger/signposter.
 - `@LogCategory(subsystem:)` to generate `LogSubsystemCategoryProtocol` conformance and bind to a subsystem.
+- <doc:LoggingMacros>
 
 ### Support Types
 
