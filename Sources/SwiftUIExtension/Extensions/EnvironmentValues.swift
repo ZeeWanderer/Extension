@@ -19,5 +19,14 @@ public extension EnvironmentValues
     {
         self[SafeAreaInsetsKey.self]
     }
+    
+    
 #endif
 }
+
+#if canImport(UIKit)
+public extension  EnvironmentValues
+{
+    @Entry var keyboard = KeyboardHelper.shared
+}
+#endif

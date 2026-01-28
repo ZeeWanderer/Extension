@@ -126,4 +126,8 @@ public final class KeyboardHeightHelper: LogSubsystemCategoryProtocol
         self.keyboardWillHideNotificationTask?.cancel()
     }
 }
+
+public extension KeyboardHeightHelper {
+    static let shared = KeyboardHeightHelper()
+}
 #endif
