@@ -10,7 +10,9 @@ import Foundation
 public extension MainActor
 {
     /// Executes `operation` on the main actor, blocking the current thread if needed.
-    /// - Note: Safe on the main thread; avoid calling while holding locks needed by the main actor.
+    /// - Warning: This can deadlock if called off-main while holding locks or resources the main actor needs.
+    ///   Use only when a synchronous API is required and you can guarantee no lock/dispatch dependency
+    ///   on the main actor. Prefer async APIs when possible.
     static func enforceIsolated<T>(_ operation: @escaping @MainActor () -> T,
                                    file: StaticString = #fileID,
                                    line: UInt = #line) -> T where T: Sendable
