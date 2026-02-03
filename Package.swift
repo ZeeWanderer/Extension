@@ -37,7 +37,7 @@ let package = Package(
         ),
         .target(
             name: "MacrosExtension",
-            dependencies: ["Macros", "osExtension"],
+            dependencies: ["Macros", "osExtension", "SwiftUIExtension"],
             swiftSettings: []
         ),
         .target(
@@ -107,7 +107,7 @@ let package = Package(
             dependencies: [
                 .target(name: "Macros", condition: .when(platforms: [.macOS])),
                 .target(name: "MacrosExtension", condition: .when(platforms: [.macOS])),
-                "SwiftExtension", "FoundationExtension", "GeneralExtensions",
+                "SwiftExtension", "FoundationExtension", "GeneralExtensions", "SwiftUIExtension",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax", condition: .when(platforms: [.macOS])),
             ]),
     ],

@@ -13,6 +13,7 @@ import SwiftSyntaxMacros
 struct MacrosPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
         FlatEnumMacro.self,
+        RouterDestinationMacro.self,
         CustomStringConvertibleEnumMacro.self,
         ModelSnapshotMacro.self,
         SnapshotIgnoreMacro.self,
@@ -21,6 +22,7 @@ struct MacrosPlugin: CompilerPlugin {
         ActorProtocolExtensionMacro.self,
         ActorProtocolIgnoreMacro.self,
         TransactionalMacro.self,
+        RouterMacro.self,
         LogSubsystemMacro.self,
         LogCategoryMacro.self,
     ]

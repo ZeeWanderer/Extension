@@ -51,12 +51,14 @@ final class MacroTests: XCTestCase
 #if canImport(Macros)
     nonisolated(unsafe) static let testMacros: [String: Macro.Type] = [
         "FlatEnum": FlatEnumMacro.self,
+        "RouterDestination": RouterDestinationMacro.self,
         "CustomStringConvertibleEnum": CustomStringConvertibleEnumMacro.self,
         "ModelSnapshot": ModelSnapshotMacro.self,
         "ActorProtocol": ActorProtocolMacro.self,
         "ActorProtocolExtension": ActorProtocolExtensionMacro.self,
         "ActorProtocolIgnore": ActorProtocolIgnoreMacro.self,
         "Transactional": TransactionalMacro.self,
+        "Router": RouterMacro.self,
         "LogSubsystem": LogSubsystemMacro.self,
         "LogCategory": LogCategoryMacro.self,
     ]
@@ -158,6 +160,44 @@ final class MacroTests: XCTestCase
                         return .test1
                     }
                 }
+            }
+            """,
+            macros: Self.testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    func testRouterDestinationMacro() throws {
+        #if canImport(Macros)
+        assertMacroExpansion(
+            """
+            @RouterDestination
+            enum Test: Hashable {
+                case test0(Bool), test1(Int)
+            }
+            """,
+            expandedSource: """
+            enum Test: Hashable {
+                case test0(Bool), test1(Int)
+
+                public enum Flat: Hashable {
+                    case test0
+                    case test1
+                }
+
+                public var flat: Flat {
+                    switch self {
+                    case .test0:
+                        return .test0
+                    case .test1:
+                        return .test1
+                    }
+                }
+            }
+
+            extension Test: RouterDestination {
             }
             """,
             macros: Self.testMacros
@@ -740,6 +780,28 @@ final class MacroTests: XCTestCase
                         return __original_test8(ctx, int)
                     }
                 }
+            }
+            """,
+            macros: Self.testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    func testRouterMacro_Public() throws {
+        #if canImport(Macros)
+        assertMacroExpansion(
+            """
+            @Router
+            public final class AppRouter {}
+            """,
+            expandedSource: """
+            public final class AppRouter {
+                public static let viewTypes = computeViewTypes()
+            }
+
+            extension AppRouter: RouterProtocol {
             }
             """,
             macros: Self.testMacros

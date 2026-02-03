@@ -24,6 +24,11 @@ MacrosExtension provides code generation helpers that live at compile time. They
 - `@Transactional` overloads for ModelContext-backed transactional work.
 - <doc:TransactionalMacros>
 
+### Router Macros
+
+- `@Router` to generate a cached `viewTypes` map for routers.
+- <doc:RouterMacro>
+
 ### Logging Macros
 
 - `@LogSubsystem` to generate `LogSubsystemProtocol` conformance with logger/signposter.

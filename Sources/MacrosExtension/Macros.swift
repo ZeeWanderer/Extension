@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 import osExtension
+import SwiftUIExtension
 
 /// A macro that generates encapsulated flat version of the enum by excluding associated values
 /// and provides mapping from original to flat enum for case identification purposes.
@@ -15,6 +16,13 @@ import osExtension
 public macro FlatEnum(name: String? = nil, generateName: Bool = true) =
 #externalMacro(
     module: "Macros", type: "FlatEnumMacro"
+)
+
+@attached(member, names: arbitrary)
+@attached(extension, conformances: RouterDestination, names: arbitrary)
+public macro RouterDestination() =
+#externalMacro(
+    module: "Macros", type: "RouterDestinationMacro"
 )
 
 @attached(member, names: arbitrary)
@@ -63,6 +71,13 @@ public macro Transactional<R>(keyPath: any KeyPath<R, ModelContext> & Sendable, 
 @attached(body)
 public macro Transactional<R>(keyPath: any KeyPath<R, ModelContext?> & Sendable, retval: Any? = nil) = #externalMacro(
     module: "Macros", type: "TransactionalMacro"
+)
+
+@attached(member, names: named(viewTypes))
+@attached(extension, conformances: RouterProtocol, names: arbitrary)
+public macro Router() =
+#externalMacro(
+    module: "Macros", type: "RouterMacro"
 )
 
 @attached(extension, conformances: LogSubsystemProtocol, names: arbitrary)
