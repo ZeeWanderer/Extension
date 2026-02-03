@@ -96,6 +96,76 @@ final class MacroTests: XCTestCase
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
+
+    func testFlatEnumMacro_GenerateNameFalse() throws {
+        #if canImport(Macros)
+        assertMacroExpansion(
+            """
+            @FlatEnum(generateName: false)
+            enum Test {
+                case test0(Bool), test1(Int)
+            }
+            """,
+            expandedSource: """
+            enum Test {
+                case test0(Bool), test1(Int)
+
+                public enum Flat: Hashable {
+                    case test0
+                    case test1
+                }
+
+                public var flat: Flat {
+                    switch self {
+                    case .test0:
+                        return .test0
+                    case .test1:
+                        return .test1
+                    }
+                }
+            }
+            """,
+            macros: Self.testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    func testFlatEnumMacro_CustomName() throws {
+        #if canImport(Macros)
+        assertMacroExpansion(
+            """
+            @FlatEnum(name: "Flat")
+            enum Test {
+                case test0(Bool), test1(Int)
+            }
+            """,
+            expandedSource: """
+            enum Test {
+                case test0(Bool), test1(Int)
+
+                public enum Flat: Hashable {
+                    case test0
+                    case test1
+                }
+
+                public var flat: Flat {
+                    switch self {
+                    case .test0:
+                        return .test0
+                    case .test1:
+                        return .test1
+                    }
+                }
+            }
+            """,
+            macros: Self.testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
     
     func testCustomStringConvertibleEnumMacro() throws {
         #if canImport(Macros)
@@ -780,8 +850,8 @@ final class MacroTests: XCTestCase
             public enum PublicLog {}
 
             extension PublicLog: LogSubsystemProtocol {
-                public nonisolated static let logger = makeLogger()
-                public nonisolated static let signposter = makeSignposter()
+                nonisolated public static let logger = makeLogger()
+                nonisolated public static let signposter = makeSignposter()
             }
             """,
             macros: Self.testMacros
@@ -803,8 +873,8 @@ final class MacroTests: XCTestCase
 
             extension PublicCategory: LogSubsystemCategoryProtocol {
                 public typealias Subsystem = Media
-                public nonisolated static let logger = makeLogger()
-                public nonisolated static let signposter = makeSignposter()
+                nonisolated public static let logger = makeLogger()
+                nonisolated public static let signposter = makeSignposter()
             }
             """,
             macros: Self.testMacros

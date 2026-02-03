@@ -32,7 +32,44 @@ extension FlatEnumMacro: MemberMacro {
         }
         
         let enumName = enumDecl.name.text
-        let flatEnumName = "\(Self.flatEnumSuffix)\(enumName)"
+        var customFlatName: String? = nil
+        var generateName = true
+        var hasErrors = false
+        
+        if let arguments = node.arguments?.as(LabeledExprListSyntax.self) {
+            if let nameExpr = arguments.first(where: { arg in
+                let label = arg.label?.text
+                return label == "name" || label == "flatName"
+            })?.expression {
+                if let name = nameExpr.as(StringLiteralExprSyntax.self)?.representedLiteralValue,
+                   !name.isEmpty {
+                    customFlatName = name
+                } else {
+                    let diag = Diagnostic(node: nameExpr, message: MacroDiagnostic<Self>.error("name must be a non-empty string literal"))
+                    context.diagnose(diag)
+                    hasErrors = true
+                }
+            }
+            
+            if let generateExpr = arguments.first(where: { arg in
+                let label = arg.label?.text
+                return label == "generateName"
+            })?.expression {
+                if let boolLiteral = generateExpr.as(BooleanLiteralExprSyntax.self) {
+                    generateName = boolLiteral.literal.tokenKind == .keyword(.true)
+                } else {
+                    let diag = Diagnostic(node: generateExpr, message: MacroDiagnostic<Self>.error("generateName must be a boolean literal"))
+                    context.diagnose(diag)
+                    hasErrors = true
+                }
+            }
+        }
+        
+        if hasErrors {
+            return []
+        }
+        
+        let flatEnumName = customFlatName ?? (generateName ? "\(Self.flatEnumSuffix)\(enumName)" : "Flat")
         
         let hasStringMacro = enumDecl.attributes.contains { attribute in
             guard case .attribute(let attr) = attribute else { return false }

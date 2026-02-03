@@ -12,7 +12,7 @@ import osExtension
 /// A macro that generates encapsulated flat version of the enum by excluding associated values
 /// and provides mapping from original to flat enum for case identification purposes.
 @attached(member, names: arbitrary)
-public macro FlatEnum() =
+public macro FlatEnum(name: String? = nil, generateName: Bool = true) =
 #externalMacro(
     module: "Macros", type: "FlatEnumMacro"
 )
