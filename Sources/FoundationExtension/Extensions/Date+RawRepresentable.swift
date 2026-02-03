@@ -12,7 +12,7 @@ extension Date: @retroactive RawRepresentable
     @inlinable
     public var rawValue: TimeInterval
     {
-        Date.timeIntervalSinceReferenceDate
+        self.timeIntervalSinceReferenceDate
     }
     
     @inlinable
