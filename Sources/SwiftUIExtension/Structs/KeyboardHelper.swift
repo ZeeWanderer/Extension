@@ -59,6 +59,7 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
         public var event: Event?
         public var beginFrame: CGRect
         public var endFrame: CGRect
+        public var keyboardHeight: CGFloat
         public var animationDuration: CGFloat
         public var animationCurve: UIView.AnimationCurve
         public var isLocal: Bool
@@ -66,6 +67,7 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
         public static let empty = KeyboardState(event: nil,
                                                beginFrame: .zero,
                                                endFrame: .zero,
+                                               keyboardHeight: 0,
                                                animationDuration: 0.25,
                                                animationCurve: .easeOut,
                                                isLocal: true)
@@ -85,8 +87,7 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
     }
     
     public private(set) var state: KeyboardState = .empty
-    
-    public var keyboardHeight: CGFloat { state.endFrame.height }
+    public var keyboardHeight: CGFloat { state.keyboardHeight }
     public var beginFrame: CGRect { state.beginFrame }
     public var endFrame: CGRect { state.endFrame }
     public var animationDuration: CGFloat { state.animationDuration }
@@ -139,8 +140,34 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
     @usableFromInline @MainActor
     internal func updateState(from data: EventData)
     {
-        let next = state.merged(with: data)
+        var next = state.merged(with: data)
+        next.keyboardHeight = Self.visibleKeyboardHeight(for: next)
+        
         if next != state { state = next }
+    }
+    
+    @usableFromInline @MainActor
+    internal static func visibleKeyboardHeight(for state: KeyboardState) -> CGFloat
+    {
+        switch state.event
+        {
+        case .willHide, .didHide:
+            return 0
+        default:
+            let keyboardFrame = state.endFrame
+            guard !keyboardFrame.isNull, !keyboardFrame.isEmpty else { return 0 }
+            
+            let screenBounds = UIApplication.shared.connectedScenes
+                .compactMap { $0 as? UIWindowScene }
+                .flatMap(\.windows)
+                .first(where: \.isKeyWindow)?
+                .screen
+                .bounds ?? UIScreen.main.bounds
+            
+            let visibleIntersection = keyboardFrame.intersection(screenBounds)
+            guard !visibleIntersection.isNull, !visibleIntersection.isEmpty else { return 0 }
+            return visibleIntersection.height
+        }
     }
     
     @usableFromInline
