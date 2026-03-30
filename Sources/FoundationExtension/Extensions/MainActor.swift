@@ -7,6 +7,26 @@
 
 import Foundation
 
+internal final class MainActorResultBox<T: Sendable>: @unchecked Sendable
+{
+    private let lock = NSLock()
+    private var value: T?
+
+    func store(_ value: T)
+    {
+        lock.lock()
+        self.value = value
+        lock.unlock()
+    }
+
+    func load() -> T?
+    {
+        lock.lock()
+        defer { lock.unlock() }
+        return value
+    }
+}
+
 public extension MainActor
 {
     /// Executes `operation` on the main actor, blocking the current thread if needed.
@@ -21,13 +41,13 @@ public extension MainActor
             return MainActor.assumeIsolated(operation)
         } else {
             let semaphore = DispatchSemaphore(value: 0)
-            var result: T?
+            let result = MainActorResultBox<T>()
             Task { @MainActor in
                 defer { semaphore.signal() }
-                result = operation()
+                result.store(operation())
             }
             semaphore.wait()
-            return result!
+            return result.load()!
         }
     }
 }
