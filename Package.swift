@@ -23,6 +23,7 @@ let package = Package(
         // .package(url: /* package url */, from: "1.0.0"),
         .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.4.1"),
         .package(url: "https://github.com/apple/swift-numerics", from: "1.0.3"),
+        .package(url: "https://github.com/apple/swift-atomics", from: "1.3.0"),
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.1"),
     ],
     targets: [
@@ -43,7 +44,8 @@ let package = Package(
         .target(
             name: "SwiftExtension",
             dependencies: [
-                .product(name: "RealModule", package: "swift-numerics") // SE-0246 Accepted but not Implemented into Swift STL due to compiler issues
+                .product(name: "RealModule", package: "swift-numerics"), // SE-0246 Accepted but not Implemented into Swift STL due to compiler issues
+                .product(name: "Atomics", package: "swift-atomics")
             ],
             swiftSettings: []
         ),
