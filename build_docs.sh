@@ -29,6 +29,7 @@ echo "docc tool located at: $DOCC_EXECUTABLE"
 
 echo "Merging module archives..."
 MODULE_ARCHIVES=(
+    "$PRODUCTS_PATH/Extension.doccarchive"
     "$PRODUCTS_PATH/SwiftExtension.doccarchive"
     "$PRODUCTS_PATH/FoundationExtension.doccarchive"
     "$PRODUCTS_PATH/CoreGraphicsExtension.doccarchive"
