@@ -78,18 +78,21 @@ public extension UserDefaults
     @inlinable
     func float(forKey defaultName: some RawRepresentable<String>) -> Float?
     {
+        guard self.object(forKey: defaultName.rawValue) != nil else { return nil }
         return self.float(forKey: defaultName.rawValue)
     }
     
     @inlinable
     func double(forKey defaultName: some RawRepresentable<String>) -> Double?
     {
+        guard self.object(forKey: defaultName.rawValue) != nil else { return nil }
         return self.double(forKey: defaultName.rawValue)
     }
     
     @inlinable
     func integer(forKey defaultName: some RawRepresentable<String>) -> Int?
     {
+        guard self.object(forKey: defaultName.rawValue) != nil else { return nil }
         return self.integer(forKey: defaultName.rawValue)
     }
     

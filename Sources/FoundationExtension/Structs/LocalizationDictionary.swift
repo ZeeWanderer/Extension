@@ -23,16 +23,16 @@ public extension LocalizationDictionary
         }
         
         // require lang code
-        guard let languageCode = locale.languageCode
+        guard let languageCode = locale.language.languageCode?.identifier
         else {return nil}
         
         // check for Script, this format is used by lproj files
-        if let regionCode = locale.regionCode, let l_string = self["\(languageCode)-\(regionCode)"]
+        if let regionCode = locale.region?.identifier, let l_string = self["\(languageCode)-\(regionCode)"]
         {
             return l_string
         }
         else // Fallback on language code
-        if let languageCode = locale.languageCode, let l_string = self[languageCode]
+        if let l_string = self[languageCode]
         {
             return l_string
         }
@@ -72,4 +72,3 @@ public extension LocalizationDictionary
         return self.first?.value ?? ""
     }
 }
-
