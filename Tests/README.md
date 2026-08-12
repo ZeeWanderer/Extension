@@ -25,7 +25,7 @@ Every source target has at least one client-style public API contract:
 | `Macros` | Direct expansion snapshots for every registered macro implementation |
 | `MacrosExtension` | Compiled generated-API and macro-usage tests |
 | `SwiftExtension` | Collections, math, builders, and input-safety contracts |
-| `FoundationExtension` | Binary representation, lossy decoding, localization, and defaults |
+| `FoundationExtension` | JSON coding, raw-key dictionaries, binary representation, lossy decoding, localization, and defaults |
 | `osExtension` | Public logging protocol defaults |
 | `ObservationExtension` | Transactional observations and observable defaults |
 | `AccelerateExtension` | Public full convolution and re-exported binary APIs |
@@ -52,6 +52,7 @@ Recorded on 12 August 2026 with a release build on a 10-core Apple M4 MacBook Pr
 | Binary array round trip | 10 round trips of 2.5M `Int64` values | 13 ms CPU | 8.74% (retired instructions: 0.67%) |
 | Set round trip | 5 round trips of 100K `Int64` values | 27 ms CPU | 0.57% (retired instructions: 0.01%) |
 | Stable set encoding | 3 sorted encodes of 100K `Int64` values | 22 ms CPU | 0.94% (retired instructions: 0.09%) |
+| JSON coding round trip | 3 round trips of 10K structured values | 89 ms CPU | 1.63% (retired instructions: 0.01%) |
 | Fast queue throughput | 20 enqueue/drain cycles of 250K values | 18 ms | 1.35% |
 | Hashed heap build/drain | Build and drain 100K values | 553 ms CPU | 0.41% |
 | Rectangle union | 100 unions of 100K rectangles | 48 ms | 0.39% |
