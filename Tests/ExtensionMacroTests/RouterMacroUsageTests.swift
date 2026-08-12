@@ -96,11 +96,14 @@ final class RouterMacroRouter {
 
 final class RouterMacroUsageTests: XCTestCase {
     @MainActor
-    func testRouterMacroUsageCompiles() {
+    func testRouterMacroProducesUsablePublicRoutingAPI() {
         let router = RouterMacroRouter()
         router.push(.detail(id: 9))
+
+        XCTAssertEqual(router.path, [.detail(id: 9)])
+        XCTAssertNotNil(RouterMacroRouter.viewTypes[.detail])
+        XCTAssertNotNil(RouterMacroRouter.viewTypes[.settings])
         _ = router.view(for: .settings)
-        _ = RouterMacroRouter.viewTypes[.detail]
     }
 }
 
