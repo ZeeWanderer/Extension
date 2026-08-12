@@ -87,7 +87,7 @@ public extension RouterProtocol {
     
     @discardableResult
     static func pop(_ array: inout [Destination], amount: Int = 1) -> Bool {
-        guard amount <= array.count else { return false }
+        guard amount >= 0, amount <= array.count else { return false }
         array.removeLast(amount)
         return true
     }

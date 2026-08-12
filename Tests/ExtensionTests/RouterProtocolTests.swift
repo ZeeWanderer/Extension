@@ -8,7 +8,7 @@
 import XCTest
 import SwiftUI
 import Observation
-@testable import SwiftUIExtension
+import SwiftUIExtension
 
 #if canImport(SwiftUI) && canImport(MacrosExtension)
 
@@ -118,16 +118,54 @@ final class DemoRouter: RouterProtocol {
     var paths: [PathID: [Destination]] = [:]
 }
 
-final class RouterProtocolTests: XCTestCase {
+final class RouterPublicAPITests: XCTestCase {
     @MainActor
-    func testRouterBuildsViews() {
+    func testPushAndPopMutateOnlyTheRequestedPath() {
         let router = DemoRouter()
-        
+
         router.push(.detail(id: 7))
-        XCTAssertEqual(router.path.count, 1)
-        
-        _ = router.view(for: .settings, pathID: .modal)
-        _ = DemoRouter.view(for: .detail(id: 1))
+        router.push(.settings, to: .modal)
+        router.push(.detail(id: 8), to: .modal)
+
+        XCTAssertEqual(router.path, [.detail(id: 7)])
+        XCTAssertEqual(router.path(for: .modal), [.settings, .detail(id: 8)])
+        XCTAssertTrue(router.pop(.modal, to: DemoDestination.settings))
+        XCTAssertEqual(router.path(for: .modal), [.settings])
+        XCTAssertEqual(router.path, [.detail(id: 7)])
+    }
+
+    @MainActor
+    func testPopToExistingCanCompareExactOrFlatDestinations() {
+        var exactPath: [DemoDestination] = [.detail(id: 1), .settings]
+        var flatPath: [DemoDestination] = [.detail(id: 1), .settings]
+
+        DemoRouter.push(.detail(id: 2), to: &exactPath, options: [.popToExisting])
+        DemoRouter.push(.detail(id: 2), to: &flatPath, options: [.popToExisting, .flatComparison])
+
+        XCTAssertEqual(exactPath, [.detail(id: 1), .settings, .detail(id: 2)])
+        XCTAssertEqual(flatPath, [.detail(id: 1)])
+    }
+
+    @MainActor
+    func testZeroAndOversizedPopCountsDoNotMutateThePath() {
+        var path: [DemoDestination] = [.settings, .detail(id: 1)]
+
+        XCTAssertTrue(DemoRouter.pop(&path, amount: 0))
+        XCTAssertEqual(path, [.settings, .detail(id: 1)])
+        XCTAssertFalse(DemoRouter.pop(&path, amount: 3))
+        XCTAssertEqual(path, [.settings, .detail(id: 1)])
+        XCTAssertFalse(DemoRouter.pop(&path, amount: -1))
+        XCTAssertEqual(path, [.settings, .detail(id: 1)])
+    }
+
+    @MainActor
+    func testRegisteredViewTypesAndViewFactoriesRemainPublic() {
+        let router = DemoRouter()
+
+        XCTAssertNotNil(DemoRouter.viewType(for: .detail))
+        XCTAssertNotNil(DemoRouter.viewType(for: .settings))
+        _ = router.view(for: .settings, pathID: .modal, requester: "test")
+        _ = DemoRouter.view(for: .detail(id: 1), pathID: DemoRouter.PathID.root)
     }
 }
 

@@ -41,6 +41,7 @@ public struct CyclicTimelineSchedule: TimelineSchedule
         @inlinable
         mutating public func next() -> Date?
         {
+            guard !offsets.isEmpty else { return nil }
             idx = (idx + 1) % offsets.count
             
             last = last.addingTimeInterval(offsets[idx])
