@@ -15,7 +15,7 @@ import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import Macros
-@testable import MacrosExtension
+import MacrosExtension
 
 @ModelSnapshot
 @Model
@@ -46,6 +46,56 @@ class Test0 {
     }
 }
 
+@ModelSnapshot
+@Model
+final class RequiredSnapshotChild {
+    var value: Int
+
+    init(value: Int) {
+        self.value = value
+    }
+}
+
+@ModelSnapshot
+@Model
+final class RequiredSnapshotParent {
+    @Relationship
+    var child: RequiredSnapshotChild
+
+    init(child: RequiredSnapshotChild) {
+        self.child = child
+    }
+}
+
+@ActorProtocol
+public protocol CompiledDataService: Sendable {
+    associatedtype Item: Sendable
+    var context: Int { get }
+    subscript(index: Int) -> Item { get }
+    func readContext() -> Int
+}
+
+public struct CompiledDataServiceImplementation: CompiledDataService {
+    public typealias Item = Int
+    public var context: Int { 42 }
+    public subscript(index: Int) -> Int { context + index }
+    public func readContext() -> Int { context }
+}
+
+public actor CompiledDataServiceActorImplementation: CompiledDataServiceActor {
+    public typealias Item = Int
+    public let context: Int = 43
+    public subscript(index: Int) -> Int { context + index }
+    public func readContext() -> Int { context }
+}
+
+private func compiledActorItem<Service: CompiledDataServiceActor>(
+    _ service: Service,
+    at index: Int
+) async -> Service.Item {
+    await service[index]
+}
+
 final class MacroTests: XCTestCase
 {
 #if canImport(Macros)
@@ -55,14 +105,33 @@ final class MacroTests: XCTestCase
         "CustomStringConvertibleEnum": CustomStringConvertibleEnumMacro.self,
         "ModelSnapshot": ModelSnapshotMacro.self,
         "ActorProtocol": ActorProtocolMacro.self,
-        "ActorProtocolExtension": ActorProtocolExtensionMacro.self,
-        "ActorProtocolIgnore": ActorProtocolIgnoreMacro.self,
         "Transactional": TransactionalMacro.self,
         "Router": RouterMacro.self,
         "LogSubsystem": LogSubsystemMacro.self,
         "LogCategory": LogCategoryMacro.self,
     ]
 #endif
+
+    func testGeneratedModelSnapshotAPICompilesAndRuns() {
+        let child = RequiredSnapshotChild(value: 7)
+        let parent = RequiredSnapshotParent(child: child)
+
+        XCTAssertEqual(parent.snapshot.child.value, 7)
+    }
+
+    func testGeneratedActorProtocolAPICompilesAndRuns() async {
+        let service: any CompiledDataService = CompiledDataServiceImplementation()
+        let actorImplementation = CompiledDataServiceActorImplementation()
+        let actorService: any CompiledDataServiceActor = actorImplementation
+        let actorContext = await actorService.context
+        let actorReadContext = await actorService.readContext()
+        let actorItem = await compiledActorItem(actorImplementation, at: 2)
+
+        XCTAssertEqual(service.readContext(), 42)
+        XCTAssertEqual(actorContext, 43)
+        XCTAssertEqual(actorReadContext, 43)
+        XCTAssertEqual(actorItem, 45)
+    }
 
     func testFlatEnumMacro() throws {
         #if canImport(Macros)
@@ -467,6 +536,64 @@ final class MacroTests: XCTestCase
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
+
+    func testModelSnapshotMacroWithNonoptionalToOneRelationship() throws {
+        #if canImport(Macros)
+        assertMacroExpansion(
+            """
+            @ModelSnapshot
+            class TestParent {
+                @Relationship
+                var child: TestChild
+            }
+            """,
+            expandedSource: """
+            class TestParent {
+                @Relationship
+                var child: TestChild
+
+                /// A protocol to streamline usage of ``Snapshot`` and ``ShallowSnapshot``
+                public protocol SnapshotProtocol: Sendable {
+                    var persistentModelID: PersistentIdentifier {
+                        get
+                    }
+
+                }
+
+                public struct Snapshot: SnapshotProtocol, Sendable {
+                    public let persistentModelID: PersistentIdentifier
+                    public let child: TestChild.Snapshot
+                    public init(from model: TestParent) {
+                        self.persistentModelID = model.persistentModelID
+                        self.child = TestChild.Snapshot(from: model.child)
+                    }
+                }
+
+                public struct ShallowSnapshot: SnapshotProtocol, Sendable {
+                    public let persistentModelID: PersistentIdentifier
+
+                    public init(from model: TestParent) {
+                        self.persistentModelID = model.persistentModelID
+
+                    }
+                }
+
+                /// - Important: This version snapshots all the relationships that are not not marked by `SnapshotIgnore`
+                /// If you need just the snapshot of the current object use ``shallowSnapshot`` instead
+                public var snapshot: Snapshot {
+                    return Snapshot(from: self)
+                }
+                public var shallowSnapshot: ShallowSnapshot {
+                    return ShallowSnapshot(from: self)
+                }
+            }
+            """,
+            macros: Self.testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
     
     func testActorProtocolMacro() throws {
         #if canImport(Macros)
@@ -477,54 +604,34 @@ final class MacroTests: XCTestCase
 
             @ActorProtocol
             public protocol DataService: Sendable {
+                associatedtype Payload: Sendable
                 var context: Int { get }
+                subscript(index: Int) -> Payload { get }
                 func getContext0() -> Int
                 func getContext1() -> Int
-            }
-            
-            @ActorProtocolExtension(name: "DataService")
-            struct DataServiceImpl: DataService {
-                var context: Int { 0 }
-                override public func getContext0() -> Int { context }
-                @ActorProtocolIgnore
-                override public func getContext1() -> Int { context }
             }
             """,
             expandedSource: """
             import SwiftUI
             import SwiftData
             public protocol DataService: Sendable {
+                associatedtype Payload: Sendable
                 var context: Int { get }
+                subscript(index: Int) -> Payload { get }
                 func getContext0() -> Int
                 func getContext1() -> Int
             }
 
             public protocol DataServiceActor: Sendable, Actor {
+                associatedtype Payload: Sendable
                 var context: Int {
+                    get
+                }
+                subscript(index: Int) -> Payload {
                     get
                 }
                 func getContext0() async -> Int
                 func getContext1() async -> Int
-            }
-            struct DataServiceImpl: DataService {
-                var context: Int { 0 }
-                override public func getContext0() -> Int { context }
-                override public func getContext1() -> Int { context }
-            }
-
-            extension DataService {
-                func getContext0() -> Int {
-                    context
-                }
-                func getContext1() -> Int {
-                    context
-                }
-            }
-
-            extension DataServiceActor {
-                func getContext0() -> Int {
-                    context
-                }
             }
             """,
             macros: Self.testMacros
@@ -798,6 +905,7 @@ final class MacroTests: XCTestCase
             """,
             expandedSource: """
             public final class AppRouter {
+
                 public static let viewTypes = computeViewTypes()
             }
 
