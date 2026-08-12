@@ -1,17 +1,17 @@
 # ``AccelerateExtension``
 
-Binary buffer utilities for Accelerate-style workflows.
+Focused conveniences built on Apple's Accelerate framework.
 
 ## Overview
 
-AccelerateExtension defines `BinaryRepresentableCollection` and adds safe buffer access helpers for common collection types. Use it when you want to feed contiguous numeric data into Accelerate without hand-rolling pointer glue.
+AccelerateExtension adds higher-level operations where vDSP materially improves
+large numeric-buffer workloads. Binary serialization remains in
+`FoundationExtension`; this module uses `AccelerateBuffer` only as the input
+contract for Accelerate algorithms and re-exports the relocated binary API for
+source compatibility.
 
 ## Topics
 
-### Binary Buffers
+### Digital Signal Processing
 
-- ``BinaryRepresentableCollection``
-
-### Guides
-
-- <doc:BinaryBufferIO>
+- <doc:FullConvolution>
