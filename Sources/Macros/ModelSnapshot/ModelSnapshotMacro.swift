@@ -112,11 +112,11 @@ extension ModelSnapshotMacro: MemberMacro {
                         }
                     } else {
                         if prop.useShallow {
-                            snapshotFields += "public let \(prop.name): \(prop.type).ShallowSnapshot?\n"
-                            snapshotInitBody += "self.\(prop.name) = model.\(prop.name).map { \(prop.type).ShallowSnapshot(from: $0) }\n"
+                            snapshotFields += "public let \(prop.name): \(prop.type).ShallowSnapshot\n"
+                            snapshotInitBody += "self.\(prop.name) = \(prop.type).ShallowSnapshot(from: model.\(prop.name))\n"
                         } else {
-                            snapshotFields += "public let \(prop.name): \(prop.type).Snapshot?\n"
-                            snapshotInitBody += "self.\(prop.name) = model.\(prop.name).map { \(prop.type).Snapshot(from: $0) }\n"
+                            snapshotFields += "public let \(prop.name): \(prop.type).Snapshot\n"
+                            snapshotInitBody += "self.\(prop.name) = \(prop.type).Snapshot(from: model.\(prop.name))\n"
                         }
                     }
                 }
