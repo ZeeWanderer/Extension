@@ -1,6 +1,6 @@
 # Router Macro
 
-Generate a cached `viewTypes` map and add ``RouterProtocol`` conformance when missing.
+Generate a cached `viewTypes` map and add `RouterProtocol` conformance when missing.
 
 ## Example
 

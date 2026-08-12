@@ -17,13 +17,15 @@ final class Item {
     @Relationship
     var related: Item? = nil
 
-    @SnapshotShallow
-    @Relationship
-    var tags: [String] = []
 }
 ```
 
 `@SnapshotIgnore` and `@SnapshotShallow` are marker macros used by `@ModelSnapshot`. They don’t emit code by themselves; they only influence snapshot generation.
+
+A nonoptional to-one relationship such as `var child: Child` becomes a
+nonoptional `Child.Snapshot`. Optional relationships remain optional, and
+to-many relationships map every model to its snapshot. `@SnapshotShallow`
+selects the related model's `ShallowSnapshot` instead.
 
 ## Expansion
 
