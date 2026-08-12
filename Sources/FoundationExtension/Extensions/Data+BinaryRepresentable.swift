@@ -12,8 +12,8 @@ public extension Data
     @inlinable
     func load<T: BinaryRepresentable>(as type: T.Type) -> T
     {
-        return self.withUnsafeBytes { (bytes: UnsafeRawBufferPointer) in
-            return bytes.load(as: type)
+        self.withUnsafeBytes { bytes in
+            bytes.loadUnaligned(as: type)
         }
     }
     
@@ -27,24 +27,9 @@ public extension Data
     @inlinable
     func saferLoad<T: BinaryRepresentable>(as type: T.Type) -> T?
     {
-        guard self.count >= MemoryLayout<T>.size
-        else { return nil }
-        
-        return self.withUnsafeBytes { rawBuffer -> T? in
-            guard let baseAddress = rawBuffer.baseAddress
-            else { return nil }
-            
-            if Int(bitPattern: baseAddress) % MemoryLayout<T>.alignment == 0
-            {
-                return baseAddress.load(as: T.self)
-            }
-            else
-            {
-                let value = UnsafeMutablePointer<T>.allocate(capacity: 1)
-                defer { value.deallocate() }
-                memcpy(value, baseAddress, MemoryLayout<T>.size)
-                return value.pointee
-            }
+        guard count >= MemoryLayout<T>.size else { return nil }
+        return withUnsafeBytes { bytes in
+            bytes.loadUnaligned(as: type)
         }
     }
     

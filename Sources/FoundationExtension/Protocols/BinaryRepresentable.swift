@@ -9,20 +9,28 @@ import Foundation
 
 // MARK: - BinaryRepresentable
 
-/// Streamlines transformation to and from Data for conforming types.
-/// - Warning: Ensure that the conforming Type is BitwiseCopyable. Use ``SafeBinaryRepresentable`` when conforming your own type for compile time verification.
+/// Streamlines same-type transformation to and from native bytes.
+///
+/// `BinaryRepresentable` is intentionally a native-memory representation, not
+/// a portable serialization format. The producing and consuming code is
+/// responsible for using the same type and a compatible layout.
+///
+/// - Warning: Ensure that a conforming type is `BitwiseCopyable`. Prefer
+///   ``SafeBinaryRepresentable`` for custom types so the compiler verifies that
+///   requirement.
 public protocol BinaryRepresentable
 {
     init(data: Data)
-    
+
+    /// Loads a value when the buffer contains enough bytes for the requested
+    /// type. This does not validate semantic invariants of the loaded value.
     init?(validating data: Data)
-    
-    /// Generates Data representation
+
+    /// The value's native-memory representation.
     var data: Data { get }
 }
 
-/// Streamlines transformation to and from Data for conforming types.
-/// - Important: Use this instead of ``BinaryRepresentable`` when conforming your own type
+/// A `BinaryRepresentable` type whose native bytes can be copied directly.
 public typealias SafeBinaryRepresentable = BinaryRepresentable & BitwiseCopyable
 
 public extension BinaryRepresentable
@@ -32,21 +40,17 @@ public extension BinaryRepresentable
     {
         self = data.load(as: Self.self)
     }
-    
-    /// Validates data as much as it can before loading
+
     @inlinable
     init?(validating data: Data)
     {
-        guard let newSelf = data.saferLoad(as: Self.self)
-        else { return nil }
-        self = newSelf
+        guard let value = data.saferLoad(as: Self.self) else { return nil }
+        self = value
     }
-    
+
     @inlinable
     var data: Data
     {
-        return withUnsafePointer(to: self) { pointer in
-            return Data(bytes: pointer, count: MemoryLayout<Self>.size)
-        }
+        withUnsafeBytes(of: self) { Data($0) }
     }
 }

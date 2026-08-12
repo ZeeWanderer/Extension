@@ -24,6 +24,12 @@ FoundationExtension adds higher-level helpers around decoding, caching, and comm
 - ``AnyCodingKey``
 - ``load_object(_:)``
 
+### Binary Representation
+
+- ``BinaryRepresentable``
+- ``SafeBinaryRepresentable``
+- ``BinaryRepresentableCollection``
+
 ### Localization
 
 - ``LocalizationDictionary``
@@ -33,3 +39,4 @@ FoundationExtension adds higher-level helpers around decoding, caching, and comm
 ### Guides
 
 - <doc:LossyDecodingAndCaching>
+- <doc:BinaryBufferIO>
