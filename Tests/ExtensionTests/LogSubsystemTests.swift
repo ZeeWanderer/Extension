@@ -18,6 +18,8 @@ final class LoggingPublicAPITests: XCTestCase {
         let expected = Bundle.main.bundleIdentifier ?? "unknown"
         XCTAssertEqual(TestLog.bundle, expected)
         XCTAssertFalse(TestLog.bundle.isEmpty)
+        XCTAssertEqual(TestLog.logScope, "[TestLog]")
+        XCTAssertEqual(TestLog.subsystem, "\(expected).TestLog")
     }
 }
 #endif

@@ -23,18 +23,12 @@ public protocol LogSubsystemProtocol: LogProtocol
 {
     nonisolated static var bundle: String { get }
     nonisolated static var subsystem: String { get }
-    @available(*, deprecated)
-    nonisolated static var name: String { get }
 }
 
 public extension LogSubsystemProtocol
 {
     @inlinable nonisolated static var bundle: String { Bundle.main.bundleIdentifier ?? "unknown" }
-    @available(*, deprecated)
-    @inlinable nonisolated static var name: String { class_ }
     @inlinable nonisolated static var subsystem: String { "\(bundle).\(class_)" }
-    @available(*, deprecated, renamed: "logScope")
-    @inlinable nonisolated static var messagePrefix: String { logScope }
     @inlinable nonisolated static var logScope: String { "[\(class_)]" }
     @inlinable nonisolated static func makeLogger() -> Logger { Logger(subsystem: subsystem, category: class_) }
 }
