@@ -7,10 +7,9 @@
 
 import Foundation
 import XCTest
-@testable import FoundationExtension
+import FoundationExtension
 
-final class LossyTests: XCTestCase
-{
+final class LossyDecodingPublicAPITests: XCTestCase {
     final class TestLossyReporter: LossyDecodingReporter, @unchecked Sendable
     {
         struct Record
