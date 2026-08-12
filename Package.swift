@@ -112,6 +112,9 @@ let package = Package(
                 "SwiftExtension", "FoundationExtension", "GeneralExtensions", "SwiftUIExtension",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax", condition: .when(platforms: [.macOS])),
             ]),
+        .testTarget(
+            name: "ExtensionPerformanceTests",
+            dependencies: ["Extension"]),
     ],
     swiftLanguageModes: [
         .v5,
