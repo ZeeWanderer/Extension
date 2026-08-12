@@ -26,7 +26,10 @@ MacrosExtension provides code generation helpers that live at compile time. They
 
 ### Router Macros
 
-- `@Router` to generate a cached `viewTypes` map for routers.
+- `@Router` to infer storage and rendering protocols and generate a cached
+  registry map when needed.
+- `@RouterDestination` to add destination conformance with generated, renamed,
+  custom, or exact-only flat comparison.
 - <doc:RouterMacro>
 
 ### Logging Macros

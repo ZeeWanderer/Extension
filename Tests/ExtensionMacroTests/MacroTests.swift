@@ -275,6 +275,65 @@ final class MacroTests: XCTestCase
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
+
+    func testRouterDestinationMacroWithoutGeneratedFlatType() throws {
+        #if canImport(Macros)
+        assertMacroExpansion(
+            """
+            @RouterDestination(generateFlat: false)
+            enum Test: Hashable {
+                case value(Int)
+            }
+            """,
+            expandedSource: """
+            enum Test: Hashable {
+                case value(Int)
+            }
+
+            extension Test: RouterDestination {
+            }
+            """,
+            macros: Self.testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    func testRouterDestinationMacroWithCustomFlatName() throws {
+        #if canImport(Macros)
+        assertMacroExpansion(
+            """
+            @RouterDestination(flatName: "Kind")
+            enum Test: Hashable {
+                case value(Int)
+            }
+            """,
+            expandedSource: """
+            enum Test: Hashable {
+                case value(Int)
+
+                public enum Kind: Hashable {
+                    case value
+                }
+
+                public var flat: Kind {
+                    switch self {
+                    case .value:
+                        return .value
+                    }
+                }
+            }
+
+            extension Test: RouterDestination {
+            }
+            """,
+            macros: Self.testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
     
     func testCustomStringConvertibleEnumMacro() throws {
         #if canImport(Macros)
@@ -904,12 +963,81 @@ final class MacroTests: XCTestCase
             public final class AppRouter {}
             """,
             expandedSource: """
-            public final class AppRouter {
-
-                public static let viewTypes = computeViewTypes()
-            }
+            public final class AppRouter {}
 
             extension AppRouter: RouterProtocol {
+            }
+            """,
+            macros: Self.testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    func testRouterMacroInfersSinglePathAndDirectViewProvider() throws {
+        #if canImport(Macros)
+        assertMacroExpansion(
+            """
+            @Router
+            final class AppRouter {
+                var path: [Destination] = []
+
+                func view(for destination: Destination, context: RouterDestinationContext) -> EmptyView {
+                    EmptyView()
+                }
+            }
+            """,
+            expandedSource: """
+            final class AppRouter {
+                var path: [Destination] = []
+
+                func view(for destination: Destination, context: RouterDestinationContext) -> EmptyView {
+                    EmptyView()
+                }
+            }
+
+            extension AppRouter: RouterProtocol, SinglePathRouterProtocol, RouterViewProvider {
+            }
+            """,
+            macros: Self.testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    func testRouterMacroIgnoresViewMethodWithAdditionalParameters() throws {
+        #if canImport(Macros)
+        assertMacroExpansion(
+            """
+            @Router
+            final class AppRouter {
+                var path: [Destination] = []
+
+                func view(
+                    for destination: Destination,
+                    context: RouterDestinationContext,
+                    animated: Bool
+                ) -> EmptyView {
+                    EmptyView()
+                }
+            }
+            """,
+            expandedSource: """
+            final class AppRouter {
+                var path: [Destination] = []
+
+                func view(
+                    for destination: Destination,
+                    context: RouterDestinationContext,
+                    animated: Bool
+                ) -> EmptyView {
+                    EmptyView()
+                }
+            }
+
+            extension AppRouter: RouterProtocol, SinglePathRouterProtocol {
             }
             """,
             macros: Self.testMacros

@@ -8,7 +8,8 @@
 import SwiftUI
 
 /// View contract for a router destination.
-public protocol RouterDestinationView<Destination>: View {
+public protocol RouterDestinationView<Destination>: View
+{
     associatedtype Destination: RouterDestination
     associatedtype Model: RouterDestinationModel where Model.Destination == Destination
     
@@ -17,17 +18,25 @@ public protocol RouterDestinationView<Destination>: View {
     
     /// Builds the view for a destination.
     @MainActor
-    static func makeView(destination: Destination, pathID: AnyHashable?, requester: AnyHashable?) -> AnyView
+    static func makeView(
+        destination: Destination,
+        context: RouterDestinationContext
+    ) -> AnyView
     
     /// Initialize the view with a fully configured model.
     init(model: Model)
 }
 
-public extension RouterDestinationView {
+public extension RouterDestinationView
+{
     @MainActor
-    static func makeView(destination: Destination, pathID: AnyHashable?, requester: AnyHashable?) -> AnyView {
-        var model = Model(destination: destination, pathID: pathID, requester: requester)
-        model.configure(destination: destination, pathID: pathID, requester: requester)
+    static func makeView(
+        destination: Destination,
+        context: RouterDestinationContext
+    ) -> AnyView
+    {
+        var model = Model(destination: destination, context: context)
+        model.configure(destination: destination, context: context)
         return AnyView(Self(model: model))
     }
 }

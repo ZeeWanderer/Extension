@@ -29,6 +29,25 @@ SwiftUIExtension focuses on pragmatic UI plumbing: convenience views, timeline h
 
 - ``SKSceneSwiftUI``
 
+### Router APIs
+
+- ``RouterDestination``
+- ``RouterProtocol``
+- ``SinglePathRouterProtocol``
+- ``DictionaryRouterProtocol``
+- ``RouterViewProvider``
+- ``RouterViewRegistryProtocol``
+- ``RouterDestinationModel``
+- ``RouterDestinationView``
+- ``RouterDestinationContext``
+- ``RouterNavigationOperation``
+- ``RouterNavigationEvent``
+- ``RouterPushOptions``
+- ``RouterPathSearchDirection``
+- ``RouterSinglePathID``
+- ``RouterViewRegistrationConflictPolicy``
+
 ### Guides
 
 - <doc:ViewUtilities>
+- <doc:Routing>

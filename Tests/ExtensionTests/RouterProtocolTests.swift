@@ -39,9 +39,9 @@ final class DetailModel: RouterDestinationModel {
     var pathID: AnyHashable?
     var requester: AnyHashable?
     
-    init(destination: Destination, pathID: AnyHashable?, requester: AnyHashable?) {
-        self.pathID = pathID
-        self.requester = requester
+    init(destination: Destination, context: RouterDestinationContext) {
+        self.pathID = context.pathID
+        self.requester = context.requester
         switch destination {
         case .detail(let id):
             self.id = id
@@ -58,9 +58,9 @@ final class SettingsModel: RouterDestinationModel {
     var pathID: AnyHashable?
     var requester: AnyHashable?
     
-    init(destination: Destination, pathID: AnyHashable?, requester: AnyHashable?) {
-        self.pathID = pathID
-        self.requester = requester
+    init(destination: Destination, context: RouterDestinationContext) {
+        self.pathID = context.pathID
+        self.requester = context.requester
     }
 }
 
@@ -99,7 +99,7 @@ struct SettingsView: RouterDestinationView {
 }
 
 @MainActor
-final class DemoRouter: RouterProtocol {
+final class DemoRouter: DictionaryRouterProtocol, RouterViewRegistryProtocol {
     typealias Destination = DemoDestination
     
     enum PathID: Hashable {
@@ -107,7 +107,7 @@ final class DemoRouter: RouterProtocol {
         case modal
     }
     
-    static let defaultPathID: PathID = .root
+    static let defaultPathID: PathID? = .root
     static let views: [any RouterDestinationView<Destination>.Type] = [
         DetailView.self,
         SettingsView.self,

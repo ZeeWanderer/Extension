@@ -1,34 +1,80 @@
-# Router Macro
+# Router Macros
 
-Generate a cached `viewTypes` map and add `RouterProtocol` conformance when missing.
+Infer common router conformances and generate case-only destination mappings
+without preventing custom storage, rendering, or navigation behavior.
 
-## Example
+## Router
+
+`@Router` inspects the declaration's existing members:
+
+- A `path` property adds `SinglePathRouterProtocol` conformance.
+- A `paths` property adds `DictionaryRouterProtocol` conformance.
+- Neither property adds the storage-independent `RouterProtocol` conformance.
+- A static `views` registry adds `RouterViewRegistryProtocol` conformance and
+  generates `viewTypes` when it is not already declared.
+- A `view(for:context:)` implementation adds `RouterViewProvider` conformance.
+
+Apply `@Router` to a class. Routers are reference types isolated to the main
+actor by `RouterProtocol`.
+
+The macro never creates stored path state. This keeps it compatible with
+`@Observable`, `ObservableObject`, custom nested presentation storage, and
+application-specific initialization.
 
 ```swift
-import MacrosExtension
-import SwiftUIExtension
-
+@MainActor
+@Observable
 @Router
-final class AppRouter: RouterProtocol {
-    enum PathID: Hashable { case main }
+final class AppRouter {
     typealias Destination = AppDestination
 
-    static let defaultPathID: PathID = .main
-    static let views: [any RouterDestinationView<Destination>.Type] = [
-        LoginView.self,
-        ProfileView.self,
-    ]
+    var path: [Destination] = []
 
-    var paths: [PathID: [Destination]] = [:]
+    @ViewBuilder
+    func view(
+        for destination: Destination,
+        context: RouterDestinationContext
+    ) -> some View {
+        destination.view
+    }
 }
 ```
 
-## Expansion
+Explicitly declare any router protocol when member-name inference would not
+express the intended design. The macro preserves that choice and only adds a
+missing rendering conformance when applicable.
+
+## Router Destination
+
+`@RouterDestination` adds `RouterDestination` conformance and normally
+generates a nested `Flat` enum plus the `flat` mapping:
 
 ```swift
-final class AppRouter: RouterProtocol {
-    static let viewTypes = computeViewTypes()
+@RouterDestination
+enum Destination {
+    case details(id: Int)
+    case settings
 }
-
-extension AppRouter: RouterProtocol {}
 ```
+
+Rename the generated type when `Flat` conflicts with an existing declaration:
+
+```swift
+@RouterDestination(flatName: "Kind")
+enum Destination {
+    case details(id: Int)
+    case settings
+}
+```
+
+Suppress generation when exact destination comparison is sufficient or when a
+hand-written mapping is needed:
+
+```swift
+@RouterDestination(generateFlat: false)
+enum Destination {
+    case details(id: Int)
+}
+```
+
+Without a custom mapping, `RouterDestination` uses `Self` as its `Flat` type.

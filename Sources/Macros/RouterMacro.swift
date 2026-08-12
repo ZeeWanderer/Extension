@@ -51,42 +51,88 @@ private func routerAccessPrefix(_ level: RouterAccessLevel) -> String {
     }
 }
 
-private func hasRouterProtocolConformance(_ declaration: some DeclGroupSyntax) -> Bool {
-    func inheritsRouterProtocol(_ clause: InheritanceClauseSyntax?) -> Bool {
-        guard let clause else { return false }
-        return clause.inheritedTypes.contains { inherited in
-            let name = inherited.type.trimmedDescription
-            return name == "RouterProtocol" || name.hasSuffix(".RouterProtocol")
-        }
+private let routerProtocolNames: Set<String> = [
+    "RouterProtocol",
+    "SinglePathRouterProtocol",
+    "DictionaryRouterProtocol",
+    "RouterViewProvider",
+    "RouterViewRegistryProtocol",
+]
+
+private func routerConformances(
+    of declaration: some DeclGroupSyntax
+) -> Set<String> {
+    func inheritedProtocolNames(
+        _ clause: InheritanceClauseSyntax?
+    ) -> Set<String> {
+        guard let clause else { return [] }
+        return Set(clause.inheritedTypes.compactMap { inherited in
+            let qualifiedName = inherited.type.trimmedDescription
+            return routerProtocolNames.first { name in
+                qualifiedName == name || qualifiedName.hasSuffix(".\(name)")
+            }
+        })
     }
-    
+
     if let decl = declaration.as(ClassDeclSyntax.self) {
-        return inheritsRouterProtocol(decl.inheritanceClause)
+        return inheritedProtocolNames(decl.inheritanceClause)
     }
     if let decl = declaration.as(StructDeclSyntax.self) {
-        return inheritsRouterProtocol(decl.inheritanceClause)
+        return inheritedProtocolNames(decl.inheritanceClause)
     }
     if let decl = declaration.as(EnumDeclSyntax.self) {
-        return inheritsRouterProtocol(decl.inheritanceClause)
+        return inheritedProtocolNames(decl.inheritanceClause)
     }
     if let decl = declaration.as(ActorDeclSyntax.self) {
-        return inheritsRouterProtocol(decl.inheritanceClause)
+        return inheritedProtocolNames(decl.inheritanceClause)
     }
-    
-    return false
+
+    return []
 }
 
-private func hasViewTypesMember(_ declaration: some DeclGroupSyntax) -> Bool {
+private func hasRouterMember(
+    named name: String,
+    isStatic expectedStatic: Bool? = nil,
+    in declaration: some DeclGroupSyntax
+) -> Bool {
     for member in declaration.memberBlock.members {
         guard let varDecl = member.decl.as(VariableDeclSyntax.self) else { continue }
+        let isStatic = varDecl.modifiers.contains { modifier in
+            modifier.name.tokenKind == .keyword(.static)
+                || modifier.name.tokenKind == .keyword(.class)
+        }
+        if let expectedStatic, expectedStatic != isStatic { continue }
+
         for binding in varDecl.bindings {
             if let ident = binding.pattern.as(IdentifierPatternSyntax.self),
-               ident.identifier.text == "viewTypes" {
+               ident.identifier.text == name {
                 return true
             }
         }
     }
     return false
+}
+
+private func hasDirectViewProviderMember(
+    _ declaration: some DeclGroupSyntax
+) -> Bool {
+    declaration.memberBlock.members.contains { member in
+        guard let function = member.decl.as(FunctionDeclSyntax.self),
+              function.name.text == "view",
+              !function.modifiers.contains(where: {
+                  $0.name.tokenKind == .keyword(.static)
+                      || $0.name.tokenKind == .keyword(.class)
+              })
+        else {
+            return false
+        }
+
+        let parameters = function.signature.parameterClause.parameters
+        guard parameters.count == 2 else { return false }
+        let first = parameters[parameters.startIndex]
+        let second = parameters[parameters.index(after: parameters.startIndex)]
+        return first.firstName.text == "for" && second.firstName.text == "context"
+    }
 }
 
 extension RouterMacro: MemberMacro {
@@ -95,16 +141,15 @@ extension RouterMacro: MemberMacro {
         providingMembersOf declaration: some DeclGroupSyntax,
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
-        guard declaration.is(StructDeclSyntax.self)
-                || declaration.is(ClassDeclSyntax.self)
-                || declaration.is(EnumDeclSyntax.self)
-                || declaration.is(ActorDeclSyntax.self) else {
-            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.error("can only be applied to a struct, class, enum, or actor."))
+        guard declaration.is(ClassDeclSyntax.self) else {
+            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.error("can only be applied to a class."))
             context.diagnose(diag)
             return []
         }
         
-        if hasViewTypesMember(declaration) {
+        guard hasRouterMember(named: "views", isStatic: true, in: declaration),
+              !hasRouterMember(named: "viewTypes", isStatic: true, in: declaration)
+        else {
             return []
         }
         
@@ -121,24 +166,66 @@ extension RouterMacro: ExtensionMacro {
                                  conformingTo protocols: [TypeSyntax],
                                  in context: some MacroExpansionContext)
     throws -> [ExtensionDeclSyntax] {
-        guard declaration.is(StructDeclSyntax.self)
-                || declaration.is(ClassDeclSyntax.self)
-                || declaration.is(EnumDeclSyntax.self)
-                || declaration.is(ActorDeclSyntax.self) else {
-            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.error("can only be applied to a struct, class, enum, or actor."))
+        guard declaration.is(ClassDeclSyntax.self) else {
+            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.error("can only be applied to a class."))
             context.diagnose(diag)
             return []
         }
         
-        if hasRouterProtocolConformance(declaration) {
+        let existingConformances = routerConformances(of: declaration)
+        var addedConformances: [String] = []
+
+        if existingConformances.isDisjoint(with: routerProtocolNames)
+        {
+            if hasRouterMember(named: "path", isStatic: false, in: declaration)
+            {
+                addedConformances.append("RouterProtocol")
+                addedConformances.append("SinglePathRouterProtocol")
+            }
+            else if hasRouterMember(named: "paths", isStatic: false, in: declaration)
+            {
+                addedConformances.append("RouterProtocol")
+                addedConformances.append("DictionaryRouterProtocol")
+            }
+            else
+            {
+                addedConformances.append("RouterProtocol")
+            }
+        }
+
+        let hasViewProvider = existingConformances.contains("RouterViewProvider")
+            || existingConformances.contains("RouterViewRegistryProtocol")
+
+        if hasRouterMember(named: "views", isStatic: true, in: declaration),
+           !hasViewProvider
+        {
+            if !existingConformances.contains("RouterViewProvider")
+            {
+                addedConformances.append("RouterViewProvider")
+            }
+            addedConformances.append("RouterViewRegistryProtocol")
+        }
+        else if hasDirectViewProviderMember(declaration),
+                !hasViewProvider
+        {
+            addedConformances.append("RouterViewProvider")
+        }
+
+        guard !addedConformances.isEmpty else
+        {
             return []
         }
-        
+
         let extensionDecl = ExtensionDeclSyntax(
             extendedType: type,
             inheritanceClause: InheritanceClauseSyntax(
                 inheritedTypes: InheritedTypeListSyntax {
-                    InheritedTypeSyntax(type: TypeSyntax(stringLiteral: "RouterProtocol"))
+                    for conformance in addedConformances
+                    {
+                        InheritedTypeSyntax(
+                            type: TypeSyntax(stringLiteral: conformance)
+                        )
+                    }
                 }
             )
         ) {}

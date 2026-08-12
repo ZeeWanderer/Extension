@@ -19,13 +19,26 @@ enum RouterMacroDestination {
     case settings
 }
 
+@RouterDestination(generateFlat: false)
+enum ExactRouterMacroDestination
+{
+    case detail(id: Int)
+}
+
+@RouterDestination(flatName: "Kind")
+enum NamedFlatRouterMacroDestination
+{
+    case detail(id: Int)
+    case settings
+}
+
 @Observable
 final class RouterMacroDetailModel: RouterDestinationModel {
     typealias Destination = RouterMacroDestination
     
     var id: Int
     
-    init(destination: Destination, pathID: AnyHashable?, requester: AnyHashable?) {
+    init(destination: Destination, context: RouterDestinationContext) {
         switch destination {
         case .detail(let id):
             self.id = id
@@ -39,7 +52,7 @@ final class RouterMacroDetailModel: RouterDestinationModel {
 final class RouterMacroSettingsModel: RouterDestinationModel {
     typealias Destination = RouterMacroDestination
     
-    init(destination: Destination, pathID: AnyHashable?, requester: AnyHashable?) {}
+    init(destination: Destination, context: RouterDestinationContext) {}
 }
 
 struct RouterMacroDetailView: RouterDestinationView {
@@ -85,13 +98,61 @@ final class RouterMacroRouter {
         case root
     }
     
-    static let defaultPathID: PathID = .root
+    static let defaultPathID: PathID? = .root
     static let views: [any RouterDestinationView<Destination>.Type] = [
         RouterMacroDetailView.self,
         RouterMacroSettingsView.self,
     ]
     
     var paths: [PathID: [Destination]] = [:]
+}
+
+@MainActor
+@Router
+final class SinglePathRouterMacroRouter
+{
+    typealias Destination = RouterMacroDestination
+
+    var path: [Destination] = []
+
+    func view(
+        for destination: Destination,
+        context: RouterDestinationContext
+    ) -> some View
+    {
+        Text(String(describing: destination))
+    }
+}
+
+@MainActor
+@Router
+final class CustomStorageRouterMacroRouter
+{
+    typealias Destination = ExactRouterMacroDestination
+
+    enum PathID: Hashable
+    {
+        case active
+    }
+
+    var storage: [Destination] = []
+
+    static let defaultPathID: PathID? = .active
+
+    func path(for pathID: PathID) -> [Destination]
+    {
+        storage
+    }
+
+    @discardableResult
+    func withPath(
+        _ pathID: PathID,
+        _ mutation: (inout [Destination]) -> Void
+    ) -> Bool
+    {
+        mutation(&storage)
+        return true
+    }
 }
 
 final class RouterMacroUsageTests: XCTestCase {
@@ -104,6 +165,34 @@ final class RouterMacroUsageTests: XCTestCase {
         XCTAssertNotNil(RouterMacroRouter.viewTypes[.detail])
         XCTAssertNotNil(RouterMacroRouter.viewTypes[.settings])
         _ = router.view(for: .settings)
+    }
+
+    @MainActor
+    func testRouterMacroInfersSinglePathAndDirectViewProvider()
+    {
+        let router = SinglePathRouterMacroRouter()
+
+        XCTAssertEqual(router.push(.detail(id: 2)), .main)
+        XCTAssertEqual(router.path, [.detail(id: 2)])
+        _ = router.view(for: .settings)
+    }
+
+    @MainActor
+    func testRouterMacroLeavesCustomStorageAvailable()
+    {
+        let router = CustomStorageRouterMacroRouter()
+
+        XCTAssertEqual(router.push(.detail(id: 5)), .active)
+        XCTAssertEqual(router.storage, [.detail(id: 5)])
+    }
+
+    func testRouterDestinationMacroSupportsExactAndNamedFlatRepresentations()
+    {
+        let exact = ExactRouterMacroDestination.detail(id: 4)
+        let named = NamedFlatRouterMacroDestination.detail(id: 4)
+
+        XCTAssertEqual(exact.flat, exact)
+        XCTAssertEqual(named.flat, .detail)
     }
 }
 

@@ -35,12 +35,36 @@ extension RouterDestinationMacro: MemberMacro {
         providingMembersOf declaration: some DeclGroupSyntax,
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
+        if let arguments = node.arguments?.as(LabeledExprListSyntax.self),
+           let generateExpression = arguments.first(where: {
+               $0.label?.text == "generateFlat"
+           })?.expression
+        {
+            guard let boolean = generateExpression.as(BooleanLiteralExprSyntax.self)
+            else
+            {
+                let diagnostic = Diagnostic(
+                    node: generateExpression,
+                    message: MacroDiagnostic<Self>.error(
+                        "generateFlat must be a boolean literal"
+                    )
+                )
+                context.diagnose(diagnostic)
+                return []
+            }
+
+            if boolean.literal.tokenKind == .keyword(.false)
+            {
+                return []
+            }
+        }
+
         return try FlatEnumMacroSupport.expansion(
             of: node,
             providingMembersOf: declaration,
             in: context,
             macroType: Self.self,
-            allowArguments: false,
+            allowArguments: true,
             forceFlatName: "Flat",
             defaultGenerateName: false
         )

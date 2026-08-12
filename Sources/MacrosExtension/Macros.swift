@@ -20,7 +20,10 @@ public macro FlatEnum(name: String? = nil, generateName: Bool = true) =
 
 @attached(member, names: arbitrary)
 @attached(extension, conformances: RouterDestination, names: arbitrary)
-public macro RouterDestination() =
+public macro RouterDestination(
+    flatName: String? = nil,
+    generateFlat: Bool = true
+) =
 #externalMacro(
     module: "Macros", type: "RouterDestinationMacro"
 )
@@ -65,7 +68,15 @@ public macro Transactional<R>(keyPath: any KeyPath<R, ModelContext?> & Sendable,
 )
 
 @attached(member, names: named(viewTypes))
-@attached(extension, conformances: RouterProtocol, names: arbitrary)
+@attached(
+    extension,
+    conformances: RouterProtocol,
+        SinglePathRouterProtocol,
+        DictionaryRouterProtocol,
+        RouterViewProvider,
+        RouterViewRegistryProtocol,
+    names: arbitrary
+)
 public macro Router() =
 #externalMacro(
     module: "Macros", type: "RouterMacro"
