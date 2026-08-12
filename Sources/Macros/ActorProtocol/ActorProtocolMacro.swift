@@ -28,60 +28,21 @@ extension ActorProtocolMacro: PeerMacro {
         let protoName = protocolDecl.name.text
         let actorProtoName = "\(protoName)Actor"
 
-        let vars = protocolDecl.memberBlock.members
-            .compactMap { $0.decl.as(VariableDeclSyntax.self) }
-            .map { v -> VariableDeclSyntax in
-                var newV = v
+        let members = protocolDecl.memberBlock.members.map { member -> MemberBlockItemSyntax in
+            guard var function = member.decl.as(FunctionDeclSyntax.self) else {
+                return member
+            }
 
-                let newBindings = newV.bindings.map { binding in
-                    
-                    var newBinding = binding
-                    
-                    if var newAccessorBlock = binding.accessorBlock {
-                        let accessors = newAccessorBlock.accessors.as(AccessorDeclListSyntax.self)
-   
-                        let newAccessors: [AccessorDeclListSyntax.Element] = accessors?.map { accessor in
-                            var newAccessor = accessor
-                            if newAccessor.effectSpecifiers?.asyncSpecifier == nil {
-                                var newEffectSpecs = accessor.effectSpecifiers ?? AccessorEffectSpecifiersSyntax()
-                                newEffectSpecs.asyncSpecifier = .keyword(.async)
-                                // TODO: figure this out
-                                // newAccessor.effectSpecifiers = newEffectSpecs
-                            }
-                            return newAccessor
-                        } ?? []
-                        
-                        newAccessorBlock.accessors = .accessors(
-                            AccessorDeclListSyntax{
-                                newAccessors
-                            }
-                        )
-                        newBinding.accessorBlock = newAccessorBlock
-                    }
-                    
-                    return newBinding
-                }
-                
-                newV.bindings = PatternBindingListSyntax {
-                    newBindings
-                }
-                
-                return newV
+            var effectSpecifiers = function.signature.effectSpecifiers ?? FunctionEffectSpecifiersSyntax()
+            if effectSpecifiers.asyncSpecifier == nil {
+                effectSpecifiers.asyncSpecifier = .keyword(.async)
             }
-        
-        let methods = protocolDecl.memberBlock.members
-            .compactMap { $0.decl.as(FunctionDeclSyntax.self) }
-            .map { fn -> FunctionDeclSyntax in
-                var newFn = fn
-                
-                var newEffectSpecs = newFn.signature.effectSpecifiers ?? FunctionEffectSpecifiersSyntax()
-                if newEffectSpecs.asyncSpecifier == nil {
-                    newEffectSpecs.asyncSpecifier = .keyword(.async)
-                }
-                
-                newFn.signature.effectSpecifiers = newEffectSpecs
-                return newFn
-            }
+            function.signature.effectSpecifiers = effectSpecifiers
+
+            var transformed = member
+            transformed.decl = DeclSyntax(function)
+            return transformed
+        }
 
         var newInheritanceClause = protocolDecl.inheritanceClause ?? InheritanceClauseSyntax(inheritedTypes: InheritedTypeListSyntax())
         var newInheritedTypes = protocolDecl.inheritanceClause?.inheritedTypes.map { $0.trimmed as InheritedTypeSyntax } ?? []
@@ -93,8 +54,7 @@ extension ActorProtocolMacro: PeerMacro {
         
         let peerProtocol = ProtocolDeclSyntax(modifiers: protocolDecl.modifiers ,name: .identifier(actorProtoName), inheritanceClause: newInheritanceClause) {
             MemberBlockItemListSyntax {
-                vars
-                methods
+                members
             }
         }
 
