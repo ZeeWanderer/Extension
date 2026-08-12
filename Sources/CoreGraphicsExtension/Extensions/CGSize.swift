@@ -36,11 +36,7 @@ public extension CGSize
     @_transparent
     var diagonal: CGFloat
     {
-        // Opt for squares
-        if self.width == self.height { return self.width * CGFloat.root(2.0, 2) }
-        
-        // Universal path
-        return CGFloat.root(CGFloat.pow(self.width, 2) + CGFloat.pow(self.height, 2), 2)
+        hypot(self.width, self.height)
     }
     
     /// See ``clamp(_:width:)``

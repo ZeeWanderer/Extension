@@ -5,128 +5,127 @@
 //  Created by zeewanderer on 19.01.2026.
 //
 
+import CoreGraphics
 import XCTest
-@testable import FoundationExtension
-@testable import AccelerateExtension
-@testable import CoreGraphicsExtension
-@testable import SwiftExtension
+import CoreGraphicsExtension
 
 #if canImport(CoreGraphics)
-final class CoreGraphicsExtensionTests: XCTestCase
-{
-    func testBoundingBoxValidity()
-    {
-        let r1 = CGRect(origin: .zero, size: CGSize(width: 100, height: 100))
-        let r2 = CGRect(origin: CGPoint(x: 300, y: 300), size: CGSize(width: 100, height: 100))
-        let r3 = CGRect(origin: CGPoint(x: 1000, y: 200), size: CGSize(width: 100, height: 100))
-        let result1 = r1.union(r2)
-        let result2 = union([r1, r2])
-        
-        XCTAssertEqual(result1, result2)
-        
-        let result3 = result1.union(r3)
-        let result4 = union([r1, r2, r3])
-        
-        XCTAssertEqual(result3, result4)
+final class CoreGraphicsPublicAPITests: XCTestCase {
+    func testUnionMatchesPairwiseCoreGraphicsUnion() {
+        let rectangles = [
+            CGRect(x: 0, y: 0, width: 100, height: 100),
+            CGRect(x: 300, y: 300, width: 100, height: 100),
+            CGRect(x: 1_000, y: 200, width: 100, height: 100),
+        ]
+
+        let expected = rectangles.dropFirst().reduce(rectangles[0]) { $0.union($1) }
+
+        XCTAssertEqual(union(rectangles), expected)
+        XCTAssertEqual(rectangles[0].union(Array(rectangles.dropFirst())), expected)
+        XCTAssertTrue(union([]).isNull)
     }
-    
-    func testBoundingBox2Performance()
-    {
-        let r1 = CGRect(origin: .zero, size: CGSize(width: 100, height: 100))
-        let r2 = CGRect(origin: CGPoint(x: 300, y: 300), size: CGSize(width: 100, height: 100))
-        
-        measure {
-            let _ = r1.union(r2)
-        }
+
+    func testNumeric2DOperatorsApplyToEachCoordinate() {
+        let point = CGPoint(x: 2, y: 3)
+        let size = CGSize(width: 4, height: 5)
+
+        XCTAssertEqual(point.dot(size), 23)
+        XCTAssertEqual(point.hadamard(size), CGPoint(x: 8, y: 15))
+
+        let quotient = point.hadamardDivide(size)
+        XCTAssertEqual(quotient.x, 0.5, accuracy: 0.000_001)
+        XCTAssertEqual(quotient.y, 0.6, accuracy: 0.000_001)
+        XCTAssertEqual(point.scaled(x: 4, y: 5), CGPoint(x: 8, y: 15))
     }
-    
-    func testBoundingBox3Performance()
-    {
-        let r1 = CGRect(origin: .zero, size: CGSize(width: 100, height: 100))
-        let r2 = CGRect(origin: CGPoint(x: 300, y: 300), size: CGSize(width: 100, height: 100))
-        let r3 = CGRect(origin: CGPoint(x: 1000, y: 200), size: CGSize(width: 100, height: 100))
-        
-        measure {
-            let result1 = r1.union(r2)
-            let _ = result1.union(r3)
-        }
+
+    func testNumeric2DCrossTypeArithmeticPreservesTheLeftHandType() {
+        let point = CGPoint(x: 6, y: 8)
+        let size = CGSize(width: 2, height: 4)
+        let vector = CGVector(dx: 3, dy: 2)
+
+        XCTAssertEqual(point + size, CGPoint(x: 8, y: 12))
+        XCTAssertEqual(size - vector, CGSize(width: -1, height: 2))
+        XCTAssertEqual(vector + 2, CGVector(dx: 5, dy: 4))
+        XCTAssertEqual(point - 2, CGPoint(x: 4, y: 6))
+        XCTAssertEqual(point * 2, CGPoint(x: 12, y: 16))
+        XCTAssertEqual(point / 2, CGPoint(x: 3, y: 4))
+        XCTAssertEqual(-vector, CGVector(dx: -3, dy: -2))
+        XCTAssertEqual(point.dot(vector), 34)
+        XCTAssertEqual(point.hadamard(vector), CGPoint(x: 18, y: 16))
+        XCTAssertEqual(point.hadamardDivide(size), CGPoint(x: 3, y: 2))
     }
-    
-    func testBoundingBoxArray2Performance()
-    {
-        let r1 = CGRect(origin: .zero, size: CGSize(width: 100, height: 100))
-        let r2 = CGRect(origin: CGPoint(x: 300, y: 300), size: CGSize(width: 100, height: 100))
-        
-        measure {
-            let _ = union([r1, r2])
-        }
+
+    func testNumeric2DMutatingArithmeticMatchesNonmutatingOperators() {
+        var point = CGPoint(x: 1, y: 2)
+
+        point += CGSize(width: 3, height: 4)
+        XCTAssertEqual(point, CGPoint(x: 4, y: 6))
+        point -= CGVector(dx: 1, dy: 2)
+        XCTAssertEqual(point, CGPoint(x: 3, y: 4))
+        point.negate()
+        XCTAssertEqual(point, CGPoint(x: -3, y: -4))
     }
-    
-    func testBoundingBoxArray3Performance()
-    {
-        let r1 = CGRect(origin: .zero, size: CGSize(width: 100, height: 100))
-        let r2 = CGRect(origin: CGPoint(x: 300, y: 300), size: CGSize(width: 100, height: 100))
-        let r3 = CGRect(origin: CGPoint(x: 1000, y: 200), size: CGSize(width: 100, height: 100))
-        
-        measure {
-            let _ = union([r1, r2, r3])
-        }
+
+    func testNumeric2DInterpolationSupportsScalarAndPerAxisParameters() {
+        let minimum = CGPoint(x: 0, y: 10)
+        let maximum = CGPoint(x: 8, y: 30)
+
+        let scalarResult: CGPoint = lerp(0.25, min: minimum, max: maximum)
+        let perAxisResult: CGPoint = lerp(CGPoint(x: 0.25, y: 0.75), min: minimum, max: maximum)
+        let inverseResult: CGPoint = ilerp(perAxisResult, min: minimum, max: maximum)
+
+        XCTAssertEqual(scalarResult, CGPoint(x: 2, y: 15))
+        XCTAssertEqual(perAxisResult, CGPoint(x: 2, y: 25))
+        XCTAssertEqual(inverseResult, CGPoint(x: 0.25, y: 0.75))
     }
-    
-    func testLerpValidity()
-    {
-        let r0: Double = lerp(0.5, min: 0.0, max: 10.0)
-        let r1: Double = lerp(0.5, min: 0.0, max: 10.0)
-        let r2: Double = lerp(1.0, min: 0.0, max: 10.0)
-        
-        XCTAssertEqual(r0, r1)
-        XCTAssertEqual(r0, 5)
-        XCTAssertEqual(r2, 10)
+
+    func testNumeric2DClampingCanTargetIndividualAxes() {
+        let value = CGPoint(x: -4, y: 12)
+
+        XCTAssertEqual(value.clamped(x: 0...10), CGPoint(x: 0, y: 12))
+        XCTAssertEqual(value.clamped(y: 0...10), CGPoint(x: -4, y: 10))
+        XCTAssertEqual(value.clamped(to: 0...10), CGPoint(x: 0, y: 10))
     }
-    
-    func testBinaryRepresentable()
-    {
-        let r1 = Array<Int>([0, 1, 2, 3])
-        let r1d = r1.data
-        let r1c = Array<Int>(data: r1d)
-        
-        struct Test0: Equatable, SafeBinaryRepresentable
-        {
-            let int0: Int
-            let int1: Int
-        }
-        
-        let t0: Test0 = .init(int0: 0, int1: 1)
-        let t0r: Data = t0.data
-        let t0r1 = Test0(data: t0r)
-        
-        let t1: CGRect = .init(x: 1, y: 2, width: 4, height: 5)
-        let t1r: Data = t1.data
-        let t1r1 = CGRect(data: t1r)
-        
-        let t2: [Double] = [1, 2, 4, 5]
-        let t2r: Data = t2.data
-        let t2r1 = CGRect(data: t2r)
-        
-        let t3: [Double] = [1, 2, 4]
-        let t3r: Data = t3.data
-        let t3r1 = CGRect(validating: t3r)
-        
-        let r2 = Array<Test0>([.init(int0: 0, int1: 1), .init(int0: 2, int1: 3)])
-        let r2d = r2.data
-        let r2c = Array<Test0>(data: r2d)
-        
-        let r3 = Set<Int>([1,2,3])
-        let r3d = r3.data
-        let r3c = Set<Int>(data: r3d)
-        
-        XCTAssertEqual(r1, r1c)
-        XCTAssertEqual(r2, r2c)
-        XCTAssertEqual(r3, r3c)
-        XCTAssertEqual(t0, t0r1)
-        XCTAssertEqual(t1, t1r1)
-        XCTAssertEqual(t1, t2r1)
-        XCTAssertEqual(nil, t3r1)
+
+    func testGeometryConveniencesPreserveTheirDocumentedMeaning() {
+        let rect = CGRect(x: 10, y: 20, width: 30, height: 40)
+
+        XCTAssertEqual(rect.center, CGPoint(x: 25, y: 40))
+        XCTAssertEqual(rect.translatedBy(dx: 5, dy: -10), CGRect(x: 15, y: 10, width: 30, height: 40))
+        XCTAssertEqual(CGSize(width: 3, height: 4).diagonal, 5, accuracy: 0.000_001)
     }
+
+    func testSizeDiagonalHandlesNegativeAndLargeDimensions() {
+        XCTAssertEqual(
+            CGSize(width: -3, height: -3).diagonal,
+            3 * CGFloat(2).squareRoot(),
+            accuracy: 0.000_001
+        )
+
+        let large = CGSize(
+            width: CGFloat.greatestFiniteMagnitude / 2,
+            height: CGFloat.greatestFiniteMagnitude / 3
+        )
+        XCTAssertTrue(large.diagonal.isFinite)
+    }
+
+    func testCoreGraphicsTypesRemainBinaryRepresentable() {
+        let scalar = CGFloat(1.25)
+        let point = CGPoint(x: 1, y: 2)
+        let size = CGSize(width: 3, height: 4)
+        let vector = CGVector(dx: 5, dy: 6)
+        let rect = CGRect(x: 1, y: 2, width: 4, height: 5)
+
+        XCTAssertEqual(CGFloat(data: scalar.data), scalar)
+        XCTAssertEqual(scalar.data, scalar.native.data)
+        XCTAssertEqual(scalar.data.count, MemoryLayout<CGFloat.NativeType>.size)
+        XCTAssertEqual(CGPoint(data: point.data), point)
+        XCTAssertEqual(CGSize(data: size.data), size)
+        XCTAssertEqual(CGVector(data: vector.data), vector)
+        XCTAssertEqual(CGRect(data: rect.data), rect)
+        XCTAssertEqual(rect.data.count, MemoryLayout<CGRect>.size)
+        XCTAssertNil(CGRect(validating: Data(count: MemoryLayout<CGRect>.size - 1)))
+    }
+
 }
 #endif
