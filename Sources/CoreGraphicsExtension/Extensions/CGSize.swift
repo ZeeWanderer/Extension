@@ -39,27 +39,4 @@ public extension CGSize
         hypot(self.width, self.height)
     }
     
-    /// See ``clamp(_:width:)``
-    @_transparent
-    @available(*, deprecated, renamed: "clamped(x:)")
-    func clamped(width range: ClosedRange<CGFloat>) -> CGSize
-    {
-        return clamp(self, width: range)
-    }
-    
-    /// See ``clamp(_:height:)``
-    @_transparent
-    @available(*, deprecated, renamed: "clamped(y:)")
-    func clamped(height range: ClosedRange<CGFloat>) -> CGSize
-    {
-        return clamp(self, height: range)
-    }
-    
-    /// See ``clamp(_:width:height:)``
-    @_transparent
-    @available(*, deprecated, renamed: "clamped(x:y:)")
-    func clamped(width rangeWidth: ClosedRange<CGFloat>, height rangeHeight: ClosedRange<CGFloat>) -> CGSize
-    {
-        return clamp(self, width: rangeWidth, height: rangeHeight)
-    }
 }
