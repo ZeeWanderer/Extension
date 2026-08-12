@@ -59,7 +59,7 @@ public extension UIViewController
             {
                 return selectedViewController.topMostViewController()
             }
-            return tabBarController.topMostViewController()
+            return tabBarController
         }
         else
         {
