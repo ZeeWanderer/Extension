@@ -103,6 +103,9 @@ let package = Package(
             name: "ExtensionTests",
             dependencies: [
                 "SwiftExtension", "FoundationExtension", "osExtension", "ObservationExtension", "AccelerateExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions", "Extension",
+            ],
+            resources: [
+                .process("Fixtures"),
             ]),
         .testTarget(
             name: "ExtensionMacroTests",

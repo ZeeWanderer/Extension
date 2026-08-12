@@ -22,7 +22,8 @@ FoundationExtension adds higher-level helpers around decoding, caching, and comm
 ### Coding Utilities
 
 - ``AnyCodingKey``
-- ``load_object(_:)``
+- ``JSONCoding``
+- ``JSONCodingError``
 
 ### Binary Representation
 
@@ -40,3 +41,4 @@ FoundationExtension adds higher-level helpers around decoding, caching, and comm
 
 - <doc:LossyDecodingAndCaching>
 - <doc:BinaryBufferIO>
+- <doc:JSONCodingGuide>
