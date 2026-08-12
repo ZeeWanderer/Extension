@@ -49,15 +49,6 @@ public macro ActorProtocol() =
     module: "Macros", type: "ActorProtocolMacro"
 )
 
-@attached(extension, names: arbitrary)
-public macro ActorProtocolExtension(name: String) =
-#externalMacro(
-    module: "Macros", type: "ActorProtocolExtensionMacro"
-)
-
-@attached(peer)
-public macro ActorProtocolIgnore() = #externalMacro(module: "Macros", type: "ActorProtocolIgnoreMacro")
-
 @attached(body)
 public macro Transactional(ctx: ModelContext? = nil, retval: Any? = nil) = #externalMacro(
     module: "Macros", type: "TransactionalMacro"

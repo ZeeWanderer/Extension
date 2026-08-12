@@ -1,6 +1,10 @@
 # Actor Protocol Macros
 
-Derive actor-facing protocols and glue code from protocol definitions.
+Derive an actor-facing companion protocol from a synchronous protocol definition.
+
+The generated protocol preserves all original requirements and inheritance.
+Function requirements that are not already asynchronous gain `async`; properties,
+subscripts, and associated types are copied without being discarded or reordered.
 
 ## Example
 
@@ -14,12 +18,18 @@ public protocol DataService: Sendable {
     func getContext1() -> Int
 }
 
-@ActorProtocolExtension(name: "DataService")
 struct DataServiceImpl: DataService {
-    var context: Int { 0 }
-    override public func getContext0() -> Int { context }
-    @ActorProtocolIgnore
-    override public func getContext1() -> Int { context }
+    let context: Int
+
+    func getContext0() -> Int { context }
+    func getContext1() -> Int { context }
+}
+
+actor ActorDataServiceImpl: DataServiceActor {
+    let context: Int
+
+    func getContext0() -> Int { context }
+    func getContext1() -> Int { context }
 }
 ```
 
@@ -38,18 +48,16 @@ public protocol DataServiceActor: Sendable, Actor {
     func getContext1() async -> Int
 }
 
-extension DataService {
-    func getContext0() -> Int {
-        context
-    }
-    func getContext1() -> Int {
-        context
-    }
-}
-
-extension DataServiceActor {
-    func getContext0() -> Int {
-        context
-    }
-}
 ```
+
+Synchronous actor implementations satisfy the generated asynchronous function
+requirements. Access through `DataServiceActor` still requires `await` because
+the companion protocol inherits from `Actor`.
+
+## Migration
+
+`@ActorProtocolExtension` and `@ActorProtocolIgnore` were removed. The former
+attempted to generate extensions of types other than the declaration it was
+attached to, which Swift's macro system rejects in real client compilation.
+Move those method bodies directly into conforming types or ordinary protocol
+extensions.

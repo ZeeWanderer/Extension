@@ -16,7 +16,7 @@ MacrosExtension provides code generation helpers that live at compile time. They
 
 ### Actor Protocol Macros
 
-- `@ActorProtocol`, `@ActorProtocolExtension(name:)`, and `@ActorProtocolIgnore` to standardize actor protocol surfaces and opt-out cases.
+- `@ActorProtocol` to derive an actor-isolated companion protocol.
 - <doc:ActorProtocolMacros>
 
 ### Transaction Macros
