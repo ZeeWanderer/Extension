@@ -123,6 +123,65 @@ their SwiftUI equivalents:
 | `compat_background` | `background(alignment:content:)` |
 | `compat_mask` | `mask(alignment:_:)` |
 
+### Migrate router storage and rendering separately
+
+`RouterProtocol` is now storage-independent and no longer requires a `paths`
+dictionary or a destination view registry. Select the refinements that match
+the router:
+
+| 15.x shape | 16.0 conformance |
+| --- | --- |
+| One stored `path` | `SinglePathRouterProtocol` |
+| `[PathID: [Destination]]` storage | `DictionaryRouterProtocol` |
+| Tabs, nested sheets, generated paths, or other custom storage | `RouterProtocol` |
+| Router/destination-owned `@ViewBuilder` | `RouterViewProvider` |
+| Separate registered destination views and models | `RouterViewRegistryProtocol` |
+
+For dictionary storage, make the default identifier optional:
+
+```swift
+static let defaultPathID: PathID? = .main
+```
+
+For custom storage, implement `path(for:)` and `withPath(_:_:)`. Return `false`
+from `withPath` when the requested mutable path does not exist. Override
+`resolvePathID(_:)` to substitute an active tab or presentation when a caller
+omits the identifier.
+
+`push(_:to:options:)` now returns the resolved `PathID?`. Existing callers may
+discard it; presentation routers can return an allocated sheet identifier.
+Navigation mutations are protocol requirements, so overrides continue to
+dispatch through generic router code. Override the full requirement signature,
+including the optional path and options, rather than a convenience overload.
+
+Use `rootDestination(for:on:)` for roots represented by an empty path. Move
+logging, breadcrumbs, and navigation policy into `routerDidPerform(_:)` and
+`shouldPerformNavigation(_:on:)` when the default mutations remain suitable.
+
+Flat-destination pop calls now use an unambiguous label:
+
+```swift
+router.pop(toFlat: .details)
+router.pop(.sheet, toFlat: .details)
+Router.pop(&path, toFlat: .details)
+```
+
+This avoids an overload collision when `Destination.Flat == Destination`.
+The same distinction applies to path searches: use `firstIndex(_:ofFlat:)`
+and `lastIndex(_:ofFlat:)` for static flat searches, or
+`firstIndex(ofFlat:on:)` and `lastIndex(ofFlat:on:)` on a router instance.
+
+`RouterDestinationModel` and `RouterDestinationView.makeView` now receive a
+`RouterDestinationContext` instead of separate `pathID` and `requester`
+arguments. Read those values from `context`; put additional construction data
+in `context.userInfo`.
+
+`@Router` now infers single-path, dictionary, custom-storage, direct-view, and
+registry conformances. It generates `viewTypes` only when a static `views`
+registry exists. `@RouterDestination` accepts `flatName:` and
+`generateFlat:`. A destination without a generated or custom flat mapping uses
+itself for exact comparison.
+
 ### Review corrected behavior
 
 - `Queue` copies now have independent value semantics.
