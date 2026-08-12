@@ -119,8 +119,5 @@ let package = Package(
             name: "ExtensionPerformanceTests",
             dependencies: ["Extension"]),
     ],
-    swiftLanguageModes: [
-        .v5,
-        .v6
-    ]
+    swiftLanguageModes: [.v6]
 )
