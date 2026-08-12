@@ -23,3 +23,9 @@ let payload: [String: Int] = makeDictionary {
     }
 }
 ```
+
+`Queue` is backed by a linked list and uses copy-on-write so copied queues retain
+value semantics. `FastQueue` is the array-backed choice for throughput-sensitive
+FIFO work. `HashedHeap` stores unique values: repeated inserts are no-ops, input
+arrays keep only their first occurrence, and its public index map stays aligned
+after replacement and removal.

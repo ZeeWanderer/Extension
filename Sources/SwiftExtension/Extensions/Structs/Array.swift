@@ -10,6 +10,7 @@ public extension Array
     @inlinable
     func chunked(into size: Int) -> [[Element]]
     {
+        guard size > 0 else { return [] }
         return stride(from: 0, to: count, by: size).map
         {
             Array(self[$0 ..< Swift.min($0 + size, count)])
@@ -28,6 +29,7 @@ public extension Array
     @inlinable
     subscript(safe range: CountableClosedRange<Index>) -> ArraySlice<Element>
     {
+        guard !isEmpty else { return [] }
         let start = Swift.max(range.lowerBound, startIndex)
         let end = Swift.min(range.upperBound, endIndex - 1)
         if end < start { return [] }

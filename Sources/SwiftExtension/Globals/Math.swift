@@ -46,19 +46,20 @@ public func ilerp<T>(_ parameter: T, min: T, max: T) -> T where T: Real
 }
 
 /// Greatest Common Divisor of 2 integers (GCD also known as Greatest Common Factor or GCF).
-@_transparent
+@inlinable
 public func greatestCommonDivisor<T>(_ m: T, _ n: T) -> T where T: BinaryInteger
 {
-    var b = max(m, n)
-    var r = min(m, n)
-    
-    while r != 0
-    {
-        (r, b) = (b, r)
-        r = r % b
+    var lhs = m.magnitude
+    var rhs = n.magnitude
+
+    while rhs != 0 {
+        (lhs, rhs) = (rhs, lhs % rhs)
     }
-    
-    return b
+
+    guard let result = T(exactly: lhs) else {
+        preconditionFailure("The nonnegative GCD is not representable by \(T.self)")
+    }
+    return result
 }
 
 /// Greatest Common Divisor of an array of integers (GCD also known as Greatest Common Factor or GCF).
@@ -73,10 +74,22 @@ public func greatestCommonDivisor<T>(_ arr: [T]) -> T where T: BinaryInteger
 }
 
 /// Least Common Multiple of 2 integers (LCM).
-@_transparent
+@inlinable
 public func leastCommonMultiple<T>(_ m: T, _ n: T) -> T where T: BinaryInteger
 {
-    return m * n / greatestCommonDivisor(m, n)
+    guard m != 0, n != 0 else { return 0 }
+
+    var lhs = m.magnitude
+    var rhs = n.magnitude
+    while rhs != 0 {
+        (lhs, rhs) = (rhs, lhs % rhs)
+    }
+
+    let magnitude = (m.magnitude / lhs) * n.magnitude
+    guard let result = T(exactly: magnitude) else {
+        preconditionFailure("The nonnegative LCM is not representable by \(T.self)")
+    }
+    return result
 }
 
 /// Lowest Terms of a fraction.

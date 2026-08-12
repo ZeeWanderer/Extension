@@ -132,7 +132,7 @@ extension LinkedList: CustomStringConvertible
 }
 
 // MARK: - Queue
-/// ``LinkedList`` based Queue.
+/// ``LinkedList`` based queue with copy-on-write value semantics.
 public struct Queue<T>
 {
     @usableFromInline internal var list = LinkedList<T>()
@@ -149,14 +149,17 @@ public struct Queue<T>
     @inlinable
     public mutating func enqueue(_ element: T)
     {
+        ensureUniqueStorage()
         list.append(element)
     }
     
     @inlinable
     public mutating func dequeue() -> T?
     {
-        guard !list.isEmpty, let element = list.first else { return nil }
-        
+        guard !list.isEmpty else { return nil }
+
+        ensureUniqueStorage()
+        guard let element = list.first else { return nil }
         list.remove(element)
         
         return element.value
@@ -166,6 +169,20 @@ public struct Queue<T>
     public func peek() -> T?
     {
         return list.first?.value
+    }
+
+    @usableFromInline
+    internal mutating func ensureUniqueStorage()
+    {
+        guard !isKnownUniquelyReferenced(&list) else { return }
+
+        let copy = LinkedList<T>()
+        var node = list.first
+        while let current = node {
+            copy.append(current.value)
+            node = current.next
+        }
+        list = copy
     }
 }
 
@@ -361,7 +378,7 @@ public struct Heap<T>
     @inlinable
     public mutating func replace(index i: Int, value: T)
     {
-        guard i < nodes.count else { return }
+        guard i >= 0, i < nodes.count else { return }
         
         remove(at: i)
         insert(value)
@@ -393,7 +410,7 @@ public struct Heap<T>
     @discardableResult
     public mutating func remove(at index: Int) -> T?
     {
-        guard index < nodes.count else { return nil }
+        guard index >= 0, index < nodes.count else { return nil }
         
         let size = nodes.count - 1
         if index != size {
@@ -537,6 +554,9 @@ public struct PriorityQueue<T>
 /// A heap keeps elements ordered in a binary tree without the use of pointers. A hashed heap does that as well as
 /// having amortized constant lookups by value. This is used in the A* and other heuristic search algorithms to achieve
 /// optimal performance.
+///
+/// Values are unique. Construction keeps the first occurrence of each value,
+/// and inserting or replacing with a value already in the heap is a no-op.
 public struct HashedHeap<T: Hashable>
 {
     // TODO: use `public internal(set)` instead of internal var + public var getter when [SR-7590](https://github.com/apple/swift/issues/50132) gets fixed
@@ -584,13 +604,17 @@ public struct HashedHeap<T: Hashable>
     /// - Complexity: O(n)
     @usableFromInline
     internal mutating func build(from array: [T]) {
-        _elements = array
-        for index in _elements.indices {
-            _indices[_elements[index]] = index
+        _elements.removeAll(keepingCapacity: true)
+        _indices.removeAll(keepingCapacity: true)
+        for value in array where _indices[value] == nil {
+            _indices[value] = _elements.count
+            _elements.append(value)
         }
-        
-        for i in stride(from: (_elements.count/2 - 1), through: 0, by: -1) {
-            shiftDown(i, heapSize: _elements.count)
+
+        if _elements.count > 1 {
+            for i in stride(from: (_elements.count/2 - 1), through: 0, by: -1) {
+                shiftDown(i, heapSize: _elements.count)
+            }
         }
     }
     
@@ -644,6 +668,7 @@ public struct HashedHeap<T: Hashable>
     @inlinable
     public mutating func insert(_ value: T)
     {
+        guard _indices[value] == nil else { return }
         _elements.append(value)
         _indices[value] = _elements.count - 1
         shiftUp(_elements.count - 1)
@@ -664,11 +689,17 @@ public struct HashedHeap<T: Hashable>
     @inlinable
     public mutating func replace(_ value: T, at index: Int)
     {
-        guard index < _elements.count else { return }
-        
-        assert(isOrderedBefore(value, _elements[index]))
+        guard index >= 0, index < _elements.count else { return }
+        let oldValue = _elements[index]
+        guard oldValue != value else { return }
+        guard _indices[value] == nil else { return }
+
         set(value, at: index)
-        shiftUp(index)
+        if index > 0, isOrderedBefore(value, _elements[parentIndex(of: index)]) {
+            shiftUp(index)
+        } else {
+            shiftDown(index, heapSize: _elements.count)
+        }
     }
     
     /// Removes the root node from the heap.
@@ -702,15 +733,21 @@ public struct HashedHeap<T: Hashable>
     @inlinable
     public mutating func remove(at index: Int) -> T?
     {
-        guard index < _elements.count else { return nil }
-        
+        guard index >= 0, index < _elements.count else { return nil }
+
         let size = _elements.count - 1
         if index != size {
             swapAt(index, size)
-            shiftDown(index, heapSize: size)
-            shiftUp(index)
         }
-        return removeLast()
+        let removed = removeLast()
+        if index < _elements.count {
+            if index > 0, isOrderedBefore(_elements[index], _elements[parentIndex(of: index)]) {
+                shiftUp(index)
+            } else {
+                shiftDown(index, heapSize: _elements.count)
+            }
+        }
+        return removed
     }
     
     /// Removes all elements from the heap.
@@ -738,16 +775,13 @@ public struct HashedHeap<T: Hashable>
     @usableFromInline
     internal mutating func shiftUp(_ index: Int) {
         var childIndex = index
-        let child = _elements[childIndex]
         var parentIndex = self.parentIndex(of: childIndex)
-        
-        while childIndex > 0 && isOrderedBefore(child, _elements[parentIndex]) {
-            set(_elements[parentIndex], at: childIndex)
+
+        while childIndex > 0 && isOrderedBefore(_elements[childIndex], _elements[parentIndex]) {
+            swapAt(childIndex, parentIndex)
             childIndex = parentIndex
             parentIndex = self.parentIndex(of: childIndex)
         }
-        
-        set(child, at: childIndex)
     }
     
     @usableFromInline
@@ -803,6 +837,7 @@ public struct HashedHeap<T: Hashable>
     ///
     /// - Note: The element at index 0 is the root of the tree and has no parent.
     @inline(__always)
+    @usableFromInline
     internal func parentIndex(of index: Int) -> Int {
         return (index - 1) / 2
     }

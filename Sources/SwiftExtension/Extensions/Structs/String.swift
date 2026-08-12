@@ -16,43 +16,50 @@ public extension String
     @inlinable
     subscript (bounds: CountableRange<Int>) -> Substring
     {
+        guard
+            bounds.lowerBound >= 0,
+            bounds.upperBound >= bounds.lowerBound,
+            bounds.upperBound <= count
+        else { return "" }
         let start = index(startIndex, offsetBy: bounds.lowerBound)
         let end = index(startIndex, offsetBy: bounds.upperBound)
-        if end < start { return "" }
         return self[start..<end]
     }
     
     @inlinable
     subscript (bounds: CountableClosedRange<Int>) -> Substring
     {
+        guard
+            bounds.lowerBound >= 0,
+            bounds.upperBound >= bounds.lowerBound,
+            bounds.upperBound < count
+        else { return "" }
         let start = index(startIndex, offsetBy: bounds.lowerBound)
         let end = index(startIndex, offsetBy: bounds.upperBound)
-        if end < start { return "" }
         return self[start...end]
     }
     
     @inlinable
     subscript (bounds: CountablePartialRangeFrom<Int>) -> Substring
     {
+        guard bounds.lowerBound >= 0, bounds.lowerBound <= count else { return "" }
         let start = index(startIndex, offsetBy: bounds.lowerBound)
-        let end = index(endIndex, offsetBy: -1)
-        if end < start { return "" }
-        return self[start...end]
+        return self[start..<endIndex]
     }
     
     @inlinable
     subscript (bounds: PartialRangeThrough<Int>) -> Substring
     {
+        guard bounds.upperBound >= 0, bounds.upperBound < count else { return "" }
         let end = index(startIndex, offsetBy: bounds.upperBound)
-        if end < startIndex { return "" }
         return self[startIndex...end]
     }
     
     @inlinable
     subscript (bounds: PartialRangeUpTo<Int>) -> Substring
     {
+        guard bounds.upperBound >= 0, bounds.upperBound <= count else { return "" }
         let end = index(startIndex, offsetBy: bounds.upperBound)
-        if end < startIndex { return "" }
         return self[startIndex..<end]
     }
     
