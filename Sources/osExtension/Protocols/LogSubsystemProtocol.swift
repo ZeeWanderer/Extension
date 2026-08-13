@@ -28,12 +28,12 @@ public protocol LogSubsystemProtocol: LogProtocol
 public extension LogSubsystemProtocol
 {
     @inlinable nonisolated static var bundle: String { Bundle.main.bundleIdentifier ?? "unknown" }
-    @inlinable nonisolated static var subsystem: String { "\(bundle).\(class_)" }
-    @inlinable nonisolated static var logScope: String { "[\(class_)]" }
-    @inlinable nonisolated static func makeLogger() -> Logger { Logger(subsystem: subsystem, category: class_) }
+    @inlinable nonisolated static var subsystem: String { "\(bundle).\(p_className)" }
+    @inlinable nonisolated static var logScope: String { "[\(p_className)]" }
+    @inlinable nonisolated static func makeLogger() -> Logger { Logger(subsystem: subsystem, category: p_className) }
 }
 
 internal extension LogSubsystemProtocol
 {
-    @usableFromInline nonisolated static var class_: String { "\(Self.self)" }
+    @usableFromInline nonisolated static var p_className: String { "\(Self.self)" }
 }

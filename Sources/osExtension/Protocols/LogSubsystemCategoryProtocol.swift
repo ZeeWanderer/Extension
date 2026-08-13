@@ -16,6 +16,6 @@ public protocol LogSubsystemCategoryProtocol<Subsystem>: LogProtocol
 public extension LogSubsystemCategoryProtocol
 {
     @inlinable nonisolated static var category: String { "\(Self.self)" }
-    @inlinable nonisolated static var logScope: String { "[\(Subsystem.class_)::\(category)]" }
+    @inlinable nonisolated static var logScope: String { "[\(Subsystem.p_className)::\(category)]" }
     @inlinable nonisolated static func makeLogger() -> Logger { Logger(subsystem: Subsystem.subsystem, category: category) }
 }
