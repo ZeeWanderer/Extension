@@ -1,5 +1,5 @@
 //
-//  MacroDiagnostic.swift
+//  P_MacroDiagnostic.swift
 //  Extension
 //
 //  Created by zee wanderer on 26.02.2025.
@@ -12,7 +12,7 @@ import SwiftSyntaxBuilder
 import SwiftDiagnostics
 
 
-enum MacroDiagnostic<M: MacroDiagnosticProtocol>: Hashable, DiagnosticMessage {
+internal enum P_MacroDiagnostic<M: P_MacroDiagnosticProtocol>: Hashable, DiagnosticMessage {
     case error(String)
     case onlyApplicableToEnum
     case onlyApplicableToExtension

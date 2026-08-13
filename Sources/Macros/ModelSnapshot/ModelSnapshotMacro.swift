@@ -12,7 +12,7 @@ import SwiftSyntaxMacros
 import SwiftDiagnostics
 import SwiftSyntaxBuilder
 
-public struct ModelSnapshotMacro: MacroDiagnosticProtocol {
+public struct ModelSnapshotMacro: P_MacroDiagnosticProtocol {
 }
 
 extension ModelSnapshotMacro: MemberMacro {
@@ -26,7 +26,7 @@ extension ModelSnapshotMacro: MemberMacro {
         else {
             let diag = Diagnostic(
                 node: node,
-                message: MacroDiagnostic<Self>.onlyApplicableToClass
+                message: P_MacroDiagnostic<Self>.onlyApplicableToClass
             )
             context.diagnose(diag)
             return []
@@ -136,24 +136,24 @@ extension ModelSnapshotMacro: MemberMacro {
                /// A protocol to streamline usage of ``Snapshot`` and ``ShallowSnapshot``
                public protocol SnapshotProtocol: Sendable {
                    var persistentModelID: PersistentIdentifier { get }
-               \(protocolFields.indent(by: 4))
+               \(protocolFields.p_indented(by: 4))
                }
                
                public struct Snapshot: SnapshotProtocol, Sendable {
-               \(persistentIDDecl.indent(by: 4))
-               \(snapshotFields.indent(by: 4))
+               \(persistentIDDecl.p_indented(by: 4))
+               \(snapshotFields.p_indented(by: 4))
                    public init(from model: \(typeName)) {
-               \(persistentIDInit.indent(by: 8))
-               \(snapshotInitBody.indent(by: 8))
+               \(persistentIDInit.p_indented(by: 8))
+               \(snapshotInitBody.p_indented(by: 8))
                    }
                }
                
                public struct ShallowSnapshot: SnapshotProtocol, Sendable {
-               \(persistentIDDecl.indent(by: 4))
-               \(shallowFields.indent(by: 4))
+               \(persistentIDDecl.p_indented(by: 4))
+               \(shallowFields.p_indented(by: 4))
                    public init(from model: \(typeName)) {
-               \(persistentIDInit.indent(by: 8))
-               \(shallowInitBody.indent(by: 8))
+               \(persistentIDInit.p_indented(by: 8))
+               \(shallowInitBody.p_indented(by: 8))
                    }
                }
                

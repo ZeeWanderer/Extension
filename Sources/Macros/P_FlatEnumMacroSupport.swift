@@ -1,5 +1,5 @@
 //
-//  FlatEnumMacroSupport.swift
+//  P_FlatEnumMacroSupport.swift
 //  Extension
 //
 //  Created by zeewanderer on 03.02.2026.
@@ -11,11 +11,11 @@ import SwiftSyntaxMacros
 import SwiftDiagnostics
 import SwiftSyntaxBuilder
 
-enum FlatEnumMacroSupport {
+internal enum P_FlatEnumMacroSupport {
     static let flatEnumSuffix = "Flat"
     static let flatPropertyName = "flat"
     
-    static func expansion<M: MacroDiagnosticProtocol>(
+    static func expansion<M: P_MacroDiagnosticProtocol>(
         of node: AttributeSyntax,
         providingMembersOf declaration: some DeclGroupSyntax,
         in context: some MacroExpansionContext,
@@ -27,7 +27,7 @@ enum FlatEnumMacroSupport {
         guard let enumDecl = declaration.as(EnumDeclSyntax.self) else {
             let diag = Diagnostic(
                 node: node,
-                message: MacroDiagnostic<M>.onlyApplicableToEnum
+                message: P_MacroDiagnostic<M>.onlyApplicableToEnum
             )
             context.diagnose(diag)
             return []
@@ -40,7 +40,7 @@ enum FlatEnumMacroSupport {
         
         if !allowArguments {
             if node.arguments != nil {
-                let diag = Diagnostic(node: node, message: MacroDiagnostic<M>.error("does not accept arguments"))
+                let diag = Diagnostic(node: node, message: P_MacroDiagnostic<M>.error("does not accept arguments"))
                 context.diagnose(diag)
                 return []
             }
@@ -53,7 +53,7 @@ enum FlatEnumMacroSupport {
                    !name.isEmpty {
                     customFlatName = name
                 } else {
-                    let diag = Diagnostic(node: nameExpr, message: MacroDiagnostic<M>.error("name must be a non-empty string literal"))
+                    let diag = Diagnostic(node: nameExpr, message: P_MacroDiagnostic<M>.error("name must be a non-empty string literal"))
                     context.diagnose(diag)
                     hasErrors = true
                 }
@@ -66,7 +66,7 @@ enum FlatEnumMacroSupport {
                 if let boolLiteral = generateExpr.as(BooleanLiteralExprSyntax.self) {
                     generateName = boolLiteral.literal.tokenKind == .keyword(.true)
                 } else {
-                    let diag = Diagnostic(node: generateExpr, message: MacroDiagnostic<M>.error("generateName must be a boolean literal"))
+                    let diag = Diagnostic(node: generateExpr, message: P_MacroDiagnostic<M>.error("generateName must be a boolean literal"))
                     context.diagnose(diag)
                     hasErrors = true
                 }

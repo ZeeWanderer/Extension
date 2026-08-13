@@ -11,9 +11,9 @@ import SwiftSyntaxMacros
 import SwiftDiagnostics
 import SwiftSyntaxBuilder
 
-public struct RouterMacro: MacroDiagnosticProtocol {}
+public struct RouterMacro: P_MacroDiagnosticProtocol {}
 
-private enum RouterAccessLevel {
+internal enum P_RouterAccessLevel {
     case `public`
     case `package`
     case `internal`
@@ -22,7 +22,7 @@ private enum RouterAccessLevel {
     case none
 }
 
-private func routerAccessLevel(for declaration: some DeclGroupSyntax) -> RouterAccessLevel {
+internal func p_routerAccessLevel(for declaration: some DeclGroupSyntax) -> P_RouterAccessLevel {
     for modifier in declaration.modifiers {
         switch modifier.name.tokenKind {
         case .keyword(.public), .keyword(.open):
@@ -42,7 +42,7 @@ private func routerAccessLevel(for declaration: some DeclGroupSyntax) -> RouterA
     return .none
 }
 
-private func routerAccessPrefix(_ level: RouterAccessLevel) -> String {
+internal func p_routerAccessPrefix(_ level: P_RouterAccessLevel) -> String {
     switch level {
     case .public: return "public "
     case .package: return "package "
@@ -51,7 +51,7 @@ private func routerAccessPrefix(_ level: RouterAccessLevel) -> String {
     }
 }
 
-private let routerProtocolNames: Set<String> = [
+internal let p_routerProtocolNames: Set<String> = [
     "RouterProtocol",
     "SinglePathRouterProtocol",
     "DictionaryRouterProtocol",
@@ -59,7 +59,7 @@ private let routerProtocolNames: Set<String> = [
     "RouterViewRegistryProtocol",
 ]
 
-private func routerConformances(
+internal func p_routerConformances(
     of declaration: some DeclGroupSyntax
 ) -> Set<String> {
     func inheritedProtocolNames(
@@ -68,7 +68,7 @@ private func routerConformances(
         guard let clause else { return [] }
         return Set(clause.inheritedTypes.compactMap { inherited in
             let qualifiedName = inherited.type.trimmedDescription
-            return routerProtocolNames.first { name in
+            return p_routerProtocolNames.first { name in
                 qualifiedName == name || qualifiedName.hasSuffix(".\(name)")
             }
         })
@@ -90,7 +90,7 @@ private func routerConformances(
     return []
 }
 
-private func hasRouterMember(
+internal func p_hasRouterMember(
     named name: String,
     isStatic expectedStatic: Bool? = nil,
     in declaration: some DeclGroupSyntax
@@ -113,7 +113,7 @@ private func hasRouterMember(
     return false
 }
 
-private func hasDirectViewProviderMember(
+internal func p_hasDirectViewProviderMember(
     _ declaration: some DeclGroupSyntax
 ) -> Bool {
     declaration.memberBlock.members.contains { member in
@@ -143,19 +143,19 @@ extension RouterMacro: MemberMacro {
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
         guard declaration.is(ClassDeclSyntax.self) else {
-            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.error("can only be applied to a class."))
+            let diag = Diagnostic(node: node, message: P_MacroDiagnostic<Self>.error("can only be applied to a class."))
             context.diagnose(diag)
             return []
         }
         
-        guard hasRouterMember(named: "views", isStatic: true, in: declaration),
-              !hasRouterMember(named: "viewTypes", isStatic: true, in: declaration)
+        guard p_hasRouterMember(named: "views", isStatic: true, in: declaration),
+              !p_hasRouterMember(named: "viewTypes", isStatic: true, in: declaration)
         else {
             return []
         }
         
-        let access = routerAccessLevel(for: declaration)
-        let decl = DeclSyntax("\(raw: routerAccessPrefix(access))static let viewTypes = computeViewTypes()")
+        let access = p_routerAccessLevel(for: declaration)
+        let decl = DeclSyntax("\(raw: p_routerAccessPrefix(access))static let viewTypes = computeViewTypes()")
         return [decl]
     }
 }
@@ -168,22 +168,22 @@ extension RouterMacro: ExtensionMacro {
                                  in context: some MacroExpansionContext)
     throws -> [ExtensionDeclSyntax] {
         guard declaration.is(ClassDeclSyntax.self) else {
-            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.error("can only be applied to a class."))
+            let diag = Diagnostic(node: node, message: P_MacroDiagnostic<Self>.error("can only be applied to a class."))
             context.diagnose(diag)
             return []
         }
         
-        let existingConformances = routerConformances(of: declaration)
+        let existingConformances = p_routerConformances(of: declaration)
         var addedConformances: [String] = []
 
-        if existingConformances.isDisjoint(with: routerProtocolNames)
+        if existingConformances.isDisjoint(with: p_routerProtocolNames)
         {
-            if hasRouterMember(named: "path", isStatic: false, in: declaration)
+            if p_hasRouterMember(named: "path", isStatic: false, in: declaration)
             {
                 addedConformances.append("RouterProtocol")
                 addedConformances.append("SinglePathRouterProtocol")
             }
-            else if hasRouterMember(named: "paths", isStatic: false, in: declaration)
+            else if p_hasRouterMember(named: "paths", isStatic: false, in: declaration)
             {
                 addedConformances.append("RouterProtocol")
                 addedConformances.append("DictionaryRouterProtocol")
@@ -197,7 +197,7 @@ extension RouterMacro: ExtensionMacro {
         let hasViewProvider = existingConformances.contains("RouterViewProvider")
             || existingConformances.contains("RouterViewRegistryProtocol")
 
-        if hasRouterMember(named: "views", isStatic: true, in: declaration),
+        if p_hasRouterMember(named: "views", isStatic: true, in: declaration),
            !hasViewProvider
         {
             if !existingConformances.contains("RouterViewProvider")
@@ -206,7 +206,7 @@ extension RouterMacro: ExtensionMacro {
             }
             addedConformances.append("RouterViewRegistryProtocol")
         }
-        else if hasDirectViewProviderMember(declaration),
+        else if p_hasDirectViewProviderMember(declaration),
                 !hasViewProvider
         {
             addedConformances.append("RouterViewProvider")

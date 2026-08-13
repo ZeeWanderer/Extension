@@ -10,7 +10,7 @@ import SwiftCompilerPlugin
 import SwiftSyntaxMacros
 
 @main
-struct MacrosPlugin: CompilerPlugin {
+internal struct P_MacrosPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
         FlatEnumMacro.self,
         RouterDestinationMacro.self,

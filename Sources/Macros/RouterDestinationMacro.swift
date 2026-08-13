@@ -11,9 +11,9 @@ import SwiftSyntaxMacros
 import SwiftDiagnostics
 import SwiftSyntaxBuilder
 
-public struct RouterDestinationMacro: MacroDiagnosticProtocol {}
+public struct RouterDestinationMacro: P_MacroDiagnosticProtocol {}
 
-private func hasRouterDestinationConformance(_ declaration: some DeclGroupSyntax) -> Bool {
+internal func p_hasRouterDestinationConformance(_ declaration: some DeclGroupSyntax) -> Bool {
     func inheritsRouterDestination(_ clause: InheritanceClauseSyntax?) -> Bool {
         guard let clause else { return false }
         return clause.inheritedTypes.contains { inherited in
@@ -46,7 +46,7 @@ extension RouterDestinationMacro: MemberMacro {
             {
                 let diagnostic = Diagnostic(
                     node: generateExpression,
-                    message: MacroDiagnostic<Self>.error(
+                    message: P_MacroDiagnostic<Self>.error(
                         "generateFlat must be a boolean literal"
                     )
                 )
@@ -60,7 +60,7 @@ extension RouterDestinationMacro: MemberMacro {
             }
         }
 
-        return try FlatEnumMacroSupport.expansion(
+        return try P_FlatEnumMacroSupport.expansion(
             of: node,
             providingMembersOf: declaration,
             in: context,
@@ -80,12 +80,12 @@ extension RouterDestinationMacro: ExtensionMacro {
                                  in context: some MacroExpansionContext)
     throws -> [ExtensionDeclSyntax] {
         guard declaration.is(EnumDeclSyntax.self) else {
-            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.onlyApplicableToEnum)
+            let diag = Diagnostic(node: node, message: P_MacroDiagnostic<Self>.onlyApplicableToEnum)
             context.diagnose(diag)
             return []
         }
         
-        if hasRouterDestinationConformance(declaration) {
+        if p_hasRouterDestinationConformance(declaration) {
             return []
         }
         

@@ -11,10 +11,10 @@ import SwiftSyntaxMacros
 import SwiftDiagnostics
 import SwiftSyntaxBuilder
 
-public struct LogSubsystemMacro: MacroDiagnosticProtocol {}
-public struct LogCategoryMacro: MacroDiagnosticProtocol {}
+public struct LogSubsystemMacro: P_MacroDiagnosticProtocol {}
+public struct LogCategoryMacro: P_MacroDiagnosticProtocol {}
 
-private enum AccessLevel {
+internal enum P_LogAccessLevel {
     case `public`
     case `package`
     case `internal`
@@ -23,7 +23,7 @@ private enum AccessLevel {
     case none
 }
 
-private func accessLevel(for declaration: some DeclGroupSyntax) -> AccessLevel {
+internal func p_logAccessLevel(for declaration: some DeclGroupSyntax) -> P_LogAccessLevel {
     for modifier in declaration.modifiers {
         switch modifier.name.tokenKind {
         case .keyword(.public), .keyword(.open):
@@ -43,7 +43,7 @@ private func accessLevel(for declaration: some DeclGroupSyntax) -> AccessLevel {
     return .none
 }
 
-private func accessPrefix(_ level: AccessLevel) -> String {
+internal func p_logAccessPrefix(_ level: P_LogAccessLevel) -> String {
     switch level {
     case .public: return "public "
     case .package: return "package "
@@ -53,7 +53,7 @@ private func accessPrefix(_ level: AccessLevel) -> String {
     }
 }
 
-private func accessModifiers(_ level: AccessLevel) -> DeclModifierListSyntax? {
+internal func p_logAccessModifiers(_ level: P_LogAccessLevel) -> DeclModifierListSyntax? {
     let keyword: TokenSyntax?
     switch level {
     case .public:
@@ -75,12 +75,12 @@ extension LogSubsystemMacro: ExtensionMacro {
                                  in context: some MacroExpansionContext)
     throws -> [ExtensionDeclSyntax] {
         guard declaration.is(StructDeclSyntax.self) || declaration.is(ClassDeclSyntax.self) || declaration.is(EnumDeclSyntax.self) || declaration.is(ActorDeclSyntax.self) else {
-            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.error("can only be applied to a struct, class, enum, or actor."))
+            let diag = Diagnostic(node: node, message: P_MacroDiagnostic<Self>.error("can only be applied to a struct, class, enum, or actor."))
             context.diagnose(diag)
             return []
         }
         
-        let access = accessLevel(for: declaration)
+        let access = p_logAccessLevel(for: declaration)
         let extensionDecl = ExtensionDeclSyntax(
             extendedType: type,
             inheritanceClause: InheritanceClauseSyntax(
@@ -89,8 +89,8 @@ extension LogSubsystemMacro: ExtensionMacro {
             }
         )) {
             DeclSyntax("""
-                nonisolated \(raw: accessPrefix(access))static let logger = makeLogger()
-                nonisolated \(raw: accessPrefix(access))static let signposter = makeSignposter()
+                nonisolated \(raw: p_logAccessPrefix(access))static let logger = makeLogger()
+                nonisolated \(raw: p_logAccessPrefix(access))static let signposter = makeSignposter()
             """)
         }
         
@@ -106,14 +106,14 @@ extension LogCategoryMacro: ExtensionMacro {
                                  in context: some MacroExpansionContext)
     throws -> [ExtensionDeclSyntax] {
         guard declaration.is(StructDeclSyntax.self) || declaration.is(ClassDeclSyntax.self) || declaration.is(EnumDeclSyntax.self) || declaration.is(ActorDeclSyntax.self) else {
-            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.error("can only be applied to a struct, class, enum, or actor."))
+            let diag = Diagnostic(node: node, message: P_MacroDiagnostic<Self>.error("can only be applied to a struct, class, enum, or actor."))
             context.diagnose(diag)
             return []
         }
         
         guard let arguments = node.arguments,
               let labeledArguments = arguments.as(LabeledExprListSyntax.self) else {
-            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.argumentMissing("subsystem"))
+            let diag = Diagnostic(node: node, message: P_MacroDiagnostic<Self>.argumentMissing("subsystem"))
             context.diagnose(diag)
             return []
         }
@@ -123,12 +123,12 @@ extension LogCategoryMacro: ExtensionMacro {
         })?.expression ?? labeledArguments.first?.expression
         
         guard let subsystemExpr else {
-            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.argumentMissing("subsystem"))
+            let diag = Diagnostic(node: node, message: P_MacroDiagnostic<Self>.argumentMissing("subsystem"))
             context.diagnose(diag)
             return []
         }
         
-        let access = accessLevel(for: declaration)
+        let access = p_logAccessLevel(for: declaration)
         var subsystemName = subsystemExpr.trimmedDescription
         if subsystemName.hasSuffix(".self") {
             subsystemName = String(subsystemName.dropLast(5))
@@ -142,9 +142,9 @@ extension LogCategoryMacro: ExtensionMacro {
             }
         )) {
             DeclSyntax("""
-                \(raw: accessPrefix(access))typealias Subsystem = \(raw: subsystemName)
-                nonisolated \(raw: accessPrefix(access))static let logger = makeLogger()
-                nonisolated \(raw: accessPrefix(access))static let signposter = makeSignposter()
+                \(raw: p_logAccessPrefix(access))typealias Subsystem = \(raw: subsystemName)
+                nonisolated \(raw: p_logAccessPrefix(access))static let logger = makeLogger()
+                nonisolated \(raw: p_logAccessPrefix(access))static let signposter = makeSignposter()
             """)
         }
         

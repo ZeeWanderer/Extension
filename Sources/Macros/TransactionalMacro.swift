@@ -11,7 +11,7 @@ import SwiftSyntaxMacros
 import SwiftDiagnostics
 import SwiftSyntaxBuilder
 
-public struct TransactionalMacro: MacroDiagnosticProtocol {}
+public struct TransactionalMacro: P_MacroDiagnosticProtocol {}
 
 extension TransactionalMacro: BodyMacro {
     public static func expansion(
@@ -20,13 +20,13 @@ extension TransactionalMacro: BodyMacro {
         in context: some MacroExpansionContext
     ) throws -> [CodeBlockItemSyntax] {
         guard let function = declaration.as(FunctionDeclSyntax.self) else {
-            context.diagnose(Diagnostic(node: node, message: MacroDiagnostic<Self>.onlyApplicableToFunction))
+            context.diagnose(Diagnostic(node: node, message: P_MacroDiagnostic<Self>.onlyApplicableToFunction))
             return []
         }
 
         let funcName = function.name.trimmed.text
         let originalName = "__original_\(funcName)"
-        let (ctxExprOpt, ctxIsOptional) = extractModelContext(from: function, node: node)
+        let (ctxExprOpt, ctxIsOptional) = p_extractModelContext(from: function, node: node)
         let ctxExpr = ctxExprOpt ?? ExprSyntax(DeclReferenceExprSyntax(baseName: .identifier("modelContext")))
         let returnType = function.signature.returnClause?.type
         let hasReturn = returnType != nil
@@ -34,12 +34,12 @@ extension TransactionalMacro: BodyMacro {
         let retvalExpr = node.arguments?.as(LabeledExprListSyntax.self)?.first(where: { $0.label?.text == "retval" })?.expression
 
         if hasReturn && retvalExpr == nil && !returnType!.is(OptionalTypeSyntax.self) {
-            context.diagnose(Diagnostic(node: node, message: MacroDiagnostic<Self>.argumentMissing("retval")))
+            context.diagnose(Diagnostic(node: node, message: P_MacroDiagnostic<Self>.argumentMissing("retval")))
             return []
         }
 
-        let originalFunction = buildOriginalFunction(function, originalName)
-        let transactionalCall = buildTransactionalCall(
+        let originalFunction = p_buildOriginalFunction(function, originalName)
+        let transactionalCall = p_buildTransactionalCall(
             function: function,
             originalName: originalName,
             ctxExpr: ctxExpr,
@@ -56,7 +56,7 @@ extension TransactionalMacro: BodyMacro {
         ]
     }
 
-    private static func extractModelContext(from function: FunctionDeclSyntax, node: AttributeSyntax) -> (ExprSyntax?, Bool) {
+    internal static func p_extractModelContext(from function: FunctionDeclSyntax, node: AttributeSyntax) -> (ExprSyntax?, Bool) {
         if let args = node.arguments?.as(LabeledExprListSyntax.self) {
             if let ctxArg = args.first(where: { $0.label?.text == "ctx" }) {
                 let ctxExpr = ctxArg.expression
@@ -96,7 +96,7 @@ extension TransactionalMacro: BodyMacro {
         return (nil, false)
     }
 
-    private static func buildOriginalFunction(_ function: FunctionDeclSyntax, _ originalName: String) -> FunctionDeclSyntax {
+    internal static func p_buildOriginalFunction(_ function: FunctionDeclSyntax, _ originalName: String) -> FunctionDeclSyntax {
         var originalFunction = function
         originalFunction.name = .identifier(originalName)
         originalFunction.attributes = function.attributes.filter { $0.as(AttributeSyntax.self)?.attributeName.trimmed.description != "Transactional" }
@@ -104,7 +104,7 @@ extension TransactionalMacro: BodyMacro {
         return originalFunction
     }
 
-    private static func buildTransactionalCall(
+    internal static func p_buildTransactionalCall(
         function: FunctionDeclSyntax,
         originalName: String,
         ctxExpr: ExprSyntax,
@@ -144,7 +144,7 @@ extension TransactionalMacro: BodyMacro {
                 pattern: PatternSyntax(IdentifierPatternSyntax(identifier: .identifier("context"))),
                 initializer: InitializerClauseSyntax(value: ctxExprInit)
             )
-            let transactionIf = makeTransactionIf(hasReturn: hasReturn, isThrowing: isThrowing, returnType: returnType, ctxExpr: ctxExpr, retvalExpr: retvalExpr, tryCall: tryOriginal)
+            let transactionIf = p_makeTransactionIf(hasReturn: hasReturn, isThrowing: isThrowing, returnType: returnType, ctxExpr: ctxExpr, retvalExpr: retvalExpr, tryCall: tryOriginal)
             let ifExpr = IfExprSyntax(
                 ifKeyword: .keyword(.if),
                 conditions: ConditionElementListSyntax([ConditionElementSyntax(condition: .optionalBinding(unwrapCondition))]),
@@ -157,11 +157,11 @@ extension TransactionalMacro: BodyMacro {
             )
             return ExprSyntax(ifExpr)
         } else {
-            return makeTransactionIf(hasReturn: hasReturn, isThrowing: isThrowing, returnType: returnType, ctxExpr: ctxExpr, retvalExpr: retvalExpr, tryCall: tryOriginal)
+            return p_makeTransactionIf(hasReturn: hasReturn, isThrowing: isThrowing, returnType: returnType, ctxExpr: ctxExpr, retvalExpr: retvalExpr, tryCall: tryOriginal)
         }
     }
 
-    private static func makeTransactionIf(
+    internal static func p_makeTransactionIf(
         hasReturn: Bool,
         isThrowing: Bool,
         returnType: TypeSyntax?,
@@ -179,9 +179,9 @@ extension TransactionalMacro: BodyMacro {
 
         let elseBranch = hasReturn
             ? CodeBlockItemListSyntax {
-                ReturnStmtSyntax(returnKeyword: .keyword(.return), expression: buildElseWithReturn(ctxExpr: ctxExpr, retvalInit: retvalExpr ?? ExprSyntax(NilLiteralExprSyntax()), tryCall: tryCall, returnType: returnType!, isThrowing: isThrowing))
+                ReturnStmtSyntax(returnKeyword: .keyword(.return), expression: p_buildElseWithReturn(ctxExpr: ctxExpr, retvalInit: retvalExpr ?? ExprSyntax(NilLiteralExprSyntax()), tryCall: tryCall, returnType: returnType!, isThrowing: isThrowing))
             }
-            : CodeBlockItemListSyntax { CodeBlockItemSyntax(item: .expr(buildElseNoReturn(ctxExpr: ctxExpr, tryCall: tryCall, isThrowing: isThrowing))) }
+            : CodeBlockItemListSyntax { CodeBlockItemSyntax(item: .expr(p_buildElseNoReturn(ctxExpr: ctxExpr, tryCall: tryCall, isThrowing: isThrowing))) }
 
         return ExprSyntax(IfExprSyntax(
             ifKeyword: .keyword(.if),
@@ -192,7 +192,7 @@ extension TransactionalMacro: BodyMacro {
         ))
     }
 
-    private static func buildElseWithReturn(ctxExpr: ExprSyntax, retvalInit: ExprSyntax, tryCall: ExprSyntax, returnType: TypeSyntax, isThrowing: Bool) -> ExprSyntax {
+    internal static func p_buildElseWithReturn(ctxExpr: ExprSyntax, retvalInit: ExprSyntax, tryCall: ExprSyntax, returnType: TypeSyntax, isThrowing: Bool) -> ExprSyntax {
         let transactionCall = FunctionCallExprSyntax(
             calledExpression: MemberAccessExprSyntax(base: ctxExpr, name: .identifier("transaction")),
             leftParen: .leftParenToken(),
@@ -225,7 +225,7 @@ extension TransactionalMacro: BodyMacro {
         ))
     }
 
-    private static func buildElseNoReturn(ctxExpr: ExprSyntax, tryCall: ExprSyntax, isThrowing: Bool) -> ExprSyntax {
+    internal static func p_buildElseNoReturn(ctxExpr: ExprSyntax, tryCall: ExprSyntax, isThrowing: Bool) -> ExprSyntax {
         let transactionCall = FunctionCallExprSyntax(
             calledExpression: MemberAccessExprSyntax(base: ctxExpr, name: .identifier("transaction")),
             leftParen: .leftParenToken(),

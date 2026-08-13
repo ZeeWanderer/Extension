@@ -10,9 +10,8 @@ import Foundation
 internal extension String
 {
     @usableFromInline
-    func indent(by spaces: Int) -> String {
+    func p_indented(by spaces: Int) -> String {
         let pad = String(repeating: " ", count: spaces)
         return self.split(separator: "\n").map { pad + $0 }.joined(separator: "\n")
     }
 }
-

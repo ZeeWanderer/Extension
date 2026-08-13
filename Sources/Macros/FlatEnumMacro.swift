@@ -11,7 +11,7 @@ import SwiftSyntaxMacros
 import SwiftDiagnostics
 import SwiftSyntaxBuilder
 
-public struct FlatEnumMacro: MacroDiagnosticProtocol {
+public struct FlatEnumMacro: P_MacroDiagnosticProtocol {
 }
 
 extension FlatEnumMacro: MemberMacro {
@@ -21,7 +21,7 @@ extension FlatEnumMacro: MemberMacro {
         conformingTo _: [TypeSyntax],
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
-        return try FlatEnumMacroSupport.expansion(
+        return try P_FlatEnumMacroSupport.expansion(
             of: node,
             providingMembersOf: declaration,
             in: context,

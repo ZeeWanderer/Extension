@@ -4,7 +4,7 @@ import SwiftSyntaxMacros
 import SwiftSyntaxBuilder
 import SwiftDiagnostics
 
-public struct CustomStringConvertibleEnumMacro: MacroDiagnosticProtocol {}
+public struct CustomStringConvertibleEnumMacro: P_MacroDiagnosticProtocol {}
 
 extension CustomStringConvertibleEnumMacro: ExtensionMacro {
     public static func expansion(
@@ -17,7 +17,7 @@ extension CustomStringConvertibleEnumMacro: ExtensionMacro {
         guard let enumDecl = declaration.as(EnumDeclSyntax.self) else {
             let diag = Diagnostic(
                 node: node,
-                message: MacroDiagnostic<Self>.onlyApplicableToEnum
+                message: P_MacroDiagnostic<Self>.onlyApplicableToEnum
             )
             context.diagnose(diag)
             return []

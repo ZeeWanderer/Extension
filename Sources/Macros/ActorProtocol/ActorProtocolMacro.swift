@@ -11,7 +11,7 @@ import SwiftSyntaxMacros
 import SwiftDiagnostics
 import SwiftSyntaxBuilder
 
-public struct ActorProtocolMacro: MacroDiagnosticProtocol {}
+public struct ActorProtocolMacro: P_MacroDiagnosticProtocol {}
 
 extension ActorProtocolMacro: PeerMacro {
     public static func expansion(
@@ -20,7 +20,7 @@ extension ActorProtocolMacro: PeerMacro {
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
         guard let protocolDecl = declaration.as(ProtocolDeclSyntax.self) else {
-            let diag = Diagnostic(node: node, message: MacroDiagnostic<Self>.onlyApplicableToProtocol)
+            let diag = Diagnostic(node: node, message: P_MacroDiagnostic<Self>.onlyApplicableToProtocol)
             context.diagnose(diag)
             return []
         }
