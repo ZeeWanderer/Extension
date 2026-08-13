@@ -35,8 +35,8 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
         case finish
     }
 
-    fileprivate struct State {
-        private enum Continuation {
+    internal struct P_State {
+        internal enum Continuation {
             case cancelled
             case active(UnsafeContinuation<Void, Never>)
 
@@ -50,18 +50,18 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
             }
         }
 
-        private var nextID = 0
-        private var continuations: [Int: Continuation] = [:]
-        private var isDirty = false
+        internal var nextID = 0
+        internal var continuations: [Int: Continuation] = [:]
+        internal var isDirty = false
 
-        static func generation(_ state: CriticalState<State>) -> Int {
+        static func generation(_ state: P_CriticalState<P_State>) -> Int {
             state.withCriticalRegion { state in
                 defer { state.nextID &+= 1 }
                 return state.nextID
             }
         }
 
-        static func cancel(_ state: CriticalState<State>, id: Int) {
+        static func cancel(_ state: P_CriticalState<P_State>, id: Int) {
             let continuation = state.withCriticalRegion { state in
                 guard let continuation = state.continuations.removeValue(forKey: id) else {
                     // Cancellation can race with continuation installation.
@@ -76,7 +76,7 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
             continuation?.resume()
         }
 
-        static func emitWillChange(_ state: CriticalState<State>) {
+        static func emitWillChange(_ state: P_CriticalState<P_State>) {
             let continuations = state.withCriticalRegion { state in
                 if state.continuations.isEmpty {
                     state.isDirty = true
@@ -92,7 +92,7 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
             }
         }
 
-        static func removeContinuation(_ state: CriticalState<State>, id: Int) {
+        static func removeContinuation(_ state: P_CriticalState<P_State>, id: Int) {
             let continuation = state.withCriticalRegion { state in
                 state.continuations.removeValue(forKey: id)
             }
@@ -101,7 +101,7 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
 
         static func willChange(
             isolation: isolated (any Actor)? = #isolation,
-            state: CriticalState<State>,
+            state: P_CriticalState<P_State>,
             id: Int
         ) async {
             await withUnsafeContinuation(isolation: isolation) { continuation in
@@ -128,7 +128,7 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
         }
     }
 
-    fileprivate enum Emit: Sendable {
+    internal enum P_Emit: Sendable {
         case iteration(@isolated(any) @Sendable () throws(Failure) -> Iteration)
         case element(@isolated(any) @Sendable () throws(Failure) -> Element)
 
@@ -142,21 +142,21 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
         }
     }
 
-    fileprivate enum Storage: Sendable {
-        case compatibility(CriticalState<State>, Emit)
+    internal enum P_Storage: Sendable {
+        case compatibility(P_CriticalState<P_State>, P_Emit)
 
         #if compiler(>=6.2)
-        case systemElements(UncheckedSendableStorage)
-        case systemIterations(UncheckedSendableStorage)
+        case systemElements(P_UncheckedSendableStorage)
+        case systemIterations(P_UncheckedSendableStorage)
         #endif
     }
 
-    private let storage: Storage
+    internal let p_storage: P_Storage
 
     #if compiler(>=6.2)
     /// Lets the package's tests exercise the compatibility backend on a host
     /// where system `Observations` is already available.
-    private static var shouldUseSystemObservations: Bool {
+    internal static var p_shouldUseSystemObservations: Bool {
         #if EXTENSION_OBSERVATIONS_COMPAT_FORCE_FALLBACK
         false
         #else
@@ -165,8 +165,8 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
     }
     #endif
 
-    private init(storage: Storage) {
-        self.storage = storage
+    internal init(p_storage: P_Storage) {
+        self.p_storage = p_storage
     }
 
     /// Creates a sequence that emits the current value and each subsequent
@@ -176,15 +176,15 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
     ) {
         #if compiler(>=6.2)
         if #available(iOS 26.0, macCatalyst 26.0, macOS 26.0, *),
-           Self.shouldUseSystemObservations {
-            storage = .systemElements(
-                UncheckedSendableStorage(Observation.Observations(emit))
+           Self.p_shouldUseSystemObservations {
+            p_storage = .systemElements(
+                P_UncheckedSendableStorage(Observation.Observations(emit))
             )
         } else {
-            storage = .compatibility(CriticalState(State()), .element(emit))
+            p_storage = .compatibility(P_CriticalState(P_State()), .element(emit))
         }
         #else
-        storage = .compatibility(CriticalState(State()), .element(emit))
+        p_storage = .compatibility(P_CriticalState(P_State()), .element(emit))
         #endif
     }
 
@@ -194,26 +194,26 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
     ) -> ObservationsCompat<Element, Failure> {
         #if compiler(>=6.2)
         if #available(iOS 26.0, macCatalyst 26.0, macOS 26.0, *),
-           Self.shouldUseSystemObservations {
+           Self.p_shouldUseSystemObservations {
             return .init(
-                storage: .systemIterations(
-                    UncheckedSendableStorage(Observation.Observations(emit))
+                p_storage: .systemIterations(
+                    P_UncheckedSendableStorage(Observation.Observations(emit))
                 )
             )
         }
         #endif
 
         return .init(
-            storage: .compatibility(CriticalState(State()), .iteration(emit))
+            p_storage: .compatibility(P_CriticalState(P_State()), .iteration(emit))
         )
     }
 
-    fileprivate struct CompatibilityIterator {
-        private var state: CriticalState<State>?
-        private let emit: Emit
-        private var hasStarted = false
+    internal struct P_CompatibilityIterator {
+        internal var state: P_CriticalState<P_State>?
+        internal let emit: P_Emit
+        internal var hasStarted = false
 
-        fileprivate init(state: CriticalState<State>, emit: Emit) {
+        internal init(state: P_CriticalState<P_State>, emit: P_Emit) {
             self.state = state
             self.emit = emit
         }
@@ -225,10 +225,10 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
             reason: "https://github.com/swiftlang/swift/issues/89361"
         )
         #endif
-        private static func trackEmission(
+        internal static func trackEmission(
             isolation: isolated (any Actor)?,
-            state: CriticalState<State>,
-            emit: Emit
+            state: P_CriticalState<P_State>,
+            emit: P_Emit
         ) throws(Failure) -> Iteration {
             // The public tracking API cannot throw, so preserve the typed error
             // in a Result until observation registration is complete.
@@ -248,18 +248,18 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
                     return .failure(error as! Failure)
                 }
             } onChange: { [state] in
-                State.emitWillChange(state)
+                P_State.emitWillChange(state)
             }
 
             return try result.get()
         }
 
-        private mutating func terminate(
+        internal mutating func terminate(
             throwing failure: Failure? = nil,
             id: Int
         ) throws(Failure) -> Element? {
             if let state {
-                State.removeContinuation(state, id: id)
+                P_State.removeContinuation(state, id: id)
             }
             state = nil
 
@@ -270,9 +270,9 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
             return nil
         }
 
-        private mutating func trackEmission(
+        internal mutating func trackEmission(
             isolation: isolated (any Actor)?,
-            state: CriticalState<State>,
+            state: P_CriticalState<P_State>,
             id: Int
         ) async throws(Failure) -> Element? {
             guard !Task.isCancelled else {
@@ -291,14 +291,14 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
             }
         }
 
-        fileprivate mutating func nextValue(
+        internal mutating func nextValue(
             isolation: isolated (any Actor)? = #isolation
         ) async throws(Failure) -> Element? {
             guard let state else {
                 return nil
             }
 
-            let id = State.generation(state)
+            let id = P_State.generation(state)
 
             do {
                 if !hasStarted {
@@ -306,14 +306,14 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
                 } else {
                     await withTaskCancellationHandler(
                         operation: {
-                            await State.willChange(
+                            await P_State.willChange(
                                 isolation: isolation,
                                 state: state,
                                 id: id
                             )
                         },
                         onCancel: {
-                            State.cancel(state, id: id)
+                            P_State.cancel(state, id: id)
                         },
                         isolation: isolation
                     )
@@ -333,27 +333,27 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
 
     /// An iterator over transactional observation values.
     public struct Iterator: AsyncIteratorProtocol {
-        fileprivate enum Backend {
-            case compatibility(CompatibilityIterator)
+        internal enum P_Backend {
+            case compatibility(P_CompatibilityIterator)
             case terminal
 
             #if compiler(>=6.2)
-            case systemElements(UncheckedSendableStorage)
-            case systemIterations(UncheckedSendableStorage)
+            case systemElements(P_UncheckedSendableStorage)
+            case systemIterations(P_UncheckedSendableStorage)
             #endif
         }
 
-        fileprivate var backend: Backend
+        internal var p_backend: P_Backend
 
-        fileprivate init(backend: Backend) {
-            self.backend = backend
+        internal init(p_backend: P_Backend) {
+            self.p_backend = p_backend
         }
 
-        private mutating func nextValue(
+        internal mutating func p_nextValue(
             isolation: isolated (any Actor)? = #isolation
         ) async throws(Failure) -> Element? {
-            let activeBackend = backend
-            backend = .terminal
+            let activeBackend = p_backend
+            p_backend = .terminal
 
             switch activeBackend {
             case .compatibility(var iterator):
@@ -361,7 +361,7 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
                     return nil
                 }
 
-                backend = .compatibility(iterator)
+                p_backend = .compatibility(iterator)
                 return value
 
             #if compiler(>=6.2)
@@ -376,7 +376,7 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
                     return nil
                 }
 
-                backend = .systemElements(UncheckedSendableStorage(iterator))
+                p_backend = .systemElements(P_UncheckedSendableStorage(iterator))
                 return value
 
             case .systemIterations(let iteratorStorage):
@@ -392,7 +392,7 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
 
                 switch iteration {
                 case .next(let value):
-                    backend = .systemIterations(UncheckedSendableStorage(iterator))
+                    p_backend = .systemIterations(P_UncheckedSendableStorage(iterator))
                     return value
                 case .finish:
                     return nil
@@ -407,7 +407,7 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
         /// Returns the next transactionally observed value, or `nil` after
         /// explicit completion or task cancellation.
         public mutating func next() async throws -> Element? {
-            try await nextValue()
+            try await p_nextValue()
         }
 
         /// Returns the next value while preserving the caller's isolation.
@@ -415,15 +415,15 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
         public mutating func next(
             isolation actor: isolated (any Actor)?
         ) async throws(Failure) -> Element? {
-            try await nextValue(isolation: actor)
+            try await p_nextValue(isolation: actor)
         }
     }
 
     public func makeAsyncIterator() -> Iterator {
-        switch storage {
+        switch p_storage {
         case .compatibility(let state, let emit):
             return Iterator(
-                backend: .compatibility(.init(state: state, emit: emit))
+                p_backend: .compatibility(.init(state: state, emit: emit))
             )
 
         #if compiler(>=6.2)
@@ -433,8 +433,8 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
                     as: Observation.Observations<Element, Failure>.self
                 )
                 return Iterator(
-                    backend: .systemElements(
-                        UncheckedSendableStorage(observations.makeAsyncIterator())
+                    p_backend: .systemElements(
+                        P_UncheckedSendableStorage(observations.makeAsyncIterator())
                     )
                 )
             } else {
@@ -447,8 +447,8 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
                     as: Observation.Observations<Iteration, Failure>.self
                 )
                 return Iterator(
-                    backend: .systemIterations(
-                        UncheckedSendableStorage(observations.makeAsyncIterator())
+                    p_backend: .systemIterations(
+                        P_UncheckedSendableStorage(observations.makeAsyncIterator())
                     )
                 )
             } else {
@@ -459,8 +459,8 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
     }
 }
 
-private struct UncheckedSendableStorage: @unchecked Sendable {
-    private let storedValue: Any
+internal struct P_UncheckedSendableStorage: @unchecked Sendable {
+    internal let storedValue: Any
 
     init<Value>(_ value: Value) {
         storedValue = value
@@ -475,9 +475,9 @@ private struct UncheckedSendableStorage: @unchecked Sendable {
     }
 }
 
-private final class CriticalState<Value>: @unchecked Sendable {
-    private let lock = NSLock()
-    private var value: Value
+internal final class P_CriticalState<Value>: @unchecked Sendable {
+    internal let lock = NSLock()
+    internal var value: Value
 
     init(_ value: Value) {
         self.value = value
