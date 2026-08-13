@@ -21,8 +21,8 @@ public class Node<T>
 
 public class LinkedList<T>
 {
-    @usableFromInline internal var head: Node<T>?
-    @usableFromInline internal var tail: Node<T>?
+    @usableFromInline internal var p_head: Node<T>?
+    @usableFromInline internal var p_tail: Node<T>?
     
     @inlinable
     public init() {}
@@ -30,35 +30,35 @@ public class LinkedList<T>
     @inlinable
     public var isEmpty: Bool
     {
-        return head == nil
+        return p_head == nil
     }
     
     @inlinable
     public var first: Node<T>?
     {
-        return head
+        return p_head
     }
     
     @inlinable
     public var last: Node<T>?
     {
-        return tail
+        return p_tail
     }
     
     @inlinable
     public func append(_ value: T)
     {
         let newNode = Node(value: value)
-        if let tailNode = tail
+        if let tailNode = p_tail
         {
             newNode.previous = tailNode
             tailNode.next = newNode
         }
         else
         {
-            head = newNode
+            p_head = newNode
         }
-        tail = newNode
+        p_tail = newNode
     }
     
     @inlinable
@@ -66,7 +66,7 @@ public class LinkedList<T>
     {
         if index >= 0
         {
-            var node = head
+            var node = p_head
             var i = index
             while node != nil
             {
@@ -81,8 +81,8 @@ public class LinkedList<T>
     @inlinable
     public func removeAll()
     {
-        head = nil
-        tail = nil
+        p_head = nil
+        p_tail = nil
     }
     
     @inlinable
@@ -98,13 +98,13 @@ public class LinkedList<T>
         }
         else
         {
-            head = next
+            p_head = next
         }
         next?.previous = prev
         
         if next == nil
         {
-            tail = prev
+            p_tail = prev
         }
         
         node.previous = nil
@@ -120,7 +120,7 @@ extension LinkedList: CustomStringConvertible
     public var description: String
     {
         var text = "["
-        var node = head
+        var node = p_head
         while node != nil
         {
             text += "\(node!.value)"
@@ -135,7 +135,7 @@ extension LinkedList: CustomStringConvertible
 /// ``LinkedList`` based queue with copy-on-write value semantics.
 public struct Queue<T>
 {
-    @usableFromInline internal var list = LinkedList<T>()
+    @usableFromInline internal var p_list = LinkedList<T>()
     
     @inlinable
     public init() {}
@@ -143,24 +143,24 @@ public struct Queue<T>
     @inlinable
     public var isEmpty: Bool
     {
-        return list.isEmpty
+        return p_list.isEmpty
     }
     
     @inlinable
     public mutating func enqueue(_ element: T)
     {
-        ensureUniqueStorage()
-        list.append(element)
+        p_ensureUniqueStorage()
+        p_list.append(element)
     }
     
     @inlinable
     public mutating func dequeue() -> T?
     {
-        guard !list.isEmpty else { return nil }
+        guard !p_list.isEmpty else { return nil }
 
-        ensureUniqueStorage()
-        guard let element = list.first else { return nil }
-        list.remove(element)
+        p_ensureUniqueStorage()
+        guard let element = p_list.first else { return nil }
+        p_list.remove(element)
         
         return element.value
     }
@@ -168,21 +168,21 @@ public struct Queue<T>
     @inlinable
     public func peek() -> T?
     {
-        return list.first?.value
+        return p_list.first?.value
     }
 
     @usableFromInline
-    internal mutating func ensureUniqueStorage()
+    internal mutating func p_ensureUniqueStorage()
     {
-        guard !isKnownUniquelyReferenced(&list) else { return }
+        guard !isKnownUniquelyReferenced(&p_list) else { return }
 
         let copy = LinkedList<T>()
-        var node = list.first
+        var node = p_list.first
         while let current = node {
             copy.append(current.value)
             node = current.next
         }
-        list = copy
+        p_list = copy
     }
 }
 
@@ -191,7 +191,7 @@ extension Queue: CustomStringConvertible
     @inlinable
     public var description: String
     {
-        return list.description
+        return p_list.description
     }
 }
 
@@ -199,8 +199,8 @@ extension Queue: CustomStringConvertible
 /// Array based `FIFO` queue with `O(1) ammortized` complexity for enqueuing and dequeuing operations.
 public struct FastQueue<T>
 {
-    @usableFromInline internal var array = [T?]()
-    @usableFromInline internal var head = 0
+    @usableFromInline internal var p_array = [T?]()
+    @usableFromInline internal var p_head = 0
     
     @inlinable
     public init() {}
@@ -214,28 +214,28 @@ public struct FastQueue<T>
     @inlinable
     public var count: Int
     {
-        return array.count - head
+        return p_array.count - p_head
     }
     
     @inlinable
     public mutating func enqueue(_ element: T)
     {
-        array.append(element)
+        p_array.append(element)
     }
     
     @inlinable
     public mutating func dequeue() -> T?
     {
-        guard let element = array[safe: head] else { return nil }
+        guard let element = p_array[safe: p_head] else { return nil }
         
-        array[head] = nil
-        head += 1
+        p_array[p_head] = nil
+        p_head += 1
         
-        let percentage = Double(head)/Double(array.count)
-        if array.count > 50 && percentage > 0.25
+        let percentage = Double(p_head)/Double(p_array.count)
+        if p_array.count > 50 && percentage > 0.25
         {
-            array.removeFirst(head)
-            head = 0
+            p_array.removeFirst(p_head)
+            p_head = 0
         }
         
         return element
@@ -250,7 +250,7 @@ public struct FastQueue<T>
         }
         else
         {
-            return array[head]
+            return p_array[p_head]
         }
     }
 }
@@ -260,7 +260,7 @@ extension FastQueue: CustomStringConvertible
     @inlinable
     public var description: String
     {
-        return array[head..<array.count].description
+        return p_array[p_head..<p_array.count].description
     }
 }
 
@@ -268,13 +268,13 @@ extension FastQueue: CustomStringConvertible
 public struct Heap<T>
 {
     /// The array that stores the heap's nodes.
-    @usableFromInline internal var nodes = [T]()
+    @usableFromInline internal var p_nodes = [T]()
     
     /// Determines how to compare two nodes in the heap.
     /// Use '>' for a max-heap or '<' for a min-heap,
     /// or provide a comparing method if the heap is made
     /// of custom elements, for example tuples.
-    @usableFromInline internal var orderCriteria: (T, T) -> Bool
+    @usableFromInline internal var p_orderCriteria: (T, T) -> Bool
     
     /// Creates an empty heap.
     /// The sort function determines whether this is a min-heap or max-heap.
@@ -282,7 +282,7 @@ public struct Heap<T>
     @inlinable
     public init(sort: @escaping (T, T) -> Bool)
     {
-        self.orderCriteria = sort
+        self.p_orderCriteria = sort
     }
     
     /// Creates a heap from an array. The order of the array does not matter;
@@ -292,39 +292,39 @@ public struct Heap<T>
     @inlinable
     public init(array: [T], sort: @escaping (T, T) -> Bool)
     {
-        self.orderCriteria = sort
-        configureHeap(from: array)
+        self.p_orderCriteria = sort
+        p_configureHeap(from: array)
     }
     
     /// Configures the max-heap or min-heap from an array, in a bottom-up manner.
     /// Performance: This runs pretty much in O(n).
     @usableFromInline
-    internal mutating func configureHeap(from array: [T])
+    internal mutating func p_configureHeap(from array: [T])
     {
-        nodes = array
-        for i in stride(from: (nodes.count/2-1), through: 0, by: -1)
+        p_nodes = array
+        for i in stride(from: (p_nodes.count/2-1), through: 0, by: -1)
         {
-            shiftDown(i)
+            p_shiftDown(i)
         }
     }
     
     @inlinable
     public var isEmpty: Bool
     {
-        return nodes.isEmpty
+        return p_nodes.isEmpty
     }
     
     @inlinable
     public var count: Int
     {
-        return nodes.count
+        return p_nodes.count
     }
     
     /// Returns the index of the parent of the element at index i.
     /// The element at index 0 is the root of the tree and has no parent.
     @inline(__always)
     @usableFromInline
-    internal func parentIndex(ofIndex i: Int) -> Int {
+    internal func p_parentIndex(ofIndex i: Int) -> Int {
         return (i - 1) / 2
     }
     
@@ -333,7 +333,7 @@ public struct Heap<T>
     /// there is no left child.
     @inline(__always)
     @usableFromInline
-    internal func leftChildIndex(ofIndex i: Int) -> Int {
+    internal func p_leftChildIndex(ofIndex i: Int) -> Int {
         return 2*i + 1
     }
     
@@ -342,7 +342,7 @@ public struct Heap<T>
     /// there is no right child.
     @inline(__always)
     @usableFromInline
-    internal func rightChildIndex(ofIndex i: Int) -> Int {
+    internal func p_rightChildIndex(ofIndex i: Int) -> Int {
         return 2*i + 2
     }
     
@@ -351,7 +351,7 @@ public struct Heap<T>
     @inlinable
     public func peek() -> T?
     {
-        return nodes.first
+        return p_nodes.first
     }
     
     /// Adds a new value to the heap. This reorders the heap so that the max-heap
@@ -359,8 +359,8 @@ public struct Heap<T>
     @inlinable
     public mutating func insert(_ value: T)
     {
-        nodes.append(value)
-        shiftUp(nodes.count - 1)
+        p_nodes.append(value)
+        p_shiftUp(p_nodes.count - 1)
     }
     
     /// Adds a sequence of values to the heap. This reorders the heap so that
@@ -378,7 +378,7 @@ public struct Heap<T>
     @inlinable
     public mutating func replace(index i: Int, value: T)
     {
-        guard i >= 0, i < nodes.count else { return }
+        guard i >= 0, i < p_nodes.count else { return }
         
         remove(at: i)
         insert(value)
@@ -390,16 +390,16 @@ public struct Heap<T>
     @discardableResult
     public mutating func remove() -> T?
     {
-        guard !nodes.isEmpty else { return nil }
+        guard !p_nodes.isEmpty else { return nil }
         
-        if nodes.count == 1 {
-            return nodes.removeLast()
+        if p_nodes.count == 1 {
+            return p_nodes.removeLast()
         } else {
             // Use the last node to replace the first one, then fix the heap by
             // shifting this new first node into its proper position.
-            let value = nodes[0]
-            nodes[0] = nodes.removeLast()
-            shiftDown(0)
+            let value = p_nodes[0]
+            p_nodes[0] = p_nodes.removeLast()
+            p_shiftDown(0)
             return value
         }
     }
@@ -410,41 +410,41 @@ public struct Heap<T>
     @discardableResult
     public mutating func remove(at index: Int) -> T?
     {
-        guard index >= 0, index < nodes.count else { return nil }
+        guard index >= 0, index < p_nodes.count else { return nil }
         
-        let size = nodes.count - 1
+        let size = p_nodes.count - 1
         if index != size {
-            nodes.swapAt(index, size)
-            shiftDown(from: index, until: size)
-            shiftUp(index)
+            p_nodes.swapAt(index, size)
+            p_shiftDown(from: index, until: size)
+            p_shiftUp(index)
         }
-        return nodes.removeLast()
+        return p_nodes.removeLast()
     }
     
     /// Takes a child node and looks at its parents; if a parent is not larger
     /// (max-heap) or not smaller (min-heap) than the child, we exchange them.
     @usableFromInline
-    internal mutating func shiftUp(_ index: Int)
+    internal mutating func p_shiftUp(_ index: Int)
     {
         var childIndex = index
-        let child = nodes[childIndex]
-        var parentIndex = self.parentIndex(ofIndex: childIndex)
+        let child = p_nodes[childIndex]
+        var parentIndex = self.p_parentIndex(ofIndex: childIndex)
         
-        while childIndex > 0 && orderCriteria(child, nodes[parentIndex]) {
-            nodes[childIndex] = nodes[parentIndex]
+        while childIndex > 0 && p_orderCriteria(child, p_nodes[parentIndex]) {
+            p_nodes[childIndex] = p_nodes[parentIndex]
             childIndex = parentIndex
-            parentIndex = self.parentIndex(ofIndex: childIndex)
+            parentIndex = self.p_parentIndex(ofIndex: childIndex)
         }
         
-        nodes[childIndex] = child
+        p_nodes[childIndex] = child
     }
     
     /// Looks at a parent node and makes sure it is still larger (max-heap) or
     /// smaller (min-heap) than its childeren.
     @usableFromInline
-    internal mutating func shiftDown(from index: Int, until endIndex: Int)
+    internal mutating func p_shiftDown(from index: Int, until endIndex: Int)
     {
-        let leftChildIndex = self.leftChildIndex(ofIndex: index)
+        let leftChildIndex = self.p_leftChildIndex(ofIndex: index)
         let rightChildIndex = leftChildIndex + 1
         
         // Figure out which comes first if we order them by the sort function:
@@ -452,22 +452,22 @@ public struct Heap<T>
         // first, we're done. If not, that element is out-of-place and we make
         // it "float down" the tree until the heap property is restored.
         var first = index
-        if leftChildIndex < endIndex && orderCriteria(nodes[leftChildIndex], nodes[first]) {
+        if leftChildIndex < endIndex && p_orderCriteria(p_nodes[leftChildIndex], p_nodes[first]) {
             first = leftChildIndex
         }
-        if rightChildIndex < endIndex && orderCriteria(nodes[rightChildIndex], nodes[first]) {
+        if rightChildIndex < endIndex && p_orderCriteria(p_nodes[rightChildIndex], p_nodes[first]) {
             first = rightChildIndex
         }
         if first == index { return }
         
-        nodes.swapAt(index, first)
-        shiftDown(from: first, until: endIndex)
+        p_nodes.swapAt(index, first)
+        p_shiftDown(from: first, until: endIndex)
     }
     
     @usableFromInline
-    internal mutating func shiftDown(_ index: Int)
+    internal mutating func p_shiftDown(_ index: Int)
     {
-        shiftDown(from: index, until: nodes.count)
+        p_shiftDown(from: index, until: p_nodes.count)
     }
     
 }
@@ -479,7 +479,7 @@ extension Heap where T: Equatable
     @inlinable
     public func index(of node: T) -> Int?
     {
-        return nodes.firstIndex(where: { $0 == node })
+        return p_nodes.firstIndex(where: { $0 == node })
     }
     
     /// Removes the first occurrence of a node from the heap. Performance: O(n).
@@ -498,44 +498,44 @@ extension Heap where T: Equatable
 /// Heap based priority queue with `O(lg n)` complexity for all operations.
 public struct PriorityQueue<T>
 {
-    @usableFromInline internal var heap: Heap<T>
+    @usableFromInline internal var p_heap: Heap<T>
     
     /// To create a max-priority queue, supply a > sort function. For a min-priority
     /// queue, use <.
     @inlinable
     public init(sort: @escaping (T, T) -> Bool)
     {
-        heap = Heap(sort: sort)
+        p_heap = Heap(sort: sort)
     }
     
     @inlinable
     public var isEmpty: Bool
     {
-        return heap.isEmpty
+        return p_heap.isEmpty
     }
     
     @inlinable
     public var count: Int
     {
-        return heap.count
+        return p_heap.count
     }
     
     @inlinable
     public func peek() -> T?
     {
-        return heap.peek()
+        return p_heap.peek()
     }
     
     @inlinable
     public mutating func enqueue(_ element: T)
     {
-        heap.insert(element)
+        p_heap.insert(element)
     }
     
     @inlinable
     public mutating func dequeue() -> T?
     {
-        return heap.remove()
+        return p_heap.remove()
     }
     
     /// Allows you to change the priority of an element. In a max-priority queue,
@@ -544,7 +544,7 @@ public struct PriorityQueue<T>
     @inlinable
     public mutating func changePriority(index i: Int, value: T)
     {
-        return heap.replace(index: i, value: value)
+        return p_heap.replace(index: i, value: value)
     }
 }
 
@@ -562,19 +562,19 @@ public struct HashedHeap<T: Hashable>
     // TODO: use `public internal(set)` instead of internal var + public var getter when [SR-7590](https://github.com/apple/swift/issues/50132) gets fixed
     
     /// The array that stores the heap's nodes.
-    @usableFromInline internal var _elements = [T]()
+    @usableFromInline internal var p_elements = [T]()
     
     /// The array that stores the heap's nodes.
-    public var elements: [T] { _elements }
+    public var elements: [T] { p_elements }
     
     /// Hash mapping from elements to indices in the `elements` array.
-    @usableFromInline internal var _indices = [T: Int]()
+    @usableFromInline internal var p_indices = [T: Int]()
     
     /// Hash mapping from elements to indices in the `elements` array.
-    public var indices: [T: Int] { _indices }
+    public var indices: [T: Int] { p_indices }
     
     /// Determines whether this is a max-heap (>) or min-heap (<).
-    @usableFromInline internal var isOrderedBefore: (T, T) -> Bool
+    @usableFromInline internal var p_isOrderedBefore: (T, T) -> Bool
     
     /// Creates an empty hashed heap.
     ///
@@ -583,7 +583,7 @@ public struct HashedHeap<T: Hashable>
     @inlinable
     public init(sort: @escaping (T, T) -> Bool)
     {
-        isOrderedBefore = sort
+        p_isOrderedBefore = sort
     }
     
     /// Creates a hashed heap from an array.
@@ -595,25 +595,25 @@ public struct HashedHeap<T: Hashable>
     @inlinable
     public init(array: [T], sort: @escaping (T, T) -> Bool)
     {
-        isOrderedBefore = sort
-        build(from: array)
+        p_isOrderedBefore = sort
+        p_build(from: array)
     }
     
     /// Converts an array to a max-heap or min-heap in a bottom-up manner.
     ///
     /// - Complexity: O(n)
     @usableFromInline
-    internal mutating func build(from array: [T]) {
-        _elements.removeAll(keepingCapacity: true)
-        _indices.removeAll(keepingCapacity: true)
-        for value in array where _indices[value] == nil {
-            _indices[value] = _elements.count
-            _elements.append(value)
+    internal mutating func p_build(from array: [T]) {
+        p_elements.removeAll(keepingCapacity: true)
+        p_indices.removeAll(keepingCapacity: true)
+        for value in array where p_indices[value] == nil {
+            p_indices[value] = p_elements.count
+            p_elements.append(value)
         }
 
-        if _elements.count > 1 {
-            for i in stride(from: (_elements.count/2 - 1), through: 0, by: -1) {
-                shiftDown(i, heapSize: _elements.count)
+        if p_elements.count > 1 {
+            for i in stride(from: (p_elements.count/2 - 1), through: 0, by: -1) {
+                p_shiftDown(i, heapSize: p_elements.count)
             }
         }
     }
@@ -622,21 +622,21 @@ public struct HashedHeap<T: Hashable>
     @inlinable
     public var isEmpty: Bool
     {
-        return _elements.isEmpty
+        return p_elements.isEmpty
     }
     
     /// The number of elements in the heap.
     @inlinable
     public var count: Int
     {
-        return _elements.count
+        return p_elements.count
     }
     
     /// Accesses an element by its index.
     @inlinable
     public subscript(index: Int) -> T
     {
-        return _elements[index]
+        return p_elements[index]
     }
     
     /// Returns the index of the given element.
@@ -648,7 +648,7 @@ public struct HashedHeap<T: Hashable>
     @inlinable
     public func index(of element: T) -> Int?
     {
-        return _indices[element]
+        return p_indices[element]
     }
     
     /// Returns the maximum value in the heap (for a max-heap) or the minimum value (for a min-heap).
@@ -657,7 +657,7 @@ public struct HashedHeap<T: Hashable>
     @inlinable
     public func peek() -> T?
     {
-        return _elements.first
+        return p_elements.first
     }
     
     /// Adds a new value to the heap.
@@ -668,10 +668,10 @@ public struct HashedHeap<T: Hashable>
     @inlinable
     public mutating func insert(_ value: T)
     {
-        guard _indices[value] == nil else { return }
-        _elements.append(value)
-        _indices[value] = _elements.count - 1
-        shiftUp(_elements.count - 1)
+        guard p_indices[value] == nil else { return }
+        p_elements.append(value)
+        p_indices[value] = p_elements.count - 1
+        p_shiftUp(p_elements.count - 1)
     }
     
     /// Adds new values to the heap.
@@ -689,16 +689,16 @@ public struct HashedHeap<T: Hashable>
     @inlinable
     public mutating func replace(_ value: T, at index: Int)
     {
-        guard index >= 0, index < _elements.count else { return }
-        let oldValue = _elements[index]
+        guard index >= 0, index < p_elements.count else { return }
+        let oldValue = p_elements[index]
         guard oldValue != value else { return }
-        guard _indices[value] == nil else { return }
+        guard p_indices[value] == nil else { return }
 
-        set(value, at: index)
-        if index > 0, isOrderedBefore(value, _elements[parentIndex(of: index)]) {
-            shiftUp(index)
+        p_set(value, at: index)
+        if index > 0, p_isOrderedBefore(value, p_elements[p_parentIndex(of: index)]) {
+            p_shiftUp(index)
         } else {
-            shiftDown(index, heapSize: _elements.count)
+            p_shiftDown(index, heapSize: p_elements.count)
         }
     }
     
@@ -711,16 +711,16 @@ public struct HashedHeap<T: Hashable>
     @discardableResult
     public mutating func remove() -> T?
     {
-        if _elements.isEmpty {
+        if p_elements.isEmpty {
             return nil
-        } else if _elements.count == 1 {
+        } else if p_elements.count == 1 {
             return removeLast()
         } else {
             // Use the last node to replace the first one, then fix the heap by
             // shifting this new first node into its proper position.
-            let value = _elements[0]
-            set(removeLast(), at: 0)
-            shiftDown()
+            let value = p_elements[0]
+            p_set(removeLast(), at: 0)
+            p_shiftDown()
             return value
         }
     }
@@ -733,18 +733,18 @@ public struct HashedHeap<T: Hashable>
     @inlinable
     public mutating func remove(at index: Int) -> T?
     {
-        guard index >= 0, index < _elements.count else { return nil }
+        guard index >= 0, index < p_elements.count else { return nil }
 
-        let size = _elements.count - 1
+        let size = p_elements.count - 1
         if index != size {
-            swapAt(index, size)
+            p_swapAt(index, size)
         }
         let removed = removeLast()
-        if index < _elements.count {
-            if index > 0, isOrderedBefore(_elements[index], _elements[parentIndex(of: index)]) {
-                shiftUp(index)
+        if index < p_elements.count {
+            if index > 0, p_isOrderedBefore(p_elements[index], p_elements[p_parentIndex(of: index)]) {
+                p_shiftUp(index)
             } else {
-                shiftDown(index, heapSize: _elements.count)
+                p_shiftDown(index, heapSize: p_elements.count)
             }
         }
         return removed
@@ -754,8 +754,8 @@ public struct HashedHeap<T: Hashable>
     @inlinable
     public mutating func removeAll()
     {
-        _elements.removeAll()
-        _indices.removeAll()
+        p_elements.removeAll()
+        p_indices.removeAll()
     }
     
     /// Removes the last element from the heap.
@@ -763,40 +763,40 @@ public struct HashedHeap<T: Hashable>
     /// - Complexity: O(1)
     @inlinable
     public mutating func removeLast() -> T {
-        guard let value = _elements.last else {
+        guard let value = p_elements.last else {
             preconditionFailure("Trying to remove element from empty heap")
         }
-        _indices[value] = nil
-        return _elements.removeLast()
+        p_indices[value] = nil
+        return p_elements.removeLast()
     }
     
     /// Takes a child node and looks at its parents; if a parent is not larger (max-heap) or not smaller (min-heap)
     /// than the child, we exchange them.
     @usableFromInline
-    internal mutating func shiftUp(_ index: Int) {
+    internal mutating func p_shiftUp(_ index: Int) {
         var childIndex = index
-        var parentIndex = self.parentIndex(of: childIndex)
+        var parentIndex = self.p_parentIndex(of: childIndex)
 
-        while childIndex > 0 && isOrderedBefore(_elements[childIndex], _elements[parentIndex]) {
-            swapAt(childIndex, parentIndex)
+        while childIndex > 0 && p_isOrderedBefore(p_elements[childIndex], p_elements[parentIndex]) {
+            p_swapAt(childIndex, parentIndex)
             childIndex = parentIndex
-            parentIndex = self.parentIndex(of: childIndex)
+            parentIndex = self.p_parentIndex(of: childIndex)
         }
     }
     
     @usableFromInline
-    internal mutating func shiftDown()
+    internal mutating func p_shiftDown()
     {
-        shiftDown(0, heapSize: _elements.count)
+        p_shiftDown(0, heapSize: p_elements.count)
     }
     
     /// Looks at a parent node and makes sure it is still larger (max-heap) or smaller (min-heap) than its childeren.
     @usableFromInline
-    internal mutating func shiftDown(_ index: Int, heapSize: Int) {
+    internal mutating func p_shiftDown(_ index: Int, heapSize: Int) {
         var parentIndex = index
         
         while true {
-            let leftChildIndex = self.leftChildIndex(of: parentIndex)
+            let leftChildIndex = self.p_leftChildIndex(of: parentIndex)
             let rightChildIndex = leftChildIndex + 1
             
             // Figure out which comes first if we order them by the sort function:
@@ -804,33 +804,33 @@ public struct HashedHeap<T: Hashable>
             // first, we're done. If not, that element is out-of-place and we make
             // it "float down" the tree until the heap property is restored.
             var first = parentIndex
-            if leftChildIndex < heapSize && isOrderedBefore(_elements[leftChildIndex], _elements[first]) {
+            if leftChildIndex < heapSize && p_isOrderedBefore(p_elements[leftChildIndex], p_elements[first]) {
                 first = leftChildIndex
             }
-            if rightChildIndex < heapSize && isOrderedBefore(_elements[rightChildIndex], _elements[first]) {
+            if rightChildIndex < heapSize && p_isOrderedBefore(p_elements[rightChildIndex], p_elements[first]) {
                 first = rightChildIndex
             }
             if first == parentIndex { return }
             
-            swapAt(parentIndex, first)
+            p_swapAt(parentIndex, first)
             parentIndex = first
         }
     }
     
     /// Replaces an element in the heap and updates the indices hash.
     @usableFromInline
-    internal mutating func set(_ newValue: T, at index: Int) {
-        _indices[_elements[index]] = nil
-        _elements[index] = newValue
-        _indices[newValue] = index
+    internal mutating func p_set(_ newValue: T, at index: Int) {
+        p_indices[p_elements[index]] = nil
+        p_elements[index] = newValue
+        p_indices[newValue] = index
     }
     
     /// Swap two elements in the heap and update the indices hash.
     @usableFromInline
-    internal mutating func swapAt(_ i: Int, _ j: Int) {
-        _elements.swapAt(i, j)
-        _indices[_elements[i]] = i
-        _indices[_elements[j]] = j
+    internal mutating func p_swapAt(_ i: Int, _ j: Int) {
+        p_elements.swapAt(i, j)
+        p_indices[p_elements[i]] = i
+        p_indices[p_elements[j]] = j
     }
     
     /// Returns the index of the parent of the element at index i.
@@ -838,7 +838,7 @@ public struct HashedHeap<T: Hashable>
     /// - Note: The element at index 0 is the root of the tree and has no parent.
     @inline(__always)
     @usableFromInline
-    internal func parentIndex(of index: Int) -> Int {
+    internal func p_parentIndex(of index: Int) -> Int {
         return (index - 1) / 2
     }
     
@@ -846,7 +846,7 @@ public struct HashedHeap<T: Hashable>
     ///
     /// - Note: this index can be greater than the heap size, in which case there is no left child.
     @inline(__always)
-    internal func leftChildIndex(of index: Int) -> Int {
+    internal func p_leftChildIndex(of index: Int) -> Int {
         return 2*index + 1
     }
     
@@ -854,7 +854,7 @@ public struct HashedHeap<T: Hashable>
     ///
     /// - Note: this index can be greater than the heap size, in which case there is no right child.
     @inline(__always)
-    internal func rightChildIndex(of index: Int) -> Int {
+    internal func p_rightChildIndex(of index: Int) -> Int {
         return 2*index + 2
     }
 }
