@@ -14,7 +14,7 @@ public typealias LocalizationDictionary = Dictionary<LanguageCodeKey, LocalizedS
 public extension LocalizationDictionary
 {
     @usableFromInline
-    internal func check_locale(_ locale: Locale) -> LocalizedStringValue?
+    internal func p_checkLocale(_ locale: Locale) -> LocalizedStringValue?
     {
         // simple check
         if let l_string = self[locale.identifier]
@@ -44,14 +44,14 @@ public extension LocalizationDictionary
     subscript(_ locale: Locale) -> LocalizedStringValue
     {
         // check provided locale
-        if let l_string = check_locale(locale)
+        if let l_string = p_checkLocale(locale)
         {
             return l_string
         }
         else // fallback on current locale if provided locale is not current
         if Locale.current != locale
         {
-            if let l_string = check_locale(Locale.current)
+            if let l_string = p_checkLocale(Locale.current)
             {
                 return l_string
             }
@@ -61,7 +61,7 @@ public extension LocalizationDictionary
             for localization in Bundle.main.preferredLocalizations
             {
                 let locale_ = Locale(identifier: localization) // create locale from localization
-                if let l_string = check_locale(locale_)
+                if let l_string = p_checkLocale(locale_)
                 {
                     return l_string
                 }

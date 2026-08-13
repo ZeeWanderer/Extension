@@ -21,7 +21,7 @@ public extension KeyedDecodingContainer
           R: Decodable, R: Hashable
     {
         let rawDictionary = try decode([R: V].self, forKey: key)
-        return try dictionary(
+        return try p_dictionary(
             converting: rawDictionary,
             codingPath: codingPath + [key]
         )

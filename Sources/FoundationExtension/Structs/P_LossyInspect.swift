@@ -10,7 +10,7 @@ import Foundation
 @usableFromInline
 internal struct P_LossyInspect
 {
-    private init() {}
+    internal init() {}
     
     @usableFromInline
     static func rawString(from decoder: Decoder) -> String?
@@ -57,7 +57,7 @@ internal struct P_LossyInspect
         return nil
     }
     
-    private static func quote(_ s: String) -> String
+    internal static func quote(_ s: String) -> String
     {
         var out = "\""
         out.reserveCapacity(s.count + 2)

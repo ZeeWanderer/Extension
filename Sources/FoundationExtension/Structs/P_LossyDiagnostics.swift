@@ -10,7 +10,7 @@ import Foundation
 @usableFromInline
 internal struct P_LossyDiagnostics
 {
-    private init() {}
+    internal init() {}
     
     @usableFromInline
     static func reportMissingReporter(decoder: Decoder, note: StaticString) {

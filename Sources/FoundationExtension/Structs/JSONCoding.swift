@@ -93,7 +93,7 @@ public struct JSONCoding: Sendable
     ) throws -> Value
     where Value: Decodable
     {
-        let url = try resourceURL(
+        let url = try p_resourceURL(
             named: name,
             withExtension: fileExtension,
             subdirectory: subdirectory,
@@ -198,7 +198,7 @@ public struct JSONCoding: Sendable
     {
         do
         {
-            let url = try resourceURL(
+            let url = try p_resourceURL(
                 named: name,
                 withExtension: fileExtension,
                 subdirectory: subdirectory,
@@ -226,7 +226,7 @@ public struct JSONCoding: Sendable
     ) async throws -> Data
     where Value: Encodable, Value: Sendable
     {
-        try await result(
+        try await p_result(
             of: encodingTask(for: value, priority: priority)
         )
     }
@@ -239,7 +239,7 @@ public struct JSONCoding: Sendable
     ) async throws -> Value
     where Value: Decodable, Value: Sendable
     {
-        try await result(
+        try await p_result(
             of: decodingTask(of: type, from: data, priority: priority)
         )
     }
@@ -253,7 +253,7 @@ public struct JSONCoding: Sendable
     ) async throws
     where Value: Encodable, Value: Sendable
     {
-        try await result(
+        try await p_result(
             of: encodingTask(
                 for: value,
                 to: url,
@@ -272,7 +272,7 @@ public struct JSONCoding: Sendable
     ) async throws -> Value
     where Value: Decodable, Value: Sendable
     {
-        try await result(
+        try await p_result(
             of: decodingTask(
                 of: type,
                 contentsOf: url,
@@ -294,7 +294,7 @@ public struct JSONCoding: Sendable
     ) async throws -> Value
     where Value: Decodable, Value: Sendable
     {
-        try await result(
+        try await p_result(
             of: decodingTask(
                 of: type,
                 fromResource: name,
@@ -307,7 +307,7 @@ public struct JSONCoding: Sendable
         )
     }
 
-    private func resourceURL(
+    internal func p_resourceURL(
         named name: String,
         withExtension fileExtension: String?,
         subdirectory: String?,
@@ -331,7 +331,7 @@ public struct JSONCoding: Sendable
         return url
     }
 
-    private func result<Success>(
+    internal func p_result<Success>(
         of task: Task<Success, Error>
     ) async throws -> Success
     where Success: Sendable

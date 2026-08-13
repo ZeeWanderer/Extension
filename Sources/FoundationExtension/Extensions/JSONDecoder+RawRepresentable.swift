@@ -8,7 +8,7 @@
 import Foundation
 
 @usableFromInline
-internal func dictionary<Key, Value, RawValue>(
+internal func p_dictionary<Key, Value, RawValue>(
     converting rawDictionary: [RawValue: Value],
     codingPath: [CodingKey]
 ) throws -> [Key: Value]
@@ -54,6 +54,6 @@ public extension JSONDecoder
           R: Decodable, R: Hashable
     {
         let rawDictionary = try decode([R: V].self, from: data)
-        return try dictionary(converting: rawDictionary, codingPath: [])
+        return try p_dictionary(converting: rawDictionary, codingPath: [])
     }
 }

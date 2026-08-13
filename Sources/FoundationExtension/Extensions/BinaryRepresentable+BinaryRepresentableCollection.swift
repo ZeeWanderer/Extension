@@ -7,7 +7,7 @@
 
 import Foundation
 
-private enum BinaryCollectionFormat
+internal enum P_BinaryCollectionFormat
 {
     static func encode<CollectionType>(_ collection: CollectionType) -> Data
     where CollectionType: BinaryRepresentableCollection
@@ -64,7 +64,7 @@ public extension BinaryRepresentable where Self: BinaryRepresentableCollection
 {
     init(data: Data)
     {
-        guard let value = BinaryCollectionFormat.decode(Self.self, from: data) else {
+        guard let value = P_BinaryCollectionFormat.decode(Self.self, from: data) else {
             preconditionFailure("Invalid binary collection representation for \(Self.self)")
         }
         self = value
@@ -72,7 +72,7 @@ public extension BinaryRepresentable where Self: BinaryRepresentableCollection
 
     init?(validating data: Data)
     {
-        guard let value = BinaryCollectionFormat.decode(Self.self, from: data) else {
+        guard let value = P_BinaryCollectionFormat.decode(Self.self, from: data) else {
             return nil
         }
         self = value
@@ -80,6 +80,6 @@ public extension BinaryRepresentable where Self: BinaryRepresentableCollection
 
     var data: Data
     {
-        BinaryCollectionFormat.encode(self)
+        P_BinaryCollectionFormat.encode(self)
     }
 }
