@@ -12,7 +12,7 @@ public extension RouterProtocol
         on pathID: PathID?
     ) -> Bool
     {
-        resolvedPath(for: pathID).map {
+        p_resolvedPath(for: pathID).map {
             Self.contains($0, destination: destination)
         } ?? false
     }
@@ -22,7 +22,7 @@ public extension RouterProtocol
         on pathID: PathID?
     ) -> Bool
     {
-        resolvedPath(for: pathID).map {
+        p_resolvedPath(for: pathID).map {
             Self.contains($0, flat: flat)
         } ?? false
     }
@@ -32,7 +32,7 @@ public extension RouterProtocol
         on pathID: PathID?
     ) -> Int?
     {
-        resolvedPath(for: pathID).flatMap {
+        p_resolvedPath(for: pathID).flatMap {
             Self.firstIndex($0, of: destination)
         }
     }
@@ -42,7 +42,7 @@ public extension RouterProtocol
         on pathID: PathID?
     ) -> Int?
     {
-        resolvedPath(for: pathID).flatMap {
+        p_resolvedPath(for: pathID).flatMap {
             Self.firstIndex($0, ofFlat: flat)
         }
     }
@@ -52,7 +52,7 @@ public extension RouterProtocol
         on pathID: PathID?
     ) -> Int?
     {
-        resolvedPath(for: pathID).flatMap {
+        p_resolvedPath(for: pathID).flatMap {
             Self.lastIndex($0, of: destination)
         }
     }
@@ -62,14 +62,14 @@ public extension RouterProtocol
         on pathID: PathID?
     ) -> Int?
     {
-        resolvedPath(for: pathID).flatMap {
+        p_resolvedPath(for: pathID).flatMap {
             Self.lastIndex($0, ofFlat: flat)
         }
     }
 
     func peek(on pathID: PathID?) -> Destination?
     {
-        guard let path = resolvedPath(for: pathID) else { return nil }
+        guard let path = p_resolvedPath(for: pathID) else { return nil }
         return Self.peek(path)
     }
 
@@ -79,7 +79,7 @@ public extension RouterProtocol
         search: RouterPathSearchDirection
     ) -> Destination?
     {
-        resolvedPath(for: pathID).flatMap {
+        p_resolvedPath(for: pathID).flatMap {
             Self.peek($0, flat: flat, search: search)
         }
     }
@@ -128,9 +128,9 @@ public extension RouterProtocol
     }
 }
 
-private extension RouterProtocol
+internal extension RouterProtocol
 {
-    func resolvedPath(for requestedPathID: PathID?) -> [Destination]?
+    func p_resolvedPath(for requestedPathID: PathID?) -> [Destination]?
     {
         guard let pathID = resolvePathID(requestedPathID) else { return nil }
         return path(for: pathID)

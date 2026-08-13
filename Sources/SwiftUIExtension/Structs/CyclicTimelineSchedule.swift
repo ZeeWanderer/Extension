@@ -25,28 +25,28 @@ public struct CyclicTimelineSchedule: TimelineSchedule
     
     public struct Entries: Sequence, IteratorProtocol 
     {
-        @usableFromInline var last: Date
-        @usableFromInline let offsets: [TimeInterval]
+        @usableFromInline internal var p_last: Date
+        @usableFromInline internal let p_offsets: [TimeInterval]
         
         @inlinable
         public init(last: Date, offsets: [TimeInterval])
         {
-            self.last = last
-            self.offsets = offsets
+            self.p_last = last
+            self.p_offsets = offsets
         }
         
         @usableFromInline
-        var idx: Int = -1
+        internal var p_index: Int = -1
         
         @inlinable
         mutating public func next() -> Date?
         {
-            guard !offsets.isEmpty else { return nil }
-            idx = (idx + 1) % offsets.count
+            guard !p_offsets.isEmpty else { return nil }
+            p_index = (p_index + 1) % p_offsets.count
             
-            last = last.addingTimeInterval(offsets[idx])
+            p_last = p_last.addingTimeInterval(p_offsets[p_index])
             
-            return last
+            return p_last
         }
     }
 }

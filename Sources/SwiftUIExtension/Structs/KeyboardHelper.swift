@@ -32,7 +32,7 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
     }
 
     @usableFromInline
-    internal struct EventData: Sendable
+    internal struct P_EventData: Sendable
     {
         @usableFromInline let event: Event
         @usableFromInline let beginFrame: CGRect?
@@ -73,7 +73,7 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
                                                isLocal: true)
         
         @usableFromInline
-        func merged(with data: EventData) -> KeyboardState
+        internal func p_merged(with data: P_EventData) -> KeyboardState
         {
             var next = self
             next.event = data.event
@@ -86,7 +86,7 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
         }
     }
     
-    public private(set) var state: KeyboardState = .empty
+    public internal(set) var state: KeyboardState = .empty
     public var keyboardHeight: CGFloat { state.keyboardHeight }
     public var beginFrame: CGRect { state.beginFrame }
     public var endFrame: CGRect { state.endFrame }
@@ -95,8 +95,8 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
     public var isLocal: Bool { state.isLocal }
     public var lastEvent: Event? { state.event }
     
-    @ObservationIgnored @usableFromInline internal var keyboardEventTask: Task<Void,Never>? = nil
-    @ObservationIgnored @usableFromInline internal var keyboardObservers: [NSObjectProtocol] = []
+    @ObservationIgnored @usableFromInline internal var p_keyboardEventTask: Task<Void,Never>? = nil
+    @ObservationIgnored @usableFromInline internal var p_keyboardObservers: [NSObjectProtocol] = []
     
     @inlinable
     public var isKeyboardActive: Bool
@@ -138,16 +138,16 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
     }
     
     @usableFromInline @MainActor
-    internal func updateState(from data: EventData)
+    internal func p_updateState(from data: P_EventData)
     {
-        var next = state.merged(with: data)
-        next.keyboardHeight = Self.visibleKeyboardHeight(for: next)
+        var next = state.p_merged(with: data)
+        next.keyboardHeight = Self.p_visibleKeyboardHeight(for: next)
         
         if next != state { state = next }
     }
     
     @usableFromInline @MainActor
-    internal static func visibleKeyboardHeight(for state: KeyboardState) -> CGFloat
+    internal static func p_visibleKeyboardHeight(for state: KeyboardState) -> CGFloat
     {
         switch state.event
         {
@@ -171,9 +171,9 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
     }
     
     @usableFromInline
-    internal func listenForKeyboardNotifications()
+    internal func p_listenForKeyboardNotifications()
     {
-        let eventStream = AsyncStream<EventData> { continuation in
+        let eventStream = AsyncStream<P_EventData> { continuation in
             let center = NotificationCenter.default
             var observers: [NSObjectProtocol] = []
             
@@ -192,14 +192,14 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
             observe(UIResponder.keyboardWillChangeFrameNotification, .willChangeFrame)
             observe(UIResponder.keyboardDidChangeFrameNotification, .didChangeFrame)
             
-            self.keyboardObservers = observers
+            self.p_keyboardObservers = observers
         }
         
-        keyboardEventTask = Task { @MainActor [weak self] in
+        p_keyboardEventTask = Task { @MainActor [weak self] in
             for await data in eventStream
             {
                 guard let self else { break }
-                self.updateState(from: data)
+                self.p_updateState(from: data)
                 
                 switch data.event
                 {
@@ -222,17 +222,17 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
     
     public init()
     {
-        self.listenForKeyboardNotifications()
+        self.p_listenForKeyboardNotifications()
     }
     
     @inlinable
     isolated deinit
     {
-        self.keyboardEventTask?.cancel()
-        for token in self.keyboardObservers {
+        self.p_keyboardEventTask?.cancel()
+        for token in self.p_keyboardObservers {
             NotificationCenter.default.removeObserver(token)
         }
-        self.keyboardObservers.removeAll()
+        self.p_keyboardObservers.removeAll()
     }
 }
 

@@ -15,7 +15,7 @@ public extension RouterProtocol
     ) -> PathID?
     {
         let operation = RouterNavigationOperation.push(destination, options: options)
-        let result = performNavigation(operation, on: pathID) { path, resolvedPathID in
+        let result = p_performNavigation(operation, on: pathID) { path, resolvedPathID in
             if options.contains(.popToExisting),
                let root = rootDestination(
                    for: destination,
@@ -40,7 +40,7 @@ public extension RouterProtocol
     @discardableResult
     func popAll(_ pathID: PathID?) -> Bool
     {
-        performNavigation(.popAll, on: pathID) { path, _ in
+        p_performNavigation(.popAll, on: pathID) { path, _ in
             Self.popAll(&path)
         }.succeeded
     }
@@ -48,7 +48,7 @@ public extension RouterProtocol
     @discardableResult
     func pop(_ pathID: PathID?, amount: Int) -> Bool
     {
-        performNavigation(.pop(amount: amount), on: pathID) { path, _ in
+        p_performNavigation(.pop(amount: amount), on: pathID) { path, _ in
             Self.pop(&path, amount: amount)
         }.succeeded
     }
@@ -59,7 +59,7 @@ public extension RouterProtocol
         to destination: Destination
     ) -> Bool
     {
-        performNavigation(.popTo(destination), on: pathID) { path, _ in
+        p_performNavigation(.popTo(destination), on: pathID) { path, _ in
             Self.pop(&path, to: destination)
         }.succeeded
     }
@@ -70,7 +70,7 @@ public extension RouterProtocol
         toFlat destination: Destination.Flat
     ) -> Bool
     {
-        performNavigation(.popToFlat(destination), on: pathID) { path, _ in
+        p_performNavigation(.popToFlat(destination), on: pathID) { path, _ in
             Self.pop(&path, toFlat: destination)
         }.succeeded
     }
@@ -83,7 +83,7 @@ public extension RouterProtocol
         search: RouterPathSearchDirection
     ) -> Bool
     {
-        performNavigation(
+        p_performNavigation(
             .replace(destination, with: replacement, search: search),
             on: pathID
         ) { path, _ in
@@ -104,7 +104,7 @@ public extension RouterProtocol
         search: RouterPathSearchDirection
     ) -> Bool
     {
-        performNavigation(
+        p_performNavigation(
             .replaceFlat(flat, with: replacement, search: search),
             on: pathID
         ) { path, _ in
@@ -243,9 +243,9 @@ public extension RouterProtocol
     }
 }
 
-private extension RouterProtocol
+internal extension RouterProtocol
 {
-    func performNavigation(
+    func p_performNavigation(
         _ operation: RouterNavigationOperation<Destination>,
         on requestedPathID: PathID?,
         mutation: (inout [Destination], PathID) -> Bool

@@ -23,10 +23,10 @@ public final class KeyboardHeightHelper: LogSubsystemCategoryProtocol
     
     public var keyboardHeight: CGFloat = 0
     
-    @ObservationIgnored @usableFromInline internal var duration: CGFloat = 0.25
-    @ObservationIgnored @usableFromInline internal var curve: UIView.AnimationCurve = .easeOut
-    @ObservationIgnored @usableFromInline internal var keyboardWillShowNotificationTask: Task<Void,Never>? = nil
-    @ObservationIgnored @usableFromInline internal var keyboardWillHideNotificationTask: Task<Void,Never>? = nil
+    @ObservationIgnored @usableFromInline internal var p_duration: CGFloat = 0.25
+    @ObservationIgnored @usableFromInline internal var p_curve: UIView.AnimationCurve = .easeOut
+    @ObservationIgnored @usableFromInline internal var p_keyboardWillShowNotificationTask: Task<Void,Never>? = nil
+    @ObservationIgnored @usableFromInline internal var p_keyboardWillHideNotificationTask: Task<Void,Never>? = nil
     
     @inlinable
     public var isKeyboardActive: Bool
@@ -52,31 +52,31 @@ public final class KeyboardHeightHelper: LogSubsystemCategoryProtocol
     @inlinable
     public var animation: Animation
     {
-        switch curve
+        switch p_curve
         {
         case .linear:
-            return .linear(duration: duration)
+            return .linear(duration: p_duration)
         case .easeIn:
-            return .easeIn(duration: duration)
+            return .easeIn(duration: p_duration)
         case .easeOut:
-            return .easeOut(duration: duration)
+            return .easeOut(duration: p_duration)
         case .easeInOut:
-            return .easeInOut(duration: duration)
+            return .easeInOut(duration: p_duration)
         @unknown default:
-            return .easeOut(duration: duration)
+            return .easeOut(duration: p_duration)
         }
     }
     
     @usableFromInline @MainActor
-    internal func set_keyboardHeight(_ value: CGFloat) async
+    internal func p_setKeyboardHeight(_ value: CGFloat) async
     {
         self.keyboardHeight = value
     }
     
     @usableFromInline
-    internal func listenForKeyboardNotifications()
+    internal func p_listenForKeyboardNotifications()
     {
-        keyboardWillShowNotificationTask = Task
+        p_keyboardWillShowNotificationTask = Task
         {
             [weak self] in
             for await data: (UIView.AnimationCurve, NSNumber, CGFloat) in NotificationCenter.default.notifications(named: UIResponder.keyboardWillShowNotification)
@@ -94,36 +94,36 @@ public final class KeyboardHeightHelper: LogSubsystemCategoryProtocol
                 guard let self else { break }
                 let (curve, duration, height) = data
                 
-                self.curve = curve
-                self.duration = CGFloat(truncating: duration)
-                Self.logger.debug("\(Self.logScope, privacy: .public) Keyboard will show: height=\(height, privacy: .public) duration=\(self.duration, privacy: .public) curve=\(curve.rawValue, privacy: .public)")
+                self.p_curve = curve
+                self.p_duration = CGFloat(truncating: duration)
+                Self.logger.debug("\(Self.logScope, privacy: .public) Keyboard will show: height=\(height, privacy: .public) duration=\(self.p_duration, privacy: .public) curve=\(curve.rawValue, privacy: .public)")
                 
-                await self.set_keyboardHeight(height)
+                await self.p_setKeyboardHeight(height)
             }
         }
         
-        keyboardWillHideNotificationTask = Task
+        p_keyboardWillHideNotificationTask = Task
         {
             [weak self] in
             for await _ in NotificationCenter.default.notifications(named: UIResponder.keyboardWillHideNotification).map({ _ in true })
             {
                 guard let self else { break }
                 Self.logger.debug("\(Self.logScope, privacy: .public) Keyboard will hide")
-                await self.set_keyboardHeight(0)
+                await self.p_setKeyboardHeight(0)
             }
         }
     }
     
     public init()
     {
-        self.listenForKeyboardNotifications()
+        self.p_listenForKeyboardNotifications()
     }
     
     @inlinable
     isolated deinit
     {
-        self.keyboardWillShowNotificationTask?.cancel()
-        self.keyboardWillHideNotificationTask?.cancel()
+        self.p_keyboardWillShowNotificationTask?.cancel()
+        self.p_keyboardWillHideNotificationTask?.cancel()
     }
 }
 
