@@ -14,6 +14,25 @@ their conditional or diagnostic purpose immediately visible, such as
 Legacy exceptions can remain until they receive an intentional major-version
 migration.
 
+### Implementation-only declarations
+
+Implementation-only declarations that remain visible inside a module use a
+prefix matching the declaration's normal casing: `P_` for UpperCamelCase names,
+such as `P_CacheReadWriteGate`, and `p_` for lower-camel-case or snake-case
+names, such as `p_storage`. The prefix makes it clear that an `internal` or
+`@usableFromInline` declaration is private to the library's implementation even
+when `@testable import` or generated interfaces make the symbol visible.
+
+Members already scoped inside a `P_` type do not repeat the prefix. Local
+variables also keep ordinary lower-camel-case names. Language-defined names
+such as initializers, deinitializers, subscripts, operators, overrides, and
+protocol witnesses retain the spelling required by Swift.
+
+Prefer an internal `P_` or `p_` declaration over `private` or `fileprivate` for
+library implementation. `@usableFromInline` does not make such a declaration
+supported public API; it only permits an `@inlinable` public body to reference
+it.
+
 ## Compatibility
 
 The package follows semantic versioning. Source-breaking changes ship only in a
