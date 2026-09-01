@@ -17,10 +17,10 @@ import os
 public final class KeyboardHelper: LogSubsystemCategoryProtocol
 {
     public typealias Subsystem = SwiftUIExtension
-    
+
     nonisolated public static let logger = makeLogger()
     nonisolated public static let signposter = makeSignposter()
-    
+
     public enum Event: String, Sendable
     {
         case willShow
@@ -40,7 +40,7 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
         @usableFromInline let animationDuration: CGFloat?
         @usableFromInline let animationCurve: UIView.AnimationCurve?
         @usableFromInline let isLocal: Bool?
-        
+
         @usableFromInline
         init(event: Event, notification: Notification)
         {
@@ -53,7 +53,7 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
             self.isLocal = (userInfo?[UIResponder.keyboardIsLocalUserInfoKey] as? NSNumber).map { $0.boolValue }
         }
     }
-    
+
     public struct KeyboardState: Sendable, Equatable
     {
         public var event: Event?
@@ -63,15 +63,15 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
         public var animationDuration: CGFloat
         public var animationCurve: UIView.AnimationCurve
         public var isLocal: Bool
-        
+
         public static let empty = KeyboardState(event: nil,
-                                               beginFrame: .zero,
-                                               endFrame: .zero,
-                                               keyboardHeight: 0,
-                                               animationDuration: 0.25,
-                                               animationCurve: .easeOut,
-                                               isLocal: true)
-        
+                                                beginFrame: .zero,
+                                                endFrame: .zero,
+                                                keyboardHeight: 0,
+                                                animationDuration: 0.25,
+                                                animationCurve: .easeOut,
+                                                isLocal: true)
+
         @usableFromInline
         internal func p_merged(with data: P_EventData) -> KeyboardState
         {
@@ -85,7 +85,7 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
             return next
         }
     }
-    
+
     public internal(set) var state: KeyboardState = .empty
     public var keyboardHeight: CGFloat { state.keyboardHeight }
     public var beginFrame: CGRect { state.beginFrame }
@@ -94,16 +94,16 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
     public var animationCurve: UIView.AnimationCurve { state.animationCurve }
     public var isLocal: Bool { state.isLocal }
     public var lastEvent: Event? { state.event }
-    
-    @ObservationIgnored @usableFromInline internal var p_keyboardEventTask: Task<Void,Never>? = nil
+
+    @ObservationIgnored @usableFromInline internal var p_keyboardEventTask: Task<Void, Never>? = nil
     @ObservationIgnored @usableFromInline internal var p_keyboardObservers: [NSObjectProtocol] = []
-    
+
     @inlinable
     public var isKeyboardActive: Bool
     {
         keyboardHeight != 0
     }
-    
+
     /// Sends action to hide keyboard if it is not hidden
     /// - Returns: Whether the keyboard will be hidden.
     @inlinable
@@ -114,10 +114,10 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
             return UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
                                                    to: nil, from: nil, for: nil)
         }
-        
+
         return false
     }
-    
+
     /// Provides `Animation` value to match keyboard animation
     @inlinable
     public var animation: Animation
@@ -136,16 +136,16 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
             return .easeOut(duration: animationDuration)
         }
     }
-    
+
     @usableFromInline @MainActor
     internal func p_updateState(from data: P_EventData)
     {
         var next = state.p_merged(with: data)
         next.keyboardHeight = Self.p_visibleKeyboardHeight(for: next)
-        
+
         if next != state { state = next }
     }
-    
+
     @usableFromInline @MainActor
     internal static func p_visibleKeyboardHeight(for state: KeyboardState) -> CGFloat
     {
@@ -156,27 +156,27 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
         default:
             let keyboardFrame = state.endFrame
             guard !keyboardFrame.isNull, !keyboardFrame.isEmpty else { return 0 }
-            
+
             let screenBounds = UIApplication.shared.connectedScenes
                 .compactMap { $0 as? UIWindowScene }
                 .flatMap(\.windows)
                 .first(where: \.isKeyWindow)?
                 .screen
                 .bounds ?? UIScreen.main.bounds
-            
+
             let visibleIntersection = keyboardFrame.intersection(screenBounds)
             guard !visibleIntersection.isNull, !visibleIntersection.isEmpty else { return 0 }
             return visibleIntersection.height
         }
     }
-    
+
     @usableFromInline
     internal func p_listenForKeyboardNotifications()
     {
         let eventStream = AsyncStream<P_EventData> { continuation in
             let center = NotificationCenter.default
             var observers: [NSObjectProtocol] = []
-            
+
             func observe(_ name: Notification.Name, _ event: Event)
             {
                 let token = center.addObserver(forName: name, object: nil, queue: nil) { notification in
@@ -184,23 +184,23 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
                 }
                 observers.append(token)
             }
-            
+
             observe(UIResponder.keyboardWillShowNotification, .willShow)
             observe(UIResponder.keyboardDidShowNotification, .didShow)
             observe(UIResponder.keyboardWillHideNotification, .willHide)
             observe(UIResponder.keyboardDidHideNotification, .didHide)
             observe(UIResponder.keyboardWillChangeFrameNotification, .willChangeFrame)
             observe(UIResponder.keyboardDidChangeFrameNotification, .didChangeFrame)
-            
+
             self.p_keyboardObservers = observers
         }
-        
+
         p_keyboardEventTask = Task { @MainActor [weak self] in
             for await data in eventStream
             {
                 guard let self else { break }
                 self.p_updateState(from: data)
-                
+
                 switch data.event
                 {
                 case .willShow:
@@ -219,12 +219,12 @@ public final class KeyboardHelper: LogSubsystemCategoryProtocol
             }
         }
     }
-    
+
     public init()
     {
         self.p_listenForKeyboardNotifications()
     }
-    
+
     @inlinable
     isolated deinit
     {

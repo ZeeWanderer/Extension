@@ -15,7 +15,7 @@ public struct Shadow
     public let radius: CGFloat
     public let x: CGFloat
     public let y: CGFloat
-    
+
     @inlinable
     public init(color: Color = .init(.sRGBLinear, white: 0, opacity: 0.33), radius: CGFloat, x: CGFloat = 0, y: CGFloat = 0)
     {
@@ -24,13 +24,13 @@ public struct Shadow
         self.x = x
         self.y = y
     }
-    
+
     @inlinable
     public static func * (_ lhs: Self, _ rhs: CGFloat) -> Self
     {
         return Self(color: lhs.color, radius: lhs.radius * rhs, x: lhs.x * rhs, y: lhs.y * rhs)
     }
-    
+
     @inlinable
     public static func * <T>(_ lhs: Self, _ rhs: T) -> Self where T: Numeric2D, T.Magnitude == CGFloat
     {

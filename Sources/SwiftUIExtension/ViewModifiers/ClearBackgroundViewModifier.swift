@@ -13,7 +13,7 @@ public struct ClearBackgroundViewModifier: ViewModifier
 {
     @inlinable
     public init() {} // for @inlinable
-    
+
     public func body(content: Content) -> some View
     {
         content

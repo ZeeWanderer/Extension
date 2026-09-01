@@ -1,6 +1,6 @@
 //
 //  CGRect.swift
-//  
+//
 //
 //  Created by zeewanderer on 21.05.2024.
 //
@@ -20,7 +20,7 @@ public extension CGRect
         let newY = self.minY + anchor.y * (self.height - newHeight)
         return CGRect(x: newX, y: newY, width: newWidth, height: newHeight)
     }
-    
+
     @inlinable
     @inline(__always)
     func scaleResize(x scaleX: CGFloat, y scaleY: CGFloat, anchor: UnitPoint = .center) -> CGRect {
@@ -30,7 +30,7 @@ public extension CGRect
         let newY = self.minY + anchor.y * (self.height - newHeight)
         return CGRect(x: newX, y: newY, width: newWidth, height: newHeight)
     }
-    
+
     @inlinable
     @inline(__always)
     func scaleResize(x scaleX: CGFloat, anchor: UnitPoint = .center) -> CGRect {
@@ -38,7 +38,7 @@ public extension CGRect
         let newX = self.minX + anchor.x * (self.width - newWidth)
         return CGRect(x: newX, y: self.origin.y, width: newWidth, height: self.height)
     }
-    
+
     @inlinable
     @inline(__always)
     func scaleResize(y scaleY: CGFloat, anchor: UnitPoint = .center) -> CGRect {
@@ -46,7 +46,7 @@ public extension CGRect
         let newY = self.minY + anchor.y * (self.height - newHeight)
         return CGRect(x: self.origin.x, y: newY, width: self.width, height: newHeight)
     }
-    
+
     @inlinable
     @inline(__always)
     func resize(width: CGFloat, height: CGFloat, anchor: UnitPoint = .center) -> CGRect {
@@ -56,7 +56,7 @@ public extension CGRect
         let newY = self.minY + anchor.y * (self.height - newHeight)
         return CGRect(x: newX, y: newY, width: newWidth, height: newHeight)
     }
-    
+
     @inlinable
     @inline(__always)
     func resize(width: CGFloat, anchor: UnitPoint = .center) -> CGRect {
@@ -64,7 +64,7 @@ public extension CGRect
         let newX = self.minX + anchor.x * (self.width - newWidth)
         return CGRect(x: newX, y: self.origin.y, width: newWidth, height: self.height)
     }
-    
+
     @inlinable
     @inline(__always)
     func resize(height: CGFloat, anchor: UnitPoint = .center) -> CGRect {

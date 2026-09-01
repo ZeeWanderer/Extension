@@ -10,6 +10,7 @@ import SwiftUI
 public extension View
 {
     // MARK: Actions
+
     @inlinable
     func debugAction(_ closure: () -> Void) -> Self
     {
@@ -18,14 +19,15 @@ public extension View
 #endif
         return self
     }
-    
+
     @inlinable
     func debugPrint(_ items: Any..., separator: String = " ", terminator: String = "\n") -> Self
     {
         debugAction { print(items, separator: separator, terminator: terminator) }
     }
-    
+
     // MARK: Modifiers
+
     @inlinable
     func debugModifier(_ modifier: (Self) -> some View) -> some View
     {
@@ -35,7 +37,7 @@ public extension View
         return self
 #endif
     }
-    
+
     @inlinable
     func debugOnAppear(_ closure: @escaping () -> Void) -> some View
     {
@@ -43,7 +45,7 @@ public extension View
             view.onAppear(perform: closure)
         }
     }
-    
+
     @inlinable
     func debugOnDisappear(_ closure: @escaping () -> Void) -> some View
     {
@@ -51,7 +53,7 @@ public extension View
             view.onDisappear(perform: closure)
         }
     }
-    
+
     @inlinable
     func debugOnAppearPrint(_ items: Any..., separator: String = " ", terminator: String = "\n") -> some View
     {
@@ -59,7 +61,7 @@ public extension View
             print(items, separator: separator, terminator: terminator)
         }
     }
-    
+
     @inlinable
     func debugOnDisappearPrint(_ items: Any..., separator: String = " ", terminator: String = "\n") -> some View
     {
@@ -67,7 +69,7 @@ public extension View
             print(items, separator: separator, terminator: terminator)
         }
     }
-    
+
     @inlinable
     func debugRect(color: Color = .red, width: CGFloat = 1) -> some View
     {
@@ -75,7 +77,7 @@ public extension View
             view.overlay(Rectangle().stroke(color, lineWidth: width))
         }
     }
-    
+
     @inlinable
     func debugBorder(_ color: Color = .red, width: CGFloat = 1) -> some View
     {
@@ -83,7 +85,7 @@ public extension View
             view.border(color, width: width)
         }
     }
-    
+
     @inlinable
     func debugBackground(_ color: Color = .red) -> some View
     {

@@ -1,6 +1,6 @@
 //
 //  View.swift
-//  
+//
 //
 //  Created by zeewanderer on 19.11.2021.
 //
@@ -13,83 +13,86 @@ import CoreGraphicsExtension
 import GeneralExtensions
 
 // MARK: - View
+
 public extension View
 {
- 
 #if canImport(UIKit)
+
     // MARK: Actions
+
     @MainActor @inlinable
     @discardableResult func endTextEditing() -> Bool
     {
         return UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
                                                to: nil, from: nil, for: nil)
     }
-    
-    
+
     @MainActor @inlinable
-    func screenShot(frame:CGRect, afterScreenUpdates: Bool) -> UIImage {
+    func screenShot(frame: CGRect, afterScreenUpdates: Bool) -> UIImage {
         let hosting = UIHostingController(rootView: self)
         hosting.overrideUserInterfaceStyle = UIApplication.shared.keySceneWindow?.overrideUserInterfaceStyle ?? .unspecified
         hosting.view.frame = frame
         return hosting.view.screenShot(afterScreenUpdates: afterScreenUpdates)
     }
 #endif
-    
+
     // MARK: Notifications
+
     @MainActor @inlinable
     func onNotification(_ notificationName: Notification.Name, perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
     {
         onReceive(NotificationCenter.default.publisher(for: notificationName), perform: action)
     }
-    
+
 #if canImport(UIKit)
     @MainActor @inlinable
     func onDidEnterBackgroundNotification(perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
     {
-        onNotification (
+        onNotification(
             UIApplication.didEnterBackgroundNotification,
             perform: action
         )
     }
-    
+
     @MainActor @inlinable
     func onWillEnterForegroundNotification(perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
     {
-        onNotification (
+        onNotification(
             UIApplication.willEnterForegroundNotification,
             perform: action
         )
     }
-    
+
     @MainActor @inlinable
     func onDidReceiveMemoryWarningNotification(perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
     {
-        onNotification (
+        onNotification(
             UIApplication.didReceiveMemoryWarningNotification,
             perform: action
         )
     }
-    
+
     @MainActor @inlinable
     func onDidFinishLaunchingNotification(perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
     {
-        onNotification (
+        onNotification(
             UIApplication.didFinishLaunchingNotification,
             perform: action
         )
     }
-    
+
     @MainActor @inlinable
     func onWillTerminateNotification(perform action: @escaping (NotificationCenter.Publisher.Output) -> Void) -> some View
     {
-        onNotification (
+        onNotification(
             UIApplication.willTerminateNotification,
             perform: action
         )
     }
 #endif
-    
+
     // MARK: Modifiers
+
     /// Conditionaly executes closure.
     /// - Note: Beware, this modifies view in a way that changes it's identifier.
     @inlinable
@@ -104,7 +107,7 @@ public extension View
             self
         }
     }
-    
+
     /// Made for redibility. Conditionaly executes closure, inverses the condition.
     /// Intended for use after `if` with the same condition to promote readibility. Equivalent to `if(!condition)`.
     /// - Note: Beware, this modifies view in a way that changes it's identifier.
@@ -113,20 +116,20 @@ public extension View
     {
         self.if(!condition, transform: transform)
     }
-    
+
     @inlinable
     func transform(@ViewBuilder _ transform: (Self) -> some View) -> some View
     {
         transform(self)
     }
-    
+
     /// Applies glow determined by the View content with radius of `radius`.
     @inlinable
     func glow(radius: CGFloat = 5) -> some View
     {
         self.overlay(self.blur(radius: radius))
     }
-    
+
     /// Applies glow of color `color` with radius of `radius`. Uses double `.shadow()` with halved radius.
     @inlinable
     func glow(color: Color = .yellow, radius: CGFloat = 5) -> some View
@@ -134,7 +137,7 @@ public extension View
         self.shadow(color: color, radius: radius / 2)
             .shadow(color: color, radius: radius / 2)
     }
-    
+
 #if canImport(UIKit)
     /// Clears background on modal views. Applies ``ClearBackgroundViewModifier``.
     @inlinable
@@ -143,7 +146,7 @@ public extension View
         self.modifier(ClearBackgroundViewModifier())
     }
 #endif
-    
+
     /// Applies `.hidden()` to view on provided condition
     @inlinable
     func hidden(_ hidden: Bool) -> some View
@@ -152,8 +155,7 @@ public extension View
             self.hidden()
         }
     }
-    
-    
+
     @inlinable
     @ViewBuilder func hiddenOnRelease() -> some View
     {
@@ -161,7 +163,7 @@ public extension View
             .debugBorder()
             .hidden(!Config.isTestFlightOrDebug)
     }
-    
+
     /// Flips view across the specified axis.
     /// - Note: Uses `rotation3DEffect`
     @inlinable
@@ -175,21 +177,21 @@ public extension View
             return self.rotation3DEffect(.degrees(180), axis: (x: 1, y: 0, z: 0))
         }
     }
-    
+
     /// Positions this view within an invisible frame with the specified size.
     @inlinable
     func frame(size: CGSize? = nil, alignment: Alignment = .center) -> some View
     {
         self.frame(width: size?.width, height: size?.height, alignment: alignment)
     }
-    
+
     /// Positions this view within an invisible frame having the specified size constraints.
     @inlinable
     func frame(minSize: CGSize? = nil, idealSize: CGSize? = nil, maxSize: CGSize? = nil, alignment: Alignment = .center) -> some View
     {
         self.frame(minWidth: minSize?.width, idealWidth: idealSize?.width, maxWidth: maxSize?.width, minHeight: minSize?.height, idealHeight: idealSize?.height, maxHeight: maxSize?.height, alignment: alignment)
     }
-    
+
     /// Frames and postions view in a geven rect.
     /// - Parameters:
     ///   - rect: A rectangle to position View in. Must be specified in View's parent coordinate system.
@@ -201,7 +203,7 @@ public extension View
             .frame(size: rect.size, alignment: alignment)
             .position(rect.center)
     }
-    
+
     /// Applies shadow with given Shadow data.
     @inlinable
     func shadow(data: Shadow) -> some View
@@ -209,7 +211,7 @@ public extension View
         self
             .shadow(color: data.color, radius: data.radius, x: data.x, y: data.y)
     }
-    
+
 #if canImport(UIKit)
     /// Applies `defersSystemGestures` on given `edges` if `iOS >= 16.0`
     @inlinable
@@ -225,9 +227,9 @@ public extension View
             self
         }
     }
-    
+
     @MainActor @inlinable
-    @ViewBuilder func screenShot(_ trigger: Binding<Bool>, closure: @escaping (UIImage)->Void, envClosure: ((Self) -> some View)? = nil) -> some View {
+    @ViewBuilder func screenShot(_ trigger: Binding<Bool>, closure: @escaping (UIImage) -> Void, envClosure: ((Self) -> some View)? = nil) -> some View {
         self
             .background {
                 GeometryReader { proxy in
@@ -239,25 +241,26 @@ public extension View
                                 if let envClosure { envClosure(view) }
                                 else { view }
                             }
-                            
+
                             let view_ = envViewBuilder(self)
-                            
+
                             let image = view_.screenShot(frame: proxy.frame(in: .global), afterScreenUpdates: true)
-                            
+
                             closure(image)
                         }
                 }
             }
     }
-    
+
     // MARK: Navigation
+
     /// Navigate to `destination` using a `binding`. Destination is instantiated imideately and repeatedly on any state changes.
     @inlinable
-    @ViewBuilder func navigate<Destination>(using binding: Binding<Bool>, @ViewBuilder destination: () -> Destination, isDetailLink: Bool = true) -> some View where Destination : View
+    @ViewBuilder func navigate<Destination>(using binding: Binding<Bool>, @ViewBuilder destination: () -> Destination, isDetailLink: Bool = true) -> some View where Destination: View
     {
         self.navigationDestination(isPresented: binding, destination: destination)
     }
-    
+
     /// Navigate to `destination` using a `binding`. Destination is warapped into ``LazyView`` to avoid unnececery initis.
     @inlinable
     @ViewBuilder func lazyNavigate(using binding: Binding<Bool>, @ViewBuilder destination: @escaping () -> some View, isDetailLink: Bool = true) -> some View
@@ -265,5 +268,4 @@ public extension View
         self.navigationDestination(isPresented: binding, destination: destination)
     }
 #endif
-    
 }

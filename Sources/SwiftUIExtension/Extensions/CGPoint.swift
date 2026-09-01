@@ -1,6 +1,6 @@
 //
 //  CGPoint.swift
-//  
+//
 //
 //  Created by zeewanderer on 21.05.2024.
 //
@@ -17,7 +17,7 @@ public extension CGPoint
     {
         self.init(x: point.x, y: point.y)
     }
-    
+
     /// Center Anchor bridged from `UnitPoint.center`
     static let center: CGPoint = UnitPoint.center.cgPoint
     static let leading: CGPoint = UnitPoint.leading.cgPoint

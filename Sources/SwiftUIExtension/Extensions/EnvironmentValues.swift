@@ -1,6 +1,6 @@
 //
 //  EnvironmentValues.swift
-//  
+//
 //
 //  Created by zeewanderer on 20.05.2024.
 //
@@ -19,13 +19,12 @@ public extension EnvironmentValues
     {
         self[SafeAreaInsetsKey.self]
     }
-    
-    
+
 #endif
 }
 
 #if canImport(UIKit)
-public extension  EnvironmentValues
+public extension EnvironmentValues
 {
     @Entry var keyboard = KeyboardHelper.shared
 }

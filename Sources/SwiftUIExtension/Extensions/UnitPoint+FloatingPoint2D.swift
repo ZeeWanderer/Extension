@@ -11,14 +11,14 @@ import CoreGraphicsExtension
 extension UnitPoint: FloatingPoint2D
 {
     public typealias Magnitude = CGFloat
-    
+
     @inlinable
     @inline(__always)
     public init(xMagnitude: Magnitude, yMagnitude: Magnitude)
     {
         self.init(x: xMagnitude, y: yMagnitude)
     }
-    
+
     @inlinable
     @inline(__always)
     public var xMagnitude: CGFloat {
@@ -29,7 +29,7 @@ extension UnitPoint: FloatingPoint2D
             self.x = newValue
         }
     }
-    
+
     @inlinable
     @inline(__always)
     public var yMagnitude: CGFloat {

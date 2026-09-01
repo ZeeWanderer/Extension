@@ -254,8 +254,7 @@ internal extension RouterProtocol
         let resolvedPathID = resolvePathID(requestedPathID)
 
         guard shouldPerformNavigation(operation, on: resolvedPathID),
-              let resolvedPathID
-        else
+              let resolvedPathID else
         {
             routerDidPerform(RouterNavigationEvent(
                 operation: operation,

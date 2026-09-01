@@ -15,12 +15,12 @@ import SwiftUIExtension
 enum DemoDestination: RouterDestination {
     case detail(id: Int)
     case settings
-    
+
     enum Flat: Hashable {
         case detail
         case settings
     }
-    
+
     var flat: Flat {
         switch self {
         case .detail:
@@ -34,11 +34,11 @@ enum DemoDestination: RouterDestination {
 @Observable
 final class DetailModel: RouterDestinationModel {
     typealias Destination = DemoDestination
-    
+
     var id: Int
     var pathID: AnyHashable?
     var requester: AnyHashable?
-    
+
     init(destination: Destination, context: RouterDestinationContext) {
         self.pathID = context.pathID
         self.requester = context.requester
@@ -54,10 +54,10 @@ final class DetailModel: RouterDestinationModel {
 @Observable
 final class SettingsModel: RouterDestinationModel {
     typealias Destination = DemoDestination
-    
+
     var pathID: AnyHashable?
     var requester: AnyHashable?
-    
+
     init(destination: Destination, context: RouterDestinationContext) {
         self.pathID = context.pathID
         self.requester = context.requester
@@ -67,15 +67,15 @@ final class SettingsModel: RouterDestinationModel {
 struct DetailView: RouterDestinationView {
     typealias Destination = DemoDestination
     typealias Model = DetailModel
-    
+
     static let flats: [Destination.Flat] = [.detail]
-    
+
     @State private var model: Model
-    
+
     init(model: Model) {
         self._model = State(initialValue: model)
     }
-    
+
     var body: some View {
         Text("Detail \(model.id)")
     }
@@ -84,15 +84,15 @@ struct DetailView: RouterDestinationView {
 struct SettingsView: RouterDestinationView {
     typealias Destination = DemoDestination
     typealias Model = SettingsModel
-    
+
     static let flats: [Destination.Flat] = [.settings]
-    
+
     @State private var model: Model
-    
+
     init(model: Model) {
         self._model = State(initialValue: model)
     }
-    
+
     var body: some View {
         Text("Settings")
     }
@@ -101,20 +101,20 @@ struct SettingsView: RouterDestinationView {
 @MainActor
 final class DemoRouter: DictionaryRouterProtocol, RouterViewRegistryProtocol {
     typealias Destination = DemoDestination
-    
+
     enum PathID: Hashable {
         case root
         case modal
     }
-    
+
     static let defaultPathID: PathID? = .root
     static let views: [any RouterDestinationView<Destination>.Type] = [
         DetailView.self,
         SettingsView.self,
     ]
-    
+
     static let viewTypes = computeViewTypes()
-    
+
     var paths: [PathID: [Destination]] = [:]
 }
 

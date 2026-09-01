@@ -12,17 +12,17 @@ public protocol RouterDestinationView<Destination>: View
 {
     associatedtype Destination: RouterDestination
     associatedtype Model: RouterDestinationModel where Model.Destination == Destination
-    
+
     /// Flat destinations supported by this view type.
     static var flats: [Destination.Flat] { get }
-    
+
     /// Builds the view for a destination.
     @MainActor
     static func makeView(
         destination: Destination,
         context: RouterDestinationContext
     ) -> AnyView
-    
+
     /// Initialize the view with a fully configured model.
     init(model: Model)
 }

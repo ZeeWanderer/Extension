@@ -1,6 +1,6 @@
 //
 //  String.swift
-//  
+//
 //
 //  Created by zeewanderer on 21.05.2024.
 //

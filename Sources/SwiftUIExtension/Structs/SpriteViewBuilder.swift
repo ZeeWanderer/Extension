@@ -11,13 +11,13 @@ import SpriteKit
 public struct SpriteViewBuilder: View
 {
     public let scene: SKSceneSwiftUI
-    
+
     @inlinable
     public init(scene: SKSceneSwiftUI)
     {
         self.scene = scene
     }
-    
+
     @inlinable
     public var body: some View
     {

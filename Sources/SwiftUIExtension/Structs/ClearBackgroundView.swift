@@ -1,6 +1,6 @@
 //
 //  ClearBackgroundView.swift
-//  
+//
 //
 //  Created by zeewanderer on 21.05.2024.
 //
@@ -14,7 +14,7 @@ public struct ClearBackgroundView: UIViewRepresentable
 {
     @inlinable
     public init() {} // for @inlinable
-    
+
     @inlinable
     public func makeUIView(context: Context) -> some UIView
     {
@@ -26,7 +26,7 @@ public struct ClearBackgroundView: UIViewRepresentable
         }
         return view
     }
-    
+
     @inlinable
     public func updateUIView(_ uiView: UIViewType, context: Context)
     {
