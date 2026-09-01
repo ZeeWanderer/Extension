@@ -582,8 +582,7 @@ final class CacheConcurrencyTests: XCTestCase
                     for value in 0..<iterations
                     {
                         try await cache.insert(value, forKey: worker)
-                        guard try await cache.value(forKey: worker) == value
-                        else { return false }
+                        guard try await cache.value(forKey: worker) == value else { return false }
                     }
                     try await cache.removeValue(forKey: worker)
                     return try await cache.value(forKey: worker) == nil

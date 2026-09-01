@@ -16,7 +16,7 @@ public extension KeyedDecodingContainer
         let d = try superDecoder(forKey: key)
         return try .init(from: d)
     }
-    
+
     @inlinable
     func decode<T>(_ type: Lossy<T?>.Type, forKey key: Key) throws -> Lossy<T?> where T: Codable
     {
@@ -24,7 +24,7 @@ public extension KeyedDecodingContainer
         let d = try superDecoder(forKey: key)
         return try .init(from: d)
     }
-    
+
     @inlinable
     func decode<T>(_ type: Lossy<[T]?>.Type, forKey key: Key) throws -> Lossy<[T]?> where T: Codable
     {
@@ -32,13 +32,14 @@ public extension KeyedDecodingContainer
         let d = try superDecoder(forKey: key)
         return try .init(from: d)
     }
-    
+
     @inlinable
     func decode<T>(_ type: Lossy<T>.Type, forKey key: Key) throws -> Lossy<T> where T: Codable
     {
         do {
             return .init(wrappedValue: try decode(T.self, forKey: key))
-        } catch {
+        }
+        catch {
             let d = try superDecoder(forKey: key)
             let path = P_LossyInspect.codingPath(error, from: d)
             let raw = P_LossyInspect.rawString(from: d)

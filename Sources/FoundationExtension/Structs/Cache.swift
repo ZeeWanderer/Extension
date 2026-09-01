@@ -699,8 +699,7 @@ public final class Cache<
                     outcomes[outcome.storeID] = outcome
                 }
                 return p_stores.compactMap { store in
-                    guard case let .failure(failure) = outcomes[store.id]
-                    else { return nil }
+                    guard case let .failure(failure) = outcomes[store.id] else { return nil }
                     return failure
                 }
             }
@@ -915,8 +914,7 @@ public final class Cache<
             for outcome in outcomes
             {
                 guard case let .value(storeID, entry?) = outcome,
-                      !entry.isExpired()
-                else { continue }
+                      !entry.isExpired() else { continue }
 
                 let hit = CacheHit(entry: entry, storeID: storeID)
                 if let targets = route.promotions[storeID], !targets.isEmpty
@@ -1153,8 +1151,7 @@ public final class Cache<
                 outcomes[outcome.storeID] = outcome
             }
             return mutations.compactMap { mutation in
-                guard case let .failure(failure) = outcomes[mutation.store.id]
-                else { return nil }
+                guard case let .failure(failure) = outcomes[mutation.store.id] else { return nil }
                 return failure
             }
         }
@@ -1183,8 +1180,7 @@ public final class Cache<
             for outcome in outcomes
             {
                 guard case let .value(storeID, entry?) = outcome,
-                      !entry.isExpired()
-                else { continue }
+                      !entry.isExpired() else { continue }
 
                 let hit = CacheHit(entry: entry, storeID: storeID)
                 if let targets = route.promotions[storeID], !targets.isEmpty

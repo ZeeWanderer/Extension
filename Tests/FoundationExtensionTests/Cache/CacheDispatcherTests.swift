@@ -545,8 +545,7 @@ final class CacheDispatcherTests: XCTestCase
         XCTAssertThrowsError(
             try valueSynchronously(in: cache, forKey: "value")
         ) { error in
-            guard case let CacheError.synchronousAccessUnavailable(storeID) = error
-            else
+            guard case let CacheError.synchronousAccessUnavailable(storeID) = error else
             {
                 return XCTFail("Unexpected error: \(error)")
             }
@@ -721,8 +720,7 @@ final class CacheDispatcherTests: XCTestCase
         try withExtendedLifetime(firstCache)
         {
             XCTAssertThrowsError(try Cache(stores: [secondStore])) { error in
-                guard case let CacheError.storeAlreadyAttached(storeID) = error
-                else
+                guard case let CacheError.storeAlreadyAttached(storeID) = error else
                 {
                     return XCTFail("Unexpected error: \(error)")
                 }

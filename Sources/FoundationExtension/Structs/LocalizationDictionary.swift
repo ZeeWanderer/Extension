@@ -21,11 +21,10 @@ public extension LocalizationDictionary
         {
             return l_string
         }
-        
+
         // require lang code
-        guard let languageCode = locale.language.languageCode?.identifier
-        else {return nil}
-        
+        guard let languageCode = locale.language.languageCode?.identifier else { return nil }
+
         // check for Script, this format is used by lproj files
         if let regionCode = locale.region?.identifier, let l_string = self["\(languageCode)-\(regionCode)"]
         {
@@ -36,10 +35,10 @@ public extension LocalizationDictionary
         {
             return l_string
         }
-        
+
         return nil
     }
-    
+
     @inlinable
     subscript(_ locale: Locale) -> LocalizedStringValue
     {
@@ -67,7 +66,7 @@ public extension LocalizationDictionary
                 }
             }
         }
-        
+
         // return any value if there are any values at all
         return self.first?.value ?? ""
     }

@@ -16,14 +16,14 @@ public extension Data
             bytes.loadUnaligned(as: type)
         }
     }
-    
+
     @inlinable
     @inline(__always)
     func load<T: BinaryRepresentable>() -> T
     {
         load(as: T.self)
     }
-    
+
     @inlinable
     func saferLoad<T: BinaryRepresentable>(as type: T.Type) -> T?
     {
@@ -32,7 +32,7 @@ public extension Data
             bytes.loadUnaligned(as: type)
         }
     }
-    
+
     @inlinable
     @inline(__always)
     func saferLoad<T: BinaryRepresentable>() -> T?

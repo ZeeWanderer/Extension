@@ -1,6 +1,6 @@
 //
 //  Calendar.swift
-//  
+//
 //
 //  Created by zeewanderer on 20.05.2024.
 //
@@ -17,7 +17,7 @@ public extension Calendar
         let fromDate = startOfDay(for: from)
         let toDate = startOfDay(for: to)
         let numberOfDays = dateComponents([.day], from: fromDate, to: toDate)
-        
+
         return numberOfDays.day!
     }
 }

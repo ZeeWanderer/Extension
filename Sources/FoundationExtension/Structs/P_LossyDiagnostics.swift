@@ -11,7 +11,7 @@ import Foundation
 internal struct P_LossyDiagnostics
 {
     internal init() {}
-    
+
     @usableFromInline
     static func reportMissingReporter(decoder: Decoder, note: StaticString) {
         let id = (decoder.userInfo[.decoderInstanceID] as? UUID)?.uuidString ?? "nil"

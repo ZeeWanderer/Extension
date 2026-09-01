@@ -1,6 +1,6 @@
 //
 //  Date+RawRepresentable.swift
-//  
+//
 //
 //  Created by zeewanderer on 20.05.2024.
 //
@@ -14,12 +14,10 @@ extension Date: @retroactive RawRepresentable
     {
         self.timeIntervalSinceReferenceDate
     }
-    
+
     @inlinable
     public init?(rawValue: TimeInterval)
     {
         self = Date(timeIntervalSinceReferenceDate: rawValue)
     }
 }
-
-

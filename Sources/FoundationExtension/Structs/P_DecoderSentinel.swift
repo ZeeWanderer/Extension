@@ -11,10 +11,10 @@ import Foundation
 internal final class P_DecoderSentinel: CustomStringConvertible, Sendable
 {
     let id = UUID()
-    
+
     @usableFromInline
     init() {}
-    
+
     @usableFromInline
     var description: String { "Sentinel(\(id))" }
 }

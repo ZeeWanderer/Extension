@@ -167,8 +167,7 @@ final class CacheConfigurationTests: XCTestCase
             XCTAssertThrowsError(
                 try Cache(stores: [available, occupied])
             ) { error in
-                guard case CacheError.storeAlreadyAttached("occupied") = error
-                else { return XCTFail("Unexpected error: \(error)") }
+                guard case CacheError.storeAlreadyAttached("occupied") = error else { return XCTFail("Unexpected error: \(error)") }
             }
 
             XCTAssertNoThrow(try Cache(stores: [available]))

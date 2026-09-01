@@ -366,8 +366,7 @@ internal final class P_DiskCacheStore<
             date: now,
             minimumPersistenceInterval:
                 storage.minimumAccessDateUpdateInterval
-        )
-        else { return }
+        ) else { return }
 
         var values = URLResourceValues()
         values.contentAccessDate = now
@@ -453,8 +452,7 @@ internal final class P_DiskCacheStore<
             from: data.subdata(in: 4..<metadataEnd)
         )
         guard metadata.version == Self.formatVersion,
-              metadata.payloadSize == data.count - metadataEnd
-        else
+              metadata.payloadSize == data.count - metadataEnd else
         {
             throw CacheError.invalidDiskEntry
         }

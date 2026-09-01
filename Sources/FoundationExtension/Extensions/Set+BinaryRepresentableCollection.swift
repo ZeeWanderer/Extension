@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Set: BinaryRepresentable where Element: BinaryRepresentable  { }
+extension Set: BinaryRepresentable where Element: BinaryRepresentable { }
 extension Set: BinaryRepresentableCollection where Element: BinaryRepresentable { }
 
 public extension Set where Element: BinaryRepresentable

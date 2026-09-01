@@ -84,8 +84,7 @@ public struct SparseCacheSnapshot: Equatable, Sendable
     {
         guard requestedRange.contains(position),
               maximumLength.map({ $0 > 0 }) != false,
-              let available = ranges.first(where: { $0.contains(position) })
-        else { return nil }
+              let available = ranges.first(where: { $0.contains(position) }) else { return nil }
 
         var upperBound = min(available.upperBound, requestedRange.upperBound)
         if let maximumLength, maximumLength > 0

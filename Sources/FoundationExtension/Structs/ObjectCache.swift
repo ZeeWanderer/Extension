@@ -12,23 +12,23 @@ public final class ObjectCache<Key: AnyObject, Value: AnyObject>
 {
     @usableFromInline
     internal let p_cache = NSCache<Key, Value>()
-    
+
     @inlinable
     public init(configure: (NSCache<Key, Value>) -> Void = { cache in })
     { configure(p_cache) }
-    
+
     @inlinable
     public func insert(_ value: Value, forKey key: Key)
     { p_cache.setObject(value, forKey: key) }
-    
+
     @inlinable
     public func value(forKey key: Key) -> Value?
     { p_cache.object(forKey: key) }
-    
+
     @inlinable
     public func removeValue(forKey key: Key)
     { p_cache.removeObject(forKey: key) }
-    
+
     @inlinable
     public subscript(key: Key) -> Value?
     {

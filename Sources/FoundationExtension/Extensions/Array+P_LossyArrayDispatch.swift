@@ -15,7 +15,7 @@ extension Array: P_LossyArrayDispatch where Element: Codable
         var out: [Element] = []
         var c = try decoder.unkeyedContainer()
         var i = 0
-        
+
         while !c.isAtEnd {
             do { out.append(try c.decode(Element.self)) }
             catch
@@ -32,10 +32,10 @@ extension Array: P_LossyArrayDispatch where Element: Codable
             }
             i += 1
         }
-        
+
         return out
     }
-    
+
     @usableFromInline
     static func _encodeArray(_ value: Any, to encoder: Encoder) throws
     {
@@ -43,7 +43,7 @@ extension Array: P_LossyArrayDispatch where Element: Codable
         var c = encoder.unkeyedContainer()
         for v in arr { try c.encode(v) }
     }
-    
+
     @usableFromInline
     static func _defaultArray() -> Any
     { [] as Self }

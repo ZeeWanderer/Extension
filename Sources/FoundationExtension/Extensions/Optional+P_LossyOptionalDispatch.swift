@@ -14,7 +14,7 @@ extension Optional: P_LossyOptionalDispatch where Wrapped: Codable
     {
         let s = try decoder.singleValueContainer()
         if s.decodeNil() { return Self.none as Any }
-        
+
         if let arr = Wrapped.self as? P_LossyArrayDispatch.Type {
             do { return try arr._decodeArray(from: decoder, reporter: reporter) as! Wrapped }
             catch
@@ -30,7 +30,7 @@ extension Optional: P_LossyOptionalDispatch where Wrapped: Codable
                 return Self.none as Any
             }
         }
-        
+
         do { return try s.decode(Wrapped.self) }
         catch
         {
@@ -45,7 +45,7 @@ extension Optional: P_LossyOptionalDispatch where Wrapped: Codable
             return Self.none as Any
         }
     }
-    
+
     @usableFromInline
     static func _encodeOptional(_ value: Any, to encoder: Encoder) throws
     {
@@ -53,7 +53,7 @@ extension Optional: P_LossyOptionalDispatch where Wrapped: Codable
         var c = encoder.singleValueContainer()
         try c.encode(v)
     }
-    
+
     @usableFromInline
     static func _defaultOptional() -> Any
     { Self.none as Any }

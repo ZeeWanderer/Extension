@@ -43,8 +43,7 @@ public final class SparseCache<Key: Hashable & Sendable>: @unchecked Sendable
         keyEncoder: CacheKeyEncoder<Key>
     ) throws
     {
-        guard DiskCacheStorage.p_isValidDirectoryName(configuration.name)
-        else
+        guard DiskCacheStorage.p_isValidDirectoryName(configuration.name) else
         {
             throw SparseCacheError.invalidConfiguration(
                 "The sparse cache name must be a nonempty path component"
@@ -158,8 +157,7 @@ public final class SparseCache<Key: Hashable & Sendable>: @unchecked Sendable
         try p_withResourceAccess(for: key, access: .wholeWrite) { resource in
             resource.cancelFlushTask()
             try p_flushResource(resource)
-            guard let (descriptor, _) = try? resource.descriptorAndManifest()
-            else { return }
+            guard let (descriptor, _) = try? resource.descriptorAndManifest() else { return }
             guard Darwin.fsync(descriptor) == 0 else { throw Self.p_posixError() }
             let manifestDescriptor = Darwin.open(
                 resource.manifestURL.path,
@@ -208,8 +206,7 @@ public final class SparseCache<Key: Hashable & Sendable>: @unchecked Sendable
             try await self.p_storage.p_ioExecutor.run {
                 guard let manifest = try resource.loadIfNeeded(
                     fileManager: self.p_storage.p_fileManager
-                ), manifest.expirationDate.map({ Date.now >= $0 }) != true
-                else { return nil }
+                ), manifest.expirationDate.map({ Date.now >= $0 }) != true else { return nil }
                 self.p_recordAccess(to: resource.dataURL)
                 return SparseCacheSnapshot(manifest)
             }
@@ -292,8 +289,7 @@ public final class SparseCache<Key: Hashable & Sendable>: @unchecked Sendable
             resource.cancelFlushTask()
             try await self.p_storage.p_ioExecutor.run {
                 try self.p_flushResource(resource)
-                guard let (descriptor, _) = try? resource.descriptorAndManifest()
-                else { return }
+                guard let (descriptor, _) = try? resource.descriptorAndManifest() else { return }
                 guard Darwin.fsync(descriptor) == 0 else
                 {
                     throw Self.p_posixError()
@@ -622,8 +618,7 @@ public final class SparseCache<Key: Hashable & Sendable>: @unchecked Sendable
     ) throws
     {
         try resource.flushLock.withLock {
-            guard let (manifest, revision) = resource.manifestForFlush()
-            else { return }
+            guard let (manifest, revision) = resource.manifestForFlush() else { return }
             try p_writeManifest(manifest, to: resource.manifestURL)
             resource.markFlushed(revision)
             resource.updateAccountedCapacity(

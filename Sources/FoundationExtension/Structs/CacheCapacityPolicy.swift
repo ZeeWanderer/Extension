@@ -171,8 +171,7 @@ public struct CacheCapacityPolicy: Hashable, Sendable
         guard let preferredCapacity,
               let trimToCapacity,
               let maximumCapacity,
-              currentCapacity > preferredCapacity
-        else
+              currentCapacity > preferredCapacity else
         {
             return EvictionPlan(
                 evictions: [],

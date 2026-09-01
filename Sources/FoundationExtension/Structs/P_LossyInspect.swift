@@ -11,7 +11,7 @@ import Foundation
 internal struct P_LossyInspect
 {
     internal init() {}
-    
+
     @usableFromInline
     static func rawString(from decoder: Decoder) -> String?
     {
@@ -50,13 +50,14 @@ internal struct P_LossyInspect
                 {
                     let val = rawString(from: sub) ?? "null"
                     parts.append("\(ks):\(val)")
-                } else { parts.append("\(ks):null") }
+                }
+                else { parts.append("\(ks):null") }
             }
             return "{\(parts.joined(separator: ","))}"
         }
         return nil
     }
-    
+
     internal static func quote(_ s: String) -> String
     {
         var out = "\""
@@ -81,12 +82,12 @@ internal struct P_LossyInspect
         out += "\""
         return out
     }
-    
+
     @usableFromInline
     static func codingPath(_ error: Error, from decoder: Decoder) -> [CodingKey]
     {
         guard let decodingError = error as? DecodingError else { return decoder.codingPath }
-        
+
         switch decodingError {
         case .keyNotFound(let codingKey, let context):
             return context.codingPath + [codingKey]

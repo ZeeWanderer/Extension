@@ -120,8 +120,7 @@ internal final class P_CacheDiskDirectoryCoordinator: @unchecked Sendable
         }
         let lastPersistedDate = persistedAccessDates[url] ?? .distantPast
         guard date.timeIntervalSince(lastPersistedDate)
-            >= minimumPersistenceInterval
-        else { return false }
+            >= minimumPersistenceInterval else { return false }
 
         persistedAccessDates[url] = date
         return true

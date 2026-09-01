@@ -318,8 +318,7 @@ public struct JSONCoding: Sendable
             forResource: name,
             withExtension: fileExtension,
             subdirectory: subdirectory
-        )
-        else
+        ) else
         {
             throw JSONCodingError.resourceNotFound(
                 name: name,

@@ -19,10 +19,10 @@ final class LossyDecodingPublicAPITests: XCTestCase {
             let message: String
             let underlying: Error?
         }
-        
+
         private let lock = NSLock()
         private(set) var records: [Record] = []
-        
+
         func recordLoss(raw: String?, codingPath: [CodingKey], message: String, underlying: Error?)
         {
             lock.lock()
@@ -30,45 +30,45 @@ final class LossyDecodingPublicAPITests: XCTestCase {
             lock.unlock()
         }
     }
-    
+
     func testLossyArrayDropsInvalidElements() throws
     {
         struct Payload: Decodable
         {
             @Lossy var values: [Int]
         }
-        
+
         let decoder = JSONDecoder()
         let reporter = TestLossyReporter()
         decoder.setLossyReporter(reporter)
-        
+
         let data = #"{"values":[1,"bad",2]}"#.data(using: .utf8)!
         let decoded = try decoder.decode(Payload.self, from: data)
-        
+
         XCTAssertEqual(decoded.values, [1, 2])
         XCTAssertEqual(reporter.records.count, 1)
         XCTAssertEqual(reporter.records.first?.message, "Dropped invalid array element at Index 1")
     }
-    
+
     func testLossyOptionalBecomesNilOnInvalidValue() throws
     {
         struct Payload: Decodable
         {
             @Lossy var value: Int?
         }
-        
+
         let decoder = JSONDecoder()
         let reporter = TestLossyReporter()
         decoder.setLossyReporter(reporter)
-        
+
         let data = #"{"value":"bad"}"#.data(using: .utf8)!
         let decoded = try decoder.decode(Payload.self, from: data)
-        
+
         XCTAssertNil(decoded.value)
         XCTAssertEqual(reporter.records.count, 1)
         XCTAssertEqual(reporter.records.first?.message, "Set optional to nil due to invalid value")
     }
-    
+
     func testLossyStandardDecoding() throws
     {
         struct Payload: Decodable
@@ -80,7 +80,7 @@ final class LossyDecodingPublicAPITests: XCTestCase {
             @Lossy var optionalValues: [Int]?
             @Lossy var optionalURL: URL?
         }
-        
+
         let data = """
         {
           "count": 3,
@@ -91,13 +91,13 @@ final class LossyDecodingPublicAPITests: XCTestCase {
           "optionalURL": "https://example.com/optional"
         }
         """.data(using: .utf8)!
-        
+
         let decoder = JSONDecoder()
         let reporter = TestLossyReporter()
         decoder.setLossyReporter(reporter)
-        
+
         let decoded = try decoder.decode(Payload.self, from: data)
-        
+
         XCTAssertEqual(decoded.count, 3)
         XCTAssertEqual(decoded.name, "Alpha")
         XCTAssertEqual(decoded.url, URL(string: "https://example.com"))
@@ -106,99 +106,99 @@ final class LossyDecodingPublicAPITests: XCTestCase {
         XCTAssertEqual(decoded.optionalURL, URL(string: "https://example.com/optional"))
         XCTAssertEqual(reporter.records.count, 0)
     }
-    
+
     func testLossyRequiredThrowsAndReports() throws
     {
         struct Payload: Decodable
         {
             @Lossy var value: Int
         }
-        
+
         let decoder = JSONDecoder()
         let reporter = TestLossyReporter()
         decoder.setLossyReporter(reporter)
-        
+
         let data = #"{"value":"bad"}"#.data(using: .utf8)!
-        
+
         XCTAssertThrowsError(try decoder.decode(Payload.self, from: data))
         XCTAssertEqual(reporter.records.count, 1)
         XCTAssertEqual(reporter.records.first?.message, "Failed to decode required value")
     }
-    
+
     func testLossyRequiredMissingKeyThrows() throws
     {
         struct Payload: Decodable
         {
             @Lossy var value: Int
         }
-        
+
         let decoder = JSONDecoder()
         decoder.setLossyReporter(TestLossyReporter())
         let data = #"{}"#.data(using: .utf8)!
-        
+
         XCTAssertThrowsError(try decoder.decode(Payload.self, from: data))
     }
-    
+
     func testLossyOptionalURLInvalidBecomesNil() throws
     {
         struct Payload: Decodable
         {
             @Lossy var url: URL?
         }
-        
+
         let data = #"{"url":123}"#.data(using: .utf8)!
-        
+
         let decoder = JSONDecoder()
         let reporter = TestLossyReporter()
         decoder.setLossyReporter(reporter)
-        
+
         let decoded = try decoder.decode(Payload.self, from: data)
-        
+
         XCTAssertNil(decoded.url)
         XCTAssertEqual(reporter.records.count, 1)
         XCTAssertEqual(reporter.records.first?.message, "Set optional to nil due to invalid value")
     }
-    
+
     func testLossyOptionalArrayInvalidTypeBecomesNil() throws
     {
         struct Payload: Decodable
         {
             @Lossy var values: [Int]?
         }
-        
+
         let data = #"{"values":"bad"}"#.data(using: .utf8)!
-        
+
         let decoder = JSONDecoder()
         let reporter = TestLossyReporter()
         decoder.setLossyReporter(reporter)
-        
+
         let decoded = try decoder.decode(Payload.self, from: data)
-        
+
         XCTAssertNil(decoded.values)
         XCTAssertEqual(reporter.records.count, 1)
         XCTAssertEqual(reporter.records.first?.message, "Expected array but found incompatible value; set optional array to nil")
     }
-    
+
     func testLossyOptionalArrayDropsInvalidElements() throws
     {
         struct Payload: Decodable
         {
             @Lossy var values: [Int]?
         }
-        
+
         let data = #"{"values":[1,"bad",2]}"#.data(using: .utf8)!
-        
+
         let decoder = JSONDecoder()
         let reporter = TestLossyReporter()
         decoder.setLossyReporter(reporter)
-        
+
         let decoded = try decoder.decode(Payload.self, from: data)
-        
+
         XCTAssertEqual(decoded.values, [1, 2])
         XCTAssertEqual(reporter.records.count, 1)
         XCTAssertEqual(reporter.records.first?.message, "Dropped invalid array element at Index 1")
     }
-    
+
     func testLossyMissingKeysUseDefaults() throws
     {
         struct Payload: Decodable
@@ -207,21 +207,21 @@ final class LossyDecodingPublicAPITests: XCTestCase {
             @Lossy var optionalValues: [Int]?
             @Lossy var optionalURL: URL?
         }
-        
+
         let data = #"{}"#.data(using: .utf8)!
-        
+
         let decoder = JSONDecoder()
         let reporter = TestLossyReporter()
         decoder.setLossyReporter(reporter)
-        
+
         let decoded = try decoder.decode(Payload.self, from: data)
-        
+
         XCTAssertEqual(decoded.values, [])
         XCTAssertNil(decoded.optionalValues)
         XCTAssertNil(decoded.optionalURL)
         XCTAssertEqual(reporter.records.count, 0)
     }
-    
+
     func testLossyFeedbackFileUploadResultDecodes() throws
     {
         struct FeedbackFileUploadResult: Decodable
@@ -233,7 +233,7 @@ final class LossyDecodingPublicAPITests: XCTestCase {
                     case file = "file"
                     case folder = "folder"
                 }
-                
+
                 @Lossy var createTime: Int
                 @Lossy var downloadPage: URL
                 @Lossy var guestToken: String
@@ -248,11 +248,11 @@ final class LossyDecodingPublicAPITests: XCTestCase {
                 @Lossy var size: Int
                 @Lossy var type: ItemType?
             }
-            
+
             let status: String
             @Lossy var data: _Data
         }
-        
+
         let json = """
         {
           "data": {
@@ -275,13 +275,13 @@ final class LossyDecodingPublicAPITests: XCTestCase {
           "status": "ok"
         }
         """
-        
+
         let decoder = JSONDecoder()
         let reporter = TestLossyReporter()
         decoder.setLossyReporter(reporter)
-        
+
         let decoded = try decoder.decode(FeedbackFileUploadResult.self, from: Data(json.utf8))
-        
+
         XCTAssertEqual(decoded.status, "ok")
         XCTAssertEqual(decoded.data.createTime, 1768824323)
         XCTAssertEqual(decoded.data.downloadPage, URL(string: "https://gofile.io/d/fshGmN"))

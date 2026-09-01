@@ -302,8 +302,7 @@ final class CacheMaintenanceTests: XCTestCase
                   failures[0].storeID == "async-only",
                   failures[0].operation == .maintenance,
                   case CacheError.synchronousAccessUnavailable("async-only") =
-                    failures[0].underlyingError
-            else { return XCTFail("Unexpected error: \(error)") }
+                    failures[0].underlyingError else { return XCTFail("Unexpected error: \(error)") }
         }
     }
 
@@ -787,10 +786,9 @@ final class CacheMaintenanceTests: XCTestCase
             let failures = try p_cacheStoreFailures(from: error)
             guard failures.count == 1,
                   case let CacheError.diskEntryExceedsMaximumCapacity(
-                    encodedByteCount,
-                    maximumCapacity
-                  ) = failures[0].underlyingError
-            else { return XCTFail("Unexpected error: \(error)") }
+                      encodedByteCount,
+                      maximumCapacity
+                  ) = failures[0].underlyingError else { return XCTFail("Unexpected error: \(error)") }
             XCTAssertGreaterThan(encodedByteCount, maximumCapacity)
             XCTAssertEqual(maximumCapacity, 128)
         }

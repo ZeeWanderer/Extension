@@ -145,8 +145,7 @@ internal final class P_CacheRangeGate: @unchecked Sendable
     {
         let resumptions: [(Lease, @Sendable (Lease) -> Void)]
         lock.lock()
-        guard let index = activeLeases.firstIndex(where: { $0.id == lease.id })
-        else
+        guard let index = activeLeases.firstIndex(where: { $0.id == lease.id }) else
         {
             lock.unlock()
             preconditionFailure("Unbalanced cache range access")

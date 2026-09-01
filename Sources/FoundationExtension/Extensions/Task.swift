@@ -14,7 +14,6 @@ public extension Task where Success == Never, Failure == Never
     @inlinable
     static func sleep(seconds duration: TimeInterval) async throws
     {
-        
         if #available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, visionOS 1.0, *)
         {
             try await Task.sleep(until: .now + .seconds(duration), clock: .continuous)
@@ -25,7 +24,7 @@ public extension Task where Success == Never, Failure == Never
             try await Task.sleep(nanoseconds: delay)
         }
     }
-    
+
     /// Convenience function to delay execution in seconds. Intended for code clarity.
     /// - Note: Function converts `TimeInterval` to nanoseconds so mind the upper `Double` limit of `10^308.3`.
     @inlinable
