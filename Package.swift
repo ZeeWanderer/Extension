@@ -100,13 +100,46 @@ let package = Package(
             swiftSettings: []
         ),
         .testTarget(
-            name: "ExtensionTests",
+            name: "MacrosExtensionTests",
             dependencies: [
-                "SwiftExtension", "FoundationExtension", "osExtension", "ObservationExtension", "AccelerateExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions", "Extension",
-            ],
+                "MacrosExtension", "SwiftUIExtension",
+            ]),
+        .testTarget(
+            name: "SwiftExtensionTests",
+            dependencies: ["SwiftExtension"]),
+        .testTarget(
+            name: "FoundationExtensionTests",
+            dependencies: ["FoundationExtension"],
             resources: [
                 .process("Fixtures"),
             ]),
+        .testTarget(
+            name: "osExtensionTests",
+            dependencies: ["osExtension"]),
+        .testTarget(
+            name: "ObservationExtensionTests",
+            dependencies: ["FoundationExtension", "ObservationExtension"]),
+        .testTarget(
+            name: "AccelerateExtensionTests",
+            dependencies: ["AccelerateExtension"]),
+        .testTarget(
+            name: "CoreGraphicsExtensionTests",
+            dependencies: ["CoreGraphicsExtension"]),
+        .testTarget(
+            name: "UIKitExtensionTests",
+            dependencies: ["FoundationExtension", "UIKitExtension"]),
+        .testTarget(
+            name: "SpriteKitExtensionTests",
+            dependencies: ["SpriteKitExtension"]),
+        .testTarget(
+            name: "SwiftUIExtensionTests",
+            dependencies: ["SwiftUIExtension"]),
+        .testTarget(
+            name: "GeneralExtensionsTests",
+            dependencies: ["GeneralExtensions"]),
+        .testTarget(
+            name: "ExtensionTests",
+            dependencies: ["Extension"]),
         .testTarget(
             name: "ExtensionMacroTests",
             dependencies: [
@@ -117,7 +150,10 @@ let package = Package(
             ]),
         .testTarget(
             name: "ExtensionPerformanceTests",
-            dependencies: ["Extension"]),
+            dependencies: [
+                "AccelerateExtension", "CoreGraphicsExtension",
+                "FoundationExtension", "SwiftExtension", "SwiftUIExtension",
+            ]),
     ],
     swiftLanguageModes: [.v6]
 )

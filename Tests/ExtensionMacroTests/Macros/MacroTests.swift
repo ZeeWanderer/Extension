@@ -17,89 +17,10 @@ import SwiftSyntaxMacrosTestSupport
 import Macros
 import MacrosExtension
 
-@ModelSnapshot
-@Model
-class Test1 {
-    var int: Int = 0
-
-    @SnapshotIgnore
-    @Relationship
-    var test0: Test0? = nil
-    
-    init(int: Int, test0: Test0? = nil) {
-        self.int = int
-        self.test0 = test0
-    }
-}
-
-@ModelSnapshot
-@Model
-class Test0 {
-    var int: Int = 0
-
-    @Relationship
-    var tests: [Test1] = []
-    
-    init(int: Int, tests: [Test1]) {
-        self.int = int
-        self.tests = tests
-    }
-}
-
-@ModelSnapshot
-@Model
-final class RequiredSnapshotChild {
-    var value: Int
-
-    init(value: Int) {
-        self.value = value
-    }
-}
-
-@ModelSnapshot
-@Model
-final class RequiredSnapshotParent {
-    @Relationship
-    var child: RequiredSnapshotChild
-
-    init(child: RequiredSnapshotChild) {
-        self.child = child
-    }
-}
-
-@ActorProtocol
-public protocol CompiledDataService: Sendable {
-    associatedtype Item: Sendable
-    var context: Int { get }
-    subscript(index: Int) -> Item { get }
-    func readContext() -> Int
-}
-
-public struct CompiledDataServiceImplementation: CompiledDataService {
-    public typealias Item = Int
-    public var context: Int { 42 }
-    public subscript(index: Int) -> Int { context + index }
-    public func readContext() -> Int { context }
-}
-
-public actor CompiledDataServiceActorImplementation: CompiledDataServiceActor {
-    public typealias Item = Int
-    public let context: Int = 43
-    public subscript(index: Int) -> Int { context + index }
-    public func readContext() -> Int { context }
-}
-
-private func compiledActorItem<Service: CompiledDataServiceActor>(
-    _ service: Service,
-    at index: Int
-) async -> Service.Item {
-    await service[index]
-}
-
 final class MacroTests: XCTestCase
 {
 #if canImport(Macros)
-    nonisolated(unsafe) static let testMacros: [String: Macro.Type] = [
+    static let testMacros: [String: Macro.Type] = [
         "FlatEnum": FlatEnumMacro.self,
         "RouterDestination": RouterDestinationMacro.self,
         "CustomStringConvertibleEnum": CustomStringConvertibleEnumMacro.self,
@@ -111,27 +32,6 @@ final class MacroTests: XCTestCase
         "LogCategory": LogCategoryMacro.self,
     ]
 #endif
-
-    func testGeneratedModelSnapshotAPICompilesAndRuns() {
-        let child = RequiredSnapshotChild(value: 7)
-        let parent = RequiredSnapshotParent(child: child)
-
-        XCTAssertEqual(parent.snapshot.child.value, 7)
-    }
-
-    func testGeneratedActorProtocolAPICompilesAndRuns() async {
-        let service: any CompiledDataService = CompiledDataServiceImplementation()
-        let actorImplementation = CompiledDataServiceActorImplementation()
-        let actorService: any CompiledDataServiceActor = actorImplementation
-        let actorContext = await actorService.context
-        let actorReadContext = await actorService.readContext()
-        let actorItem = await compiledActorItem(actorImplementation, at: 2)
-
-        XCTAssertEqual(service.readContext(), 42)
-        XCTAssertEqual(actorContext, 43)
-        XCTAssertEqual(actorReadContext, 43)
-        XCTAssertEqual(actorItem, 45)
-    }
 
     func testFlatEnumMacro() throws {
         #if canImport(Macros)

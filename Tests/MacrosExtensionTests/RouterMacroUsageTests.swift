@@ -11,8 +11,6 @@ import SwiftUIExtension
 import MacrosExtension
 import Observation
 
-#if os(macOS) && canImport(SwiftUI) && canImport(MacrosExtension)
-
 @RouterDestination
 enum RouterMacroDestination {
     case detail(id: Int)
@@ -195,5 +193,3 @@ final class RouterMacroUsageTests: XCTestCase {
         XCTAssertEqual(named.flat, .detail)
     }
 }
-
-#endif
