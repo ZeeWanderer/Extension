@@ -12,7 +12,7 @@ public extension UITableView
 {
     /**
      Registers ReusableView compliant UITableViewCell class
-     
+
      ```
      // register reusable cell
      collectionView.register(CellClass.self)
@@ -23,10 +23,10 @@ public extension UITableView
     {
         register(T.self, forCellReuseIdentifier: T.defaultReuseIdentifier)
     }
-    
+
     /**
      Registers ReusableView compliant UITableViewHeaderFooterView class
-     
+
      ```
      // register reusable view
      collectionView.register(ViewClass.self)
@@ -37,18 +37,18 @@ public extension UITableView
     {
         register(T.self, forHeaderFooterViewReuseIdentifier: T.defaultReuseIdentifier)
     }
-    
+
     /**
      Dequeues ReusableView compliant Cell.
-     
+
      - Parameter indexPath: The index path specifying the location of the supplementary view in the collection view. The data source receives this information when it is asked for the view and should just pass it along. This method uses the information to perform additional configuration based on the view’s position in the collection view.
      - Returns: A valid UITableViewCell object.
-     
+
      - Important: Cell class must be registered first
      ```
      // register reusable view
      collectionView.register(CellClass.self)
-     
+
      // dequeue reusable cell
      let cell: CellClass = tableView.dequeueReusableCell(for: indexPath)
      ```
@@ -62,10 +62,10 @@ public extension UITableView
         }
         return cell
     }
-    
+
     /**
      Dequeues ReusableView compliant Supplementary View.
-     
+
      - Returns: A valid UITableViewHeaderFooterView object.
      - Important: View class must be registered first
      ```

@@ -1,6 +1,6 @@
 //
 //  Feedback.swift
-//  
+//
 //
 //  Created by zeewanderer on 13.04.2022.
 //
@@ -13,26 +13,27 @@ import AVFoundation
 @MainActor public final class FeedbackHelper
 {
     // MARK: - Internal
-    //TODO: AudioServicesPlaySystemSound(SystemSoundID(1104))
-    
+
+    // TODO: AudioServicesPlaySystemSound(SystemSoundID(1104))
+
     @usableFromInline internal static let p_impactGeneratorLight: UIImpactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
     @usableFromInline internal static let p_impactGeneratorMedium: UIImpactFeedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
     @usableFromInline internal static let p_impactGeneratorHeavy: UIImpactFeedbackGenerator = UIImpactFeedbackGenerator(style: .heavy)
     @usableFromInline internal static let p_impactGeneratorSoft: UIImpactFeedbackGenerator = UIImpactFeedbackGenerator(style: .soft)
     @usableFromInline internal static let p_impactGeneratorRigid: UIImpactFeedbackGenerator = UIImpactFeedbackGenerator(style: .rigid)
-    
+
     @usableFromInline internal static let p_notificationGenerator = UINotificationFeedbackGenerator()
-    
+
     @usableFromInline internal static let p_selectionGenerator = UISelectionFeedbackGenerator()
-    //SystemSoundID(1306)
-    @usableFromInline nonisolated internal static let p_keyPressedSound: SystemSoundID = SystemSoundID(1104)// [SystemSoundID(1104), SystemSoundID(1105)]
-    
+    // SystemSoundID(1306)
+    @usableFromInline nonisolated internal static let p_keyPressedSound: SystemSoundID = SystemSoundID(1104) // [SystemSoundID(1104), SystemSoundID(1105)]
+
     @usableFromInline internal static var p_shouldUseVibrationProvider: (() -> Bool)? = nil
     @usableFromInline internal static var p_shouldUseSoundProvider: (() -> Bool)? = nil
-    
+
     @usableFromInline internal static var p_shouldUseVibration: Bool? = nil
     @usableFromInline internal static var p_shouldUseSound: Bool? = nil
-    
+
     @usableFromInline
     internal static func p_shouldUseVibrationPreference() -> Bool
     {
@@ -40,16 +41,15 @@ import AVFoundation
         {
             return p_shouldUseVibration
         }
-        
-        
+
         if let p_shouldUseVibrationProvider
         {
             return p_shouldUseVibrationProvider()
         }
-        
+
         return true
     }
-    
+
     @usableFromInline
     internal static func p_shouldUseSoundPreference() -> Bool
     {
@@ -57,43 +57,43 @@ import AVFoundation
         {
             return p_shouldUseSound
         }
-        
+
         if let p_shouldUseSoundProvider
         {
             return p_shouldUseSoundProvider()
         }
-        
+
         return true
     }
-    
+
     // MARK: - Interface
-    
+
     @inlinable
-    public static func set_dynamic_vibration_preference(_ closure: @escaping ()->Bool)
+    public static func set_dynamic_vibration_preference(_ closure: @escaping () -> Bool)
     {
         p_shouldUseVibrationProvider = closure
     }
-    
+
     @inlinable
-    public static func set_dynamic_sound_preference(_ closure: @escaping ()->Bool)
+    public static func set_dynamic_sound_preference(_ closure: @escaping () -> Bool)
     {
         p_shouldUseSoundProvider = closure
     }
-    
+
     @inlinable
-    public static func set_dynamic_preferences(vibration: @escaping ()->Bool, sound: @escaping ()->Bool)
+    public static func set_dynamic_preferences(vibration: @escaping () -> Bool, sound: @escaping () -> Bool)
     {
         p_shouldUseVibrationProvider = vibration
         p_shouldUseSoundProvider = sound
     }
-    
+
     @inlinable
     public static func set_static_preferences(vibration: Bool, sound: Bool)
     {
         p_shouldUseVibration = vibration
         p_shouldUseSound = sound
     }
-    
+
     @inlinable
     public static func prepare_selection_generator() async
     {
@@ -101,10 +101,10 @@ import AVFoundation
         {
             return
         }
-        
+
         p_selectionGenerator.prepare()
     }
-    
+
     @inlinable
     nonisolated public static func prepare_selection_generator()
     {
@@ -113,7 +113,7 @@ import AVFoundation
             await prepare_selection_generator()
         }
     }
-    
+
     @inlinable
     public static func prepare_notification_generator() async
     {
@@ -121,10 +121,10 @@ import AVFoundation
         {
             return
         }
-        
+
         p_notificationGenerator.prepare()
     }
-    
+
     @inlinable
     nonisolated public static func prepare_notification_generator()
     {
@@ -133,7 +133,7 @@ import AVFoundation
             await prepare_notification_generator()
         }
     }
-    
+
     @inlinable
     public static func prepare_impact_generator(_ fs: UIImpactFeedbackGenerator.FeedbackStyle) async
     {
@@ -141,7 +141,7 @@ import AVFoundation
         {
             return
         }
-        
+
         switch fs
         {
         case .light:
@@ -158,7 +158,7 @@ import AVFoundation
             p_impactGeneratorMedium.prepare()
         }
     }
-    
+
     @inlinable
     nonisolated public static func prepare_impact_generator(_ fs: UIImpactFeedbackGenerator.FeedbackStyle)
     {
@@ -167,7 +167,7 @@ import AVFoundation
             await prepare_impact_generator(fs)
         }
     }
-    
+
     @inlinable
     public static func prepare_impact_generators() async
     {
@@ -175,14 +175,14 @@ import AVFoundation
         {
             return
         }
-        
+
         p_impactGeneratorLight.prepare()
         p_impactGeneratorMedium.prepare()
         p_impactGeneratorHeavy.prepare()
         p_impactGeneratorSoft.prepare()
         p_impactGeneratorRigid.prepare()
     }
-    
+
     @inlinable
     nonisolated public static func prepare_impact_generators()
     {
@@ -191,7 +191,7 @@ import AVFoundation
             await prepare_impact_generators()
         }
     }
-    
+
     @inlinable
     public static func play_button_sound() async
     {
@@ -199,11 +199,11 @@ import AVFoundation
         {
             return
         }
-        
+
         let sound = p_keyPressedSound
         AudioServicesPlaySystemSound(sound)
     }
-    
+
     @inlinable
     nonisolated public static func play_button_sound()
     {
@@ -212,7 +212,7 @@ import AVFoundation
             await play_button_sound()
         }
     }
-    
+
     @inlinable
     public static func selectionChanged() async
     {
@@ -222,7 +222,7 @@ import AVFoundation
         }
         p_selectionGenerator.selectionChanged()
     }
-    
+
     @inlinable
     nonisolated public static func selectionChanged()
     {
@@ -231,7 +231,7 @@ import AVFoundation
             await selectionChanged()
         }
     }
-    
+
     @inlinable
     public static func notificationOccurred(_ ft: UINotificationFeedbackGenerator.FeedbackType) async
     {
@@ -239,10 +239,10 @@ import AVFoundation
         {
             return
         }
-        
+
         p_notificationGenerator.notificationOccurred(ft)
     }
-    
+
     @inlinable
     nonisolated public static func notificationOccurred(_ ft: UINotificationFeedbackGenerator.FeedbackType)
     {
@@ -251,7 +251,7 @@ import AVFoundation
             await notificationOccurred(ft)
         }
     }
-    
+
     @inlinable
     public static func impactOccurred(_ fs: UIImpactFeedbackGenerator.FeedbackStyle) async
     {
@@ -259,7 +259,7 @@ import AVFoundation
         {
             return
         }
-        
+
         switch fs
         {
         case .light:
@@ -276,7 +276,7 @@ import AVFoundation
             p_impactGeneratorMedium.impactOccurred()
         }
     }
-    
+
     @inlinable
     nonisolated public static func impactOccurred(_ fs: UIImpactFeedbackGenerator.FeedbackStyle)
     {
@@ -285,7 +285,7 @@ import AVFoundation
             await impactOccurred(fs)
         }
     }
-    
+
     @inlinable
     public static func impactOccurred(_ fs: UIImpactFeedbackGenerator.FeedbackStyle, intensity: CGFloat) async
     {
@@ -293,7 +293,7 @@ import AVFoundation
         {
             return
         }
-        
+
         switch fs
         {
         case .light:
@@ -310,7 +310,7 @@ import AVFoundation
             p_impactGeneratorMedium.impactOccurred(intensity: intensity)
         }
     }
-    
+
     @inlinable
     nonisolated public static func impactOccurred(_ fs: UIImpactFeedbackGenerator.FeedbackStyle, intensity: CGFloat)
     {

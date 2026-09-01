@@ -1,6 +1,6 @@
 //
 //  UIView.swift
-//  
+//
 //
 //  Created by zee wanderer on 02.08.2024.
 //
@@ -16,7 +16,7 @@ public extension UIView
         layer.cornerRadius = radius
         clipsToBounds = true
     }
-    
+
     @inlinable
     func circleCorner()
     {
@@ -36,7 +36,7 @@ public extension UIView
             return result
         }
     }
-    
+
     @inlinable
     class func getAllSubviews(from parenView: UIView, types: [UIView.Type]) -> [UIView]
     {
@@ -53,7 +53,7 @@ public extension UIView
             return result
         }
     }
-    
+
     @inlinable func getAllSubviews<T: UIView>() -> [T] { return UIView.getAllSubviews(from: self) as [T] }
     @inlinable func get<T: UIView>(all type: T.Type) -> [T] { return UIView.getAllSubviews(from: self) as [T] }
     @inlinable func get(all types: [UIView.Type]) -> [UIView] { return UIView.getAllSubviews(from: self, types: types) }

@@ -15,7 +15,7 @@ public extension UIScreen
     {
         return UIScreen.main.bounds.size.width
     }
-    
+
     @MainActor
     @inlinable static var height: CGFloat
     {

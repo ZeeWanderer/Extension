@@ -12,7 +12,7 @@ public extension UICollectionView
 {
     /**
      Registers ReusableView, NibLoadableView compliant UICollectionViewCell class
-     
+
      ```
      // register reusable cell
      collectionView.register(CellClass.self)
@@ -23,13 +23,13 @@ public extension UICollectionView
     {
         let bundle = Bundle(for: T.self)
         let nib = UINib(nibName: T.nibName, bundle: bundle)
-        
+
         register(nib, forCellWithReuseIdentifier: T.defaultReuseIdentifier)
     }
-    
+
     /**
      Registers ReusableView, NibLoadableView compliant UICollectionReusableView class
-     
+
      ```
      // register reusable view
      collectionView.register(ViewClass.self)
@@ -40,7 +40,7 @@ public extension UICollectionView
     {
         let bundle = Bundle(for: T.self)
         let nib = UINib(nibName: T.nibName, bundle: bundle)
-        
+
         register(nib, forSupplementaryViewOfKind: elementKind, withReuseIdentifier: T.defaultReuseIdentifier)
     }
 }

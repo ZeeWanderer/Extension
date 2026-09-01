@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by zee wanderer on 02.08.2024.
 //
@@ -10,10 +10,9 @@ import UIKit
 
 public extension UITableView
 {
-    
     /**
      Registers ReusableView, NibLoadableView compliant UITableViewCell class
-     
+
      ```
      // register reusable cell
      collectionView.register(CellClass.self)
@@ -24,13 +23,13 @@ public extension UITableView
     {
         let bundle = Bundle(for: T.self)
         let nib = UINib(nibName: T.nibName, bundle: bundle)
-        
+
         register(nib, forCellReuseIdentifier: T.defaultReuseIdentifier)
     }
-    
+
     /**
      Registers ReusableView, NibLoadableView compliant UITableViewCell class
-     
+
      ```
      // register reusable view
      collectionView.register(ViewClass.self)
@@ -41,7 +40,7 @@ public extension UITableView
     {
         let bundle = Bundle(for: T.self)
         let nib = UINib(nibName: T.nibName, bundle: bundle)
-        
+
         register(nib, forHeaderFooterViewReuseIdentifier: T.defaultReuseIdentifier)
     }
 }

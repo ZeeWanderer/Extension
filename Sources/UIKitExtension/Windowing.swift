@@ -1,6 +1,6 @@
 //
 //  Windowing.swift
-//  
+//
 //
 //  Created by zeewanderer on 31.10.2021.
 //
@@ -9,6 +9,7 @@
 import UIKit
 
 // MARK: - UIApplication
+
 public extension UIApplication
 {
     /// Replacement for deprecated `UIApplication.keyWindow`
@@ -31,6 +32,7 @@ public extension UIApplication
 }
 
 // MARK: - UIViewController
+
 public extension UIViewController
 {
     @inlinable
@@ -39,7 +41,7 @@ public extension UIViewController
         let keyWindow = UIApplication.shared.keySceneWindow
         return keyWindow?.rootViewController?.topMostViewController()
     }
-    
+
     @inlinable
     func topMostViewController() -> UIViewController?
     {

@@ -1,6 +1,6 @@
 //
 //  Debug.swift
-//  
+//
 //
 //  Created by zeewanderer on 05.04.2022.
 //

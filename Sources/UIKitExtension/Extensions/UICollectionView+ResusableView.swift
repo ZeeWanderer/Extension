@@ -12,7 +12,7 @@ public extension UICollectionView
 {
     /**
      Registers ReusableView compliant UICollectionViewCell class
-     
+
      ```
      // register reusable cell
      collectionView.register(CellClass.self)
@@ -23,10 +23,10 @@ public extension UICollectionView
     {
         register(T.self, forCellWithReuseIdentifier: T.defaultReuseIdentifier)
     }
-    
+
     /**
      Registers ReusableView compliant UICollectionReusableView class
-     
+
      ```
      // register reusable view
      collectionView.register(ViewClass.self)
@@ -37,18 +37,18 @@ public extension UICollectionView
     {
         register(T.self, forSupplementaryViewOfKind: elementKind, withReuseIdentifier: T.defaultReuseIdentifier)
     }
-    
+
     /**
      Dequeues ReusableView compliant Cell.
-     
+
      - Parameter indexPath: The index path specifying the location of the supplementary view in the collection view. The data source receives this information when it is asked for the view and should just pass it along. This method uses the information to perform additional configuration based on the view’s position in the collection view.
      - Returns: A valid UICollectionReusableView object.
-     
+
      - Important: Cell class must be registered first
      ```
      // register reusable view
      collectionView.register(CellClass.self)
-     
+
      // dequeue reusable cell
      let cell: CellClass = collectionView.dequeueReusableCell(for: indexPath)
      ```
@@ -62,14 +62,14 @@ public extension UICollectionView
         }
         return cell
     }
-    
+
     /**
      Dequeues ReusableView compliant Supplementary View.
-     
+
      - Parameter elementKind: The kind of supplementary view to retrieve. This value is defined by the layout object.
      - Parameter indexPath: The index path specifying the location of the supplementary view in the collection view. The data source receives this information when it is asked for the view and should just pass it along. This method uses the information to perform additional configuration based on the view’s position in the collection view.
      - Returns: A valid UICollectionReusableView object.
-     
+
      - Important: View class must be registered first
      ```
      // dequeue supplementary view

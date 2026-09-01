@@ -9,22 +9,22 @@
 #if canImport(UIKit)
 import UIKit
 
-public extension UIView 
+public extension UIView
 {
     @inlinable
-    var screenShot: UIImage 
+    var screenShot: UIImage
     {
         return self.layer.screenShot
     }
-    
+
     @inlinable
-    func screenShot(afterScreenUpdates: Bool) -> UIImage 
+    func screenShot(afterScreenUpdates: Bool) -> UIImage
     {
-        if !self.responds(to: #selector(drawHierarchy(in:afterScreenUpdates:))) 
+        if !self.responds(to: #selector(drawHierarchy(in:afterScreenUpdates:)))
         {
             return self.screenShot
         }
-        
+
         let renderer = UIGraphicsImageRenderer(bounds: bounds)
         let screenshot = renderer.image
         {
@@ -50,13 +50,13 @@ public extension CALayer
     var screenShot: UIImage
     {
         let renderer = UIGraphicsImageRenderer(bounds: bounds)
-        
+
         let screenshot = renderer.image
         {
             context in
             render(in: context.cgContext)
         }
-        
+
         return screenshot
     }
 }
