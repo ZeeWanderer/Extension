@@ -1,6 +1,6 @@
 //
 //  LogProtocol.swift
-//  
+//
 //
 //  Created by zee wanderer on 27.02.2025.
 //
