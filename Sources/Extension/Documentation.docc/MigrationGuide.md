@@ -19,7 +19,7 @@ migrate through each boundary without consulting old generated documentation.
 ### Adopt Swift 6
 
 Extension now compiles exclusively in the Swift 6 language mode. Use a Swift
-6.1 or newer toolchain, as required by the package manifest, and remove any
+6.2 or newer toolchain, as required by the package manifest, and remove any
 dependency override that forces Extension itself into Swift 5 mode. Language
 mode is selected per target, so a client target does not have to adopt Swift 6
 merely because it imports Extension.
