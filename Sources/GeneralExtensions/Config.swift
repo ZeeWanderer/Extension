@@ -1,6 +1,6 @@
 //
 //  Config.swift
-//  
+//
 //
 //  Created by zeewanderer on 29.03.2022.
 //
@@ -18,7 +18,7 @@ public struct Config
         /// Returned when not ``Debug`` and not ``TestFlight``.
         case AppStore
     }
-    
+
     public static let isTestFlight: Bool = {
 #if targetEnvironment(macCatalyst)
         var staticCode: SecStaticCode?
@@ -26,22 +26,22 @@ public struct Config
         guard status == errSecSuccess, let code = staticCode else {
             return false
         }
-        
+
         var requirement: SecRequirement?
         let reqString = "anchor apple generic and certificate leaf[field.1.2.840.113635.100.6.1.25.1]" as CFString
         let reqStatus = SecRequirementCreateWithString(reqString, [], &requirement)
         guard reqStatus == errSecSuccess, let req = requirement else {
             return false
         }
-        
+
         let checkStatus = SecStaticCodeCheckValidity(code, [], req)
         return checkStatus == errSecSuccess
-        
+
 #else
         return Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
 #endif
     }()
-    
+
     @_transparent
     public static var isDebug: Bool
     {
@@ -51,13 +51,13 @@ public struct Config
         return false
 #endif
     }
-    
+
     @inlinable
     public static var isTestFlightOrDebug: Bool
     {
         return isDebug || isTestFlight
     }
-    
+
     @inlinable
     public static var appConfiguration: AppConfiguration
     {
