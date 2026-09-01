@@ -152,10 +152,12 @@ final class ObservationsCompatPublicAPITests: XCTestCase {
             do {
                 _ = try await iterator.next()
                 return FailureOutcome.unexpected
-            } catch ExpectedFailure.expected {
+            }
+            catch ExpectedFailure.expected {
                 let terminalValue = try? await iterator.next()
                 return .expected(first: first, isTerminal: terminalValue == nil)
-            } catch {
+            }
+            catch {
                 return .unexpected
             }
         }

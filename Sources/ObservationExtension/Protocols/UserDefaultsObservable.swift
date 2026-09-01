@@ -17,52 +17,51 @@ public protocol UserDefaultsObservable: Observable
 }
 
 // MARK: - Get
+
 @available(iOS 17.0, macCatalyst 17.0, macOS 14.0, *)
 public extension UserDefaultsObservable
 {
     @inlinable
     func userDefaultsGet<Value: RawRepresentable>(_ key: UserDefaultsKey, _ userDefaults: UserDefaults = .standard) -> Value?
     {
-        guard let stored = userDefaults.object(forKey: key)
-        else { return nil }
-        
+        guard let stored = userDefaults.object(forKey: key) else { return nil }
+
         if let value = stored as? Value
         { return value }
-        
+
         if let data = stored as? Data,
            let binaryType = Value.self as? BinaryRepresentable.Type,
            let value = binaryType.init(validating: data) as? Value
         {
             return value
         }
-        
-        guard let rawValue = stored as? Value.RawValue
-        else { return nil }
+
+        guard let rawValue = stored as? Value.RawValue else { return nil }
         let value = Value(rawValue: rawValue)
         return value
     }
-    
+
     @inlinable
     func userDefaultsGet<Value>(_ key: UserDefaultsKey, _ userDefaults: UserDefaults = .standard) -> Value?
     {
-        guard let stored = userDefaults.object(forKey: key)
-        else { return nil }
-        
+        guard let stored = userDefaults.object(forKey: key) else { return nil }
+
         if let value = stored as? Value
         { return value }
-        
+
         if let data = stored as? Data,
            let binaryType = Value.self as? BinaryRepresentable.Type,
            let value = binaryType.init(validating: data) as? Value
         {
             return value
         }
-        
+
         return nil
     }
 }
 
 // MARK: - Set
+
 @available(iOS 17.0, macCatalyst 17.0, macOS 14.0, *)
 public extension UserDefaultsObservable
 {
@@ -82,25 +81,25 @@ public extension UserDefaultsObservable
             userDefaults.set(newValue, forKey: key)
             return true
         }
-        
+
         if PropertyListSerialization.propertyList(newValue, isValidFor: .xml)
         {
             userDefaults.set(newValue, forKey: key)
             return true
         }
-        
+
         if let binaryValue = newValue as? BinaryRepresentable
         {
             userDefaults.set(binaryValue.data, forKey: key)
             return true
         }
-        
+
         if let rawRepresentableValue = newValue as? any RawRepresentable
         {
             let rawValue = rawRepresentableValue.rawValue
             return userDefaultsSet(key, userDefaults, newValue: rawValue)
         }
-        
+
         fatalError("UserDefaultsObservable::userDefaultsSet - unable to serialize value to PropertyList: \(String(describing: newValue))")
     }
 }

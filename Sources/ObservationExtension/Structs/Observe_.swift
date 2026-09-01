@@ -16,22 +16,22 @@ public struct Observe_<V: Sendable>: AsyncSequence, AsyncIteratorProtocol
     internal let apply: @isolated(any) () -> V
     @usableFromInline
     internal let castApply: (@Sendable () -> V)?
-    
+
     @inlinable
     public init(of apply: @isolated(any) @escaping () -> V) {
         self.apply = apply
         let apply = self.apply as () -> V
-        
+
         castApply = unsafeBitCast(apply, to: (@Sendable () -> V).self)
     }
-    
+
     @inlinable
-    public mutating func next() async  -> Bool?
+    public mutating func next() async -> Bool?
     {
         guard let castApply else {
             return nil
         }
-        
+
         await withCheckedContinuation(isolation: apply.isolation) { continuation in
             withObservationTracking {
                 _ = castApply()
@@ -39,10 +39,10 @@ public struct Observe_<V: Sendable>: AsyncSequence, AsyncIteratorProtocol
                 continuation.resume()
             }
         }
-        
+
         return true
     }
-    
+
     @inlinable
     public func makeAsyncIterator() -> Self {
         self
@@ -54,14 +54,14 @@ public struct MainActorObserve_<V: Sendable>: AsyncSequence, AsyncIteratorProtoc
 {
     @usableFromInline
     internal let apply: @MainActor () -> V
-    
+
     @inlinable
     public init(of apply: @MainActor @escaping () -> V) {
         self.apply = apply
     }
-    
+
     @MainActor @inlinable
-    public mutating func next() async  -> Bool?
+    public mutating func next() async -> Bool?
     {
         await withCheckedContinuation { continuation in
             withObservationTracking {
@@ -70,10 +70,10 @@ public struct MainActorObserve_<V: Sendable>: AsyncSequence, AsyncIteratorProtoc
                 continuation.resume()
             }
         }
-        
+
         return true
     }
-    
+
     @inlinable
     public func makeAsyncIterator() -> Self {
         self

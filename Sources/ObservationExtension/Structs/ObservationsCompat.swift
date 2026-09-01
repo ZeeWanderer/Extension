@@ -180,7 +180,8 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
             p_storage = .systemElements(
                 P_UncheckedSendableStorage(Observation.Observations(emit))
             )
-        } else {
+        }
+        else {
             p_storage = .compatibility(P_CriticalState(P_State()), .element(emit))
         }
         #else
@@ -242,7 +243,8 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
                         let extracted: () throws(Failure) -> Iteration = iteration
                         return .success(try extracted())
                     }
-                } catch {
+                }
+                catch {
                     // Typed throws guarantees this cast; Swift currently
                     // erases the caught value to `any Error` in this context.
                     return .failure(error as! Failure)
@@ -303,7 +305,8 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
             do {
                 if !hasStarted {
                     hasStarted = true
-                } else {
+                }
+                else {
                     await withTaskCancellationHandler(
                         operation: {
                             await P_State.willChange(
@@ -324,11 +327,11 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
                     state: state,
                     id: id
                 )
-            } catch {
+            }
+            catch {
                 return try terminate(throwing: error, id: id)
             }
         }
-
     }
 
     /// An iterator over transactional observation values.
@@ -437,7 +440,8 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
                         P_UncheckedSendableStorage(observations.makeAsyncIterator())
                     )
                 )
-            } else {
+            }
+            else {
                 preconditionFailure("System Observations used below its availability")
             }
 
@@ -451,7 +455,8 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
                         P_UncheckedSendableStorage(observations.makeAsyncIterator())
                     )
                 )
-            } else {
+            }
+            else {
                 preconditionFailure("System Observations used below its availability")
             }
         #endif

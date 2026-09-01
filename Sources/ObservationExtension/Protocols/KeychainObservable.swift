@@ -23,20 +23,18 @@ public extension KeychainObservable
     func keychainGet<Value: Decodable>(_ key: KeychainKey, _ keychain: KeychainSwift = .init()) -> Value?
     {
         guard let data = keychain.getData(key.rawValue),
-              let value = try? JSONDecoder().decode(Value.self, from: data)
-        else { return nil }
+              let value = try? JSONDecoder().decode(Value.self, from: data) else { return nil }
         return value
     }
-    
+
     @inlinable
     func keychainGet<Value: Decodable>(_ key: KeychainKey, _ keychain: KeychainSwift = .init(), defaultValue: Value) -> Value
     {
         guard let data = keychain.getData(key.rawValue),
-              let value = try? JSONDecoder().decode(Value.self, from: data)
-        else { return defaultValue }
+              let value = try? JSONDecoder().decode(Value.self, from: data) else { return defaultValue }
         return value
     }
-    
+
     @inlinable
     func keychainSet<Value: Encodable>(_ key: KeychainKey, _ keychain: KeychainSwift = .init(), newValue: Value?)
     {
@@ -44,7 +42,7 @@ public extension KeychainObservable
         { keychain.set(data, forKey: key.rawValue) }
         else { keychain.delete(key.rawValue) }
     }
-    
+
     @inlinable
     func keychainSet<Value: Encodable>(_ key: KeychainKey, _ keychain: KeychainSwift = .init(), defaultValue: Value, newValue: Value?)
     {
