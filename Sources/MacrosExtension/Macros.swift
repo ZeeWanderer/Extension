@@ -71,10 +71,10 @@ public macro Transactional<R>(keyPath: any KeyPath<R, ModelContext?> & Sendable,
 @attached(
     extension,
     conformances: RouterProtocol,
-        SinglePathRouterProtocol,
-        DictionaryRouterProtocol,
-        RouterViewProvider,
-        RouterViewRegistryProtocol,
+    SinglePathRouterProtocol,
+    DictionaryRouterProtocol,
+    RouterViewProvider,
+    RouterViewRegistryProtocol,
     names: arbitrary
 )
 public macro Router() =

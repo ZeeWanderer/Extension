@@ -33,9 +33,9 @@ enum NamedFlatRouterMacroDestination
 @Observable
 final class RouterMacroDetailModel: RouterDestinationModel {
     typealias Destination = RouterMacroDestination
-    
+
     var id: Int
-    
+
     init(destination: Destination, context: RouterDestinationContext) {
         switch destination {
         case .detail(let id):
@@ -49,22 +49,22 @@ final class RouterMacroDetailModel: RouterDestinationModel {
 @Observable
 final class RouterMacroSettingsModel: RouterDestinationModel {
     typealias Destination = RouterMacroDestination
-    
+
     init(destination: Destination, context: RouterDestinationContext) {}
 }
 
 struct RouterMacroDetailView: RouterDestinationView {
     typealias Destination = RouterMacroDestination
     typealias Model = RouterMacroDetailModel
-    
+
     static let flats: [Destination.Flat] = [.detail]
-    
+
     @State private var model: Model
-    
+
     init(model: Model) {
         self._model = State(initialValue: model)
     }
-    
+
     var body: some View {
         Text("Detail \(model.id)")
     }
@@ -73,15 +73,15 @@ struct RouterMacroDetailView: RouterDestinationView {
 struct RouterMacroSettingsView: RouterDestinationView {
     typealias Destination = RouterMacroDestination
     typealias Model = RouterMacroSettingsModel
-    
+
     static let flats: [Destination.Flat] = [.settings]
-    
+
     @State private var model: Model
-    
+
     init(model: Model) {
         self._model = State(initialValue: model)
     }
-    
+
     var body: some View {
         Text("Settings")
     }
@@ -91,17 +91,17 @@ struct RouterMacroSettingsView: RouterDestinationView {
 @Router
 final class RouterMacroRouter {
     typealias Destination = RouterMacroDestination
-    
+
     enum PathID: Hashable {
         case root
     }
-    
+
     static let defaultPathID: PathID? = .root
     static let views: [any RouterDestinationView<Destination>.Type] = [
         RouterMacroDetailView.self,
         RouterMacroSettingsView.self,
     ]
-    
+
     var paths: [PathID: [Destination]] = [:]
 }
 
