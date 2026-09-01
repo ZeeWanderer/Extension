@@ -1,6 +1,6 @@
 //
 //  Math.swift
-//  
+//
 //
 //  Created by zeewanderer on 18.03.2022.
 //

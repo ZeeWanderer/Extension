@@ -1,6 +1,6 @@
 //
 //  Stack.swift
-//  
+//
 //
 //  Created by zeewanderer on 20.05.2024.
 //
@@ -9,7 +9,7 @@ public struct Stack<Element>: StackProtocol where Element: Equatable
 {
     @usableFromInline internal var p_storage = [Element]()
     @inlinable public func peek() -> Element? { p_storage.last }
-    @inlinable public mutating func push(_ element: Element) { p_storage.append(element)  }
+    @inlinable public mutating func push(_ element: Element) { p_storage.append(element) }
     @discardableResult
     @inlinable public mutating func pop() -> Element? { p_storage.popLast() }
 }

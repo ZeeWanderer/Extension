@@ -1,6 +1,6 @@
 //
 //  Array.swift
-//  
+//
 //
 //  Created by zeewanderer on 20.05.2024.
 //
@@ -13,19 +13,19 @@ public extension Array
         guard size > 0 else { return [] }
         return stride(from: 0, to: count, by: size).map
         {
-            Array(self[$0 ..< Swift.min($0 + size, count)])
+            Array(self[$0..<Swift.min($0 + size, count)])
         }
     }
-    
+
     @inlinable
     subscript(safe range: CountableRange<Index>) -> ArraySlice<Element>
     {
         let start = Swift.max(range.lowerBound, startIndex)
         let end = Swift.min(range.upperBound, endIndex)
-        if end <= start  { return [] }
+        if end <= start { return [] }
         return self[start..<end]
     }
-    
+
     @inlinable
     subscript(safe range: CountableClosedRange<Index>) -> ArraySlice<Element>
     {

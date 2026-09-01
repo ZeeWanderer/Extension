@@ -9,13 +9,13 @@ public extension BinaryInteger
 {
     @_transparent
     var isEven: Bool { isMultiple(of: 2) }
-    
+
     @_transparent
-    var isOdd:  Bool { !isEven }
-    
+    var isOdd: Bool { !isEven }
+
     @_transparent
     var isZero: Bool { self == 0 }
-    
+
     @_transparent
     var isNotZero: Bool { self != 0 }
 }

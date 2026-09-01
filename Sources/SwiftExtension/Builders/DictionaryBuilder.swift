@@ -15,19 +15,19 @@ public struct DictionaryBuilder<Key: Hashable, Value>
             result.merge(component) { (_, new) in new }
         }
     }
-    
+
     @inlinable
     public static func buildOptional(_ component: [Key: Value]?) -> [Key: Value]
     { component ?? [:] }
-    
+
     @inlinable
     public static func buildEither(first component: [Key: Value]) -> [Key: Value]
     { component }
-    
+
     @inlinable
     public static func buildEither(second component: [Key: Value]) -> [Key: Value]
     { component }
-    
+
     @inlinable
     public static func buildArray(_ components: [[Key: Value]]) -> [Key: Value]
     {

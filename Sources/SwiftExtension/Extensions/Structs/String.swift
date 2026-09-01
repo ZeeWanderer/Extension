@@ -8,61 +8,59 @@
 public extension String
 {
     @inlinable
-    subscript (i: Int) -> Character
+    subscript(i: Int) -> Character
     {
         return self[index(startIndex, offsetBy: i)]
     }
-    
+
     @inlinable
-    subscript (bounds: CountableRange<Int>) -> Substring
+    subscript(bounds: CountableRange<Int>) -> Substring
     {
         guard
             bounds.lowerBound >= 0,
             bounds.upperBound >= bounds.lowerBound,
-            bounds.upperBound <= count
-        else { return "" }
+            bounds.upperBound <= count else { return "" }
         let start = index(startIndex, offsetBy: bounds.lowerBound)
         let end = index(startIndex, offsetBy: bounds.upperBound)
         return self[start..<end]
     }
-    
+
     @inlinable
-    subscript (bounds: CountableClosedRange<Int>) -> Substring
+    subscript(bounds: CountableClosedRange<Int>) -> Substring
     {
         guard
             bounds.lowerBound >= 0,
             bounds.upperBound >= bounds.lowerBound,
-            bounds.upperBound < count
-        else { return "" }
+            bounds.upperBound < count else { return "" }
         let start = index(startIndex, offsetBy: bounds.lowerBound)
         let end = index(startIndex, offsetBy: bounds.upperBound)
         return self[start...end]
     }
-    
+
     @inlinable
-    subscript (bounds: CountablePartialRangeFrom<Int>) -> Substring
+    subscript(bounds: CountablePartialRangeFrom<Int>) -> Substring
     {
         guard bounds.lowerBound >= 0, bounds.lowerBound <= count else { return "" }
         let start = index(startIndex, offsetBy: bounds.lowerBound)
         return self[start..<endIndex]
     }
-    
+
     @inlinable
-    subscript (bounds: PartialRangeThrough<Int>) -> Substring
+    subscript(bounds: PartialRangeThrough<Int>) -> Substring
     {
         guard bounds.upperBound >= 0, bounds.upperBound < count else { return "" }
         let end = index(startIndex, offsetBy: bounds.upperBound)
         return self[startIndex...end]
     }
-    
+
     @inlinable
-    subscript (bounds: PartialRangeUpTo<Int>) -> Substring
+    subscript(bounds: PartialRangeUpTo<Int>) -> Substring
     {
         guard bounds.upperBound >= 0, bounds.upperBound <= count else { return "" }
         let end = index(startIndex, offsetBy: bounds.upperBound)
         return self[startIndex..<end]
     }
-    
+
     @inlinable
     func indent(by spaces: Int) -> String {
         let pad = String(repeating: " ", count: spaces)

@@ -17,7 +17,7 @@ public extension Real
     {
         return lerp(self, min: min, max: max)
     }
-    
+
     /// Inverse Linear interpolate value in `[min,max]` with `self` for `parameter`.
     /// See: ``ilerp(_:min:max:)``
     @inlinable

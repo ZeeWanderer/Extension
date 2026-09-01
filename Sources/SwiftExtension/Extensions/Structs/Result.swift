@@ -19,7 +19,7 @@ public extension Result
             return true
         }
     }
-    
+
     @inlinable
     @inline(__always)
     var isSuccess: Bool

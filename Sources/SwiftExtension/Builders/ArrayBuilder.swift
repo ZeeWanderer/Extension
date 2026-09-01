@@ -5,7 +5,6 @@
 //  Created by zeewanderer on 19.08.2026.
 //
 
-
 @resultBuilder
 public struct ArrayBuilder<Element>
 {

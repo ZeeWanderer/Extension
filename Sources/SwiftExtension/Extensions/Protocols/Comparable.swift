@@ -1,6 +1,6 @@
 //
 //  Comparable.swift
-//  
+//
 //
 //  Created by zeewanderer on 20.05.2024.
 //
@@ -17,7 +17,7 @@ public extension Comparable
     {
         return clamp(self, min: min, max: max)
     }
-    
+
     /// Clamp `self` to  to provided `limits`
     /// See: ``clamp(_:to:)``
     @inlinable

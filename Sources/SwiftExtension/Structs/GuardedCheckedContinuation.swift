@@ -20,10 +20,10 @@ public struct GuardedCheckedContinuation<Value, Failure: Error>: Sendable
         @usableFromInline init(_ continuation: CheckedContinuation<Value, Failure>)
         { self.continuation = continuation }
     }
-    
+
     @usableFromInline internal let p_continuationRef: ManagedAtomic<P_ContinuationBox?>
     @usableFromInline internal let p_onDuplicateResume: @Sendable () -> Void
-    
+
     /// Creates a guarded wrapper around `continuation`.
     ///
     /// - Parameters:
@@ -36,7 +36,7 @@ public struct GuardedCheckedContinuation<Value, Failure: Error>: Sendable
         self.p_continuationRef = ManagedAtomic(P_ContinuationBox(continuation))
         self.p_onDuplicateResume = onDuplicateResume
     }
-    
+
     /// Calls the given closure with this guarded continuation.
     ///
     /// Copies of this value share the same underlying guard.
@@ -46,7 +46,7 @@ public struct GuardedCheckedContinuation<Value, Failure: Error>: Sendable
     @_transparent
     public func run(_ body: (GuardedCheckedContinuation<Value, Failure>) -> Void)
     { body(self) }
-    
+
     /// Resume the task awaiting the continuation by having it return normally
     /// from its suspension point.
     ///
@@ -61,7 +61,7 @@ public struct GuardedCheckedContinuation<Value, Failure: Error>: Sendable
     /// able to reschedule it.
     @_transparent public func resume(returning value: sending Value)
     { p_takeContinuation()?.resume(returning: value) }
-    
+
     /// Resume the task awaiting the continuation by having it throw an error
     /// from its suspension point.
     ///
@@ -89,7 +89,7 @@ public struct GuardedCheckedContinuation<Value, Failure: Error>: Sendable
     /// able to reschedule it.
     @_transparent public func resume() where Value == Void
     { p_takeContinuation()?.resume() }
-    
+
     /// Resume the task awaiting the continuation by having it either
     /// return normally or throw an error based on the state of the given
     /// `Result` value.
@@ -106,18 +106,17 @@ public struct GuardedCheckedContinuation<Value, Failure: Error>: Sendable
     /// able to reschedule it.
     @_transparent public func resume(with result: sending Result<Value, Failure>)
     { p_takeContinuation()?.resume(with: result) }
-    
+
     @usableFromInline
     internal func p_takeContinuation() -> CheckedContinuation<Value, Failure>?
     {
         let continuation = p_continuationRef.exchange(nil, ordering: .acquiringAndReleasing)?.continuation
-        
-        guard let continuation
-        else {
+
+        guard let continuation else {
             p_onDuplicateResume()
             return nil
         }
-        
+
         return continuation
     }
 }

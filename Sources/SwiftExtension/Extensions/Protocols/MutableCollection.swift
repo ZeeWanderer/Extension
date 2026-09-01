@@ -15,7 +15,7 @@ public extension MutableCollection where Self: BidirectionalCollection
         get {
             return indices.contains(index) ? self[index] : nil
         }
-        
+
         set {
             if let value = newValue, indices.contains(index)
             {
