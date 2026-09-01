@@ -50,6 +50,7 @@ FoundationExtension adds higher-level helpers around decoding, caching, and comm
 - ``AnyCodingKey``
 - ``JSONCoding``
 - ``JSONCodingError``
+- ``UnknownCaseCodable``
 
 ### Binary Representation
 

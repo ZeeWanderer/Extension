@@ -45,7 +45,7 @@ exact expansion tests:
 | `Macros` | Direct expansion snapshots for every registered macro implementation |
 | `MacrosExtension` | Compiled generated-API and macro-usage tests |
 | `SwiftExtension` | Collections, math, builders, and input-safety contracts |
-| `FoundationExtension` | JSON coding, raw-key dictionaries, binary representation, lossy decoding, caching, localization, and defaults |
+| `FoundationExtension` | JSON coding, raw-key dictionaries, unknown-case raw values, binary representation, lossy decoding, caching, localization, and defaults |
 | `osExtension` | Public logging protocol defaults |
 | `ObservationExtension` | Transactional observations and observable defaults |
 | `AccelerateExtension` | Public full convolution and re-exported binary APIs |
