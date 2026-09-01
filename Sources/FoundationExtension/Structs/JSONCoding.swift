@@ -11,12 +11,12 @@ import Foundation
 ///
 /// Synchronous methods perform all work on the calling thread and return only
 /// after encoding, decoding, or file access completes. Asynchronous methods
-/// run the same synchronous Foundation operation in a detached task so a
-/// caller such as the main actor remains available for other work.
+/// perform the same work directly in the caller's structured task, outside the
+/// caller's actor, so an actor such as the main actor remains available.
 ///
-/// Use ``encodingTask(for:priority:)`` or
-/// ``decodingTask(of:from:priority:)`` to start work from synchronous code,
-/// continue doing other work, and await the task's value later.
+/// Use ``detachedEncodingTask(for:priority:)`` or
+/// ``detachedDecodingTask(of:from:priority:)`` to start work from synchronous code,
+/// continue doing other work, and await the explicitly detached task later.
 public struct JSONCoding: Sendable
 {
     /// The encoder used by all encoding operations.
@@ -102,49 +102,39 @@ public struct JSONCoding: Sendable
         return try decode(type, contentsOf: url, options: options)
     }
 
-    // MARK: - Deferred task coding
+    // MARK: - Explicit detached task coding
 
     /// Starts encoding outside the caller's actor and returns its task handle.
+    ///
+    /// This is an explicit unstructured-concurrency bridge for synchronous
+    /// callers. Prefer ``encodeAsync(_:)`` from an asynchronous context.
+    /// The caller owns the returned task's lifetime and cancellation.
     ///
     /// The value must be `Sendable` because it crosses into the detached task.
     /// Cancellation is checked before and after Foundation's synchronous
     /// `encode` call; that call cannot be interrupted once it has started.
-    public func encodingTask<Value>(
+    public func detachedEncodingTask<Value>(
         for value: Value,
         priority: TaskPriority? = nil
     ) -> Task<Data, Error>
     where Value: Encodable, Value: Sendable
     {
-        let encoder = encoder
-        return Task.detached(priority: priority)
-        {
-            try Task.checkCancellation()
-            let data = try encoder.encode(value)
-            try Task.checkCancellation()
-            return data
-        }
+        return Task.detached(priority: priority) { try await encodeAsync(value) }
     }
 
-    /// Starts decoding outside the caller's actor and returns its task handle.
-    public func decodingTask<Value>(
+    /// Starts decoding in an explicitly detached task and returns its handle.
+    public func detachedDecodingTask<Value>(
         of type: Value.Type,
         from data: Data,
         priority: TaskPriority? = nil
     ) -> Task<Value, Error>
     where Value: Decodable, Value: Sendable
     {
-        let decoder = decoder
-        return Task.detached(priority: priority)
-        {
-            try Task.checkCancellation()
-            let value = try decoder.decode(type, from: data)
-            try Task.checkCancellation()
-            return value
-        }
+        return Task.detached(priority: priority) { try await decodeAsync(type, from: data) }
     }
 
-    /// Starts encoding and writing outside the caller's actor.
-    public func encodingTask<Value>(
+    /// Starts encoding and writing in an explicitly detached task.
+    public func detachedEncodingTask<Value>(
         for value: Value,
         to url: URL,
         options: Data.WritingOptions = [.atomic],
@@ -152,19 +142,11 @@ public struct JSONCoding: Sendable
     ) -> Task<Void, Error>
     where Value: Encodable, Value: Sendable
     {
-        let encoder = encoder
-        return Task.detached(priority: priority)
-        {
-            try Task.checkCancellation()
-            let data = try encoder.encode(value)
-            try Task.checkCancellation()
-            try data.write(to: url, options: options)
-            try Task.checkCancellation()
-        }
+        return Task.detached(priority: priority) { try await encodeAsync(value, to: url, options: options) }
     }
 
-    /// Starts reading and decoding outside the caller's actor.
-    public func decodingTask<Value>(
+    /// Starts reading and decoding in an explicitly detached task.
+    public func detachedDecodingTask<Value>(
         of type: Value.Type,
         contentsOf url: URL,
         options: Data.ReadingOptions = [],
@@ -172,20 +154,11 @@ public struct JSONCoding: Sendable
     ) -> Task<Value, Error>
     where Value: Decodable, Value: Sendable
     {
-        let decoder = decoder
-        return Task.detached(priority: priority)
-        {
-            try Task.checkCancellation()
-            let data = try Data(contentsOf: url, options: options)
-            try Task.checkCancellation()
-            let value = try decoder.decode(type, from: data)
-            try Task.checkCancellation()
-            return value
-        }
+        return Task.detached(priority: priority) { try await decodeAsync(type, contentsOf: url, options: options) }
     }
 
-    /// Starts loading and decoding a bundled JSON resource.
-    public func decodingTask<Value>(
+    /// Starts loading and decoding a resource in an explicitly detached task.
+    public func detachedDecodingTask<Value>(
         of type: Value.Type,
         fromResource name: String,
         withExtension fileExtension: String? = "json",
@@ -196,115 +169,105 @@ public struct JSONCoding: Sendable
     ) -> Task<Value, Error>
     where Value: Decodable, Value: Sendable
     {
-        do
+        return Task.detached(priority: priority)
         {
-            let url = try p_resourceURL(
-                named: name,
+            try await decodeAsync(
+                type,
+                fromResource: name,
                 withExtension: fileExtension,
                 subdirectory: subdirectory,
-                in: bundle
+                in: bundle,
+                options: options
             )
-            return decodingTask(
-                of: type,
-                contentsOf: url,
-                options: options,
-                priority: priority
-            )
-        }
-        catch
-        {
-            return Task.detached(priority: priority) { throw error }
         }
     }
 
     // MARK: - Awaited asynchronous coding
 
-    /// Encodes outside the caller's actor and asynchronously returns the data.
+    /// Encodes directly in the caller's structured task, outside its actor.
+    @concurrent
     public func encodeAsync<Value>(
-        _ value: Value,
-        priority: TaskPriority? = nil
+        _ value: Value
     ) async throws -> Data
     where Value: Encodable, Value: Sendable
     {
-        try await p_result(
-            of: encodingTask(for: value, priority: priority)
-        )
+        try Task.checkCancellation()
+        let data = try encoder.encode(value)
+        try Task.checkCancellation()
+        return data
     }
 
-    /// Decodes outside the caller's actor and asynchronously returns the value.
+    /// Decodes directly in the caller's structured task, outside its actor.
+    @concurrent
     public func decodeAsync<Value>(
         _ type: Value.Type,
-        from data: Data,
-        priority: TaskPriority? = nil
+        from data: Data
     ) async throws -> Value
     where Value: Decodable, Value: Sendable
     {
-        try await p_result(
-            of: decodingTask(of: type, from: data, priority: priority)
-        )
+        try Task.checkCancellation()
+        let value = try decoder.decode(type, from: data)
+        try Task.checkCancellation()
+        return value
     }
 
-    /// Encodes and writes outside the caller's actor.
+    /// Encodes and writes directly in the caller's structured task, outside its actor.
+    @concurrent
     public func encodeAsync<Value>(
         _ value: Value,
         to url: URL,
-        options: Data.WritingOptions = [.atomic],
-        priority: TaskPriority? = nil
+        options: Data.WritingOptions = [.atomic]
     ) async throws
     where Value: Encodable, Value: Sendable
     {
-        try await p_result(
-            of: encodingTask(
-                for: value,
-                to: url,
-                options: options,
-                priority: priority
-            )
-        )
+        try Task.checkCancellation()
+        let data = try encoder.encode(value)
+        try Task.checkCancellation()
+        try data.write(to: url, options: options)
     }
 
-    /// Reads and decodes outside the caller's actor.
+    /// Reads and decodes directly in the caller's structured task, outside its actor.
+    @concurrent
     public func decodeAsync<Value>(
         _ type: Value.Type,
         contentsOf url: URL,
-        options: Data.ReadingOptions = [],
-        priority: TaskPriority? = nil
+        options: Data.ReadingOptions = []
     ) async throws -> Value
     where Value: Decodable, Value: Sendable
     {
-        try await p_result(
-            of: decodingTask(
-                of: type,
-                contentsOf: url,
-                options: options,
-                priority: priority
-            )
-        )
+        try Task.checkCancellation()
+        let data = try Data(contentsOf: url, options: options)
+        try Task.checkCancellation()
+        let value = try decoder.decode(type, from: data)
+        try Task.checkCancellation()
+        return value
     }
 
-    /// Loads and decodes a bundled resource outside the caller's actor.
+    /// Loads and decodes a resource directly in the caller's task, outside its actor.
+    @concurrent
     public func decodeAsync<Value>(
         _ type: Value.Type,
         fromResource name: String,
         withExtension fileExtension: String? = "json",
         subdirectory: String? = nil,
         in bundle: Bundle = .main,
-        options: Data.ReadingOptions = [],
-        priority: TaskPriority? = nil
+        options: Data.ReadingOptions = []
     ) async throws -> Value
     where Value: Decodable, Value: Sendable
     {
-        try await p_result(
-            of: decodingTask(
-                of: type,
-                fromResource: name,
-                withExtension: fileExtension,
-                subdirectory: subdirectory,
-                in: bundle,
-                options: options,
-                priority: priority
-            )
+        try Task.checkCancellation()
+        let url = try p_resourceURL(
+            named: name,
+            withExtension: fileExtension,
+            subdirectory: subdirectory,
+            in: bundle
         )
+        try Task.checkCancellation()
+        let data = try Data(contentsOf: url, options: options)
+        try Task.checkCancellation()
+        let value = try decoder.decode(type, from: data)
+        try Task.checkCancellation()
+        return value
     }
 
     internal func p_resourceURL(
@@ -328,20 +291,5 @@ public struct JSONCoding: Sendable
         }
 
         return url
-    }
-
-    internal func p_result<Success>(
-        of task: Task<Success, Error>
-    ) async throws -> Success
-    where Success: Sendable
-    {
-        try await withTaskCancellationHandler
-        {
-            try await task.value
-        }
-        onCancel:
-        {
-            task.cancel()
-        }
     }
 }

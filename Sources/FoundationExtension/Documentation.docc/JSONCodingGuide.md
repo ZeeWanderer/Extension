@@ -1,6 +1,7 @@
 # JSON Coding Guide
 
-Encode and decode JSON synchronously, asynchronously, or as deferred task work.
+Encode and decode JSON synchronously, with structured concurrency, or through
+an explicit task handle from synchronous code.
 
 ## Synchronous coding
 
@@ -47,25 +48,41 @@ let copy = try await coding.decodeAsync(Payload.self, from: data)
 ```
 
 Values crossing this isolation boundary must be `Sendable`. The implementation
-uses a detached task because Foundation's encoder and decoder expose synchronous,
-CPU-bound methods. Cancellation is checked before and after each Foundation
-operation. An encode or decode already in progress cannot be interrupted, but a
-cancelled caller receives `CancellationError` instead of the completed value.
+executes directly in the caller's task rather than creating a hidden task.
+Foundation's encoder and decoder expose synchronous, CPU-bound methods, so the
+async functions execute outside the caller's actor. Cancellation is checked
+before and after each Foundation operation. An encode or decode already in
+progress cannot be interrupted, but a cancelled caller receives
+`CancellationError` instead of the completed value.
 
-## Start now and await later
-
-Task-returning variants are useful when synchronous code starts serialization
-before another asynchronous step:
+Use structured concurrency to overlap JSON coding with other asynchronous work:
 
 ```swift
-let task = coding.encodingTask(for: payload)
+async let firstData = coding.encodeAsync(firstPayload)
+async let secondData = coding.encodeAsync(secondPayload)
+
+let (first, second) = try await (firstData, secondData)
+```
+
+The `async let` child cannot escape its scope and cancellation follows the
+parent task automatically.
+
+## Start from synchronous code
+
+Task-returning variants are an explicit unstructured-concurrency bridge when
+synchronous code must start serialization without blocking:
+
+```swift
+let task = coding.detachedEncodingTask(for: payload)
 
 prepareRequestHeaders()
 
 let body = try await task.value
 ```
 
-The caller owns the returned task and can cancel it directly.
+These variants create detached tasks. The caller owns the returned task's
+lifetime and can cancel it directly. Prefer `async let` or a task group whenever
+an asynchronous parent scope is available.
 
 ## Files and resources
 
@@ -87,8 +104,10 @@ let bundled = try coding.decode(
 )
 ```
 
-Every file and resource operation also has an asynchronous or task-returning
-counterpart.
+Every file and resource operation also has a structured asynchronous or
+explicit task-returning counterpart. Cancellation before a write prevents the
+write from starting. Once a write begins it is allowed to finish, so a completed
+side effect is not subsequently reported as cancellation.
 
 ## Raw-representable dictionary keys
 

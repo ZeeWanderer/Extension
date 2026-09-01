@@ -49,9 +49,15 @@ model = try coding.decode(Model.self, fromResource: "Model")
 ```
 
 `JSONCoding.encode(_:)` and `decode(_:from:)` are synchronous.
-`encodeAsync` and `decodeAsync` perform coding outside the caller's actor.
-`encodingTask` and `decodingTask` start work immediately and return a task that
-can be awaited after other work.
+`encodeAsync` and `decodeAsync` perform coding directly in the caller's
+structured task, outside the caller's actor. Use `async let` or a task group to
+overlap them with other asynchronous work. Their task priority is inherited from
+that structured context.
+
+`detachedEncodingTask` and `detachedDecodingTask` are explicit detached-task bridges for
+synchronous callers. They start immediately, accept an optional priority, and
+return a handle owned by the caller. Prefer the structured async methods when an
+asynchronous parent scope already exists.
 
 The unusable `SingleValueDecodingContainer` raw-representable dictionary
 overload was removed. Continue using the `JSONDecoder` root overload for a
