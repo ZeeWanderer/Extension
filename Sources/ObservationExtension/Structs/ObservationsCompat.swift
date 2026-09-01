@@ -144,16 +144,12 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
 
     internal enum P_Storage: Sendable {
         case compatibility(P_CriticalState<P_State>, P_Emit)
-
-        #if compiler(>=6.2)
         case systemElements(P_UncheckedSendableStorage)
         case systemIterations(P_UncheckedSendableStorage)
-        #endif
     }
 
     internal let p_storage: P_Storage
 
-    #if compiler(>=6.2)
     /// Lets the package's tests exercise the compatibility backend on a host
     /// where system `Observations` is already available.
     internal static var p_shouldUseSystemObservations: Bool {
@@ -163,7 +159,6 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
         true
         #endif
     }
-    #endif
 
     internal init(p_storage: P_Storage) {
         self.p_storage = p_storage
@@ -174,7 +169,6 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
     public init(
         @_inheritActorContext _ emit: @escaping @isolated(any) @Sendable () throws(Failure) -> Element
     ) {
-        #if compiler(>=6.2)
         if #available(iOS 26.0, macCatalyst 26.0, macOS 26.0, *),
            Self.p_shouldUseSystemObservations {
             p_storage = .systemElements(
@@ -184,16 +178,12 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
         else {
             p_storage = .compatibility(P_CriticalState(P_State()), .element(emit))
         }
-        #else
-        p_storage = .compatibility(P_CriticalState(P_State()), .element(emit))
-        #endif
     }
 
     /// Creates a sequence whose producer can explicitly finish iteration.
     public static func untilFinished(
         @_inheritActorContext _ emit: @escaping @isolated(any) @Sendable () throws(Failure) -> Iteration
     ) -> ObservationsCompat<Element, Failure> {
-        #if compiler(>=6.2)
         if #available(iOS 26.0, macCatalyst 26.0, macOS 26.0, *),
            Self.p_shouldUseSystemObservations {
             return .init(
@@ -202,7 +192,6 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
                 )
             )
         }
-        #endif
 
         return .init(
             p_storage: .compatibility(P_CriticalState(P_State()), .iteration(emit))
@@ -339,11 +328,8 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
         internal enum P_Backend {
             case compatibility(P_CompatibilityIterator)
             case terminal
-
-            #if compiler(>=6.2)
             case systemElements(P_UncheckedSendableStorage)
             case systemIterations(P_UncheckedSendableStorage)
-            #endif
         }
 
         internal var p_backend: P_Backend
@@ -367,7 +353,6 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
                 p_backend = .compatibility(iterator)
                 return value
 
-            #if compiler(>=6.2)
             case .systemElements(let iteratorStorage):
                 guard #available(iOS 26.0, macCatalyst 26.0, macOS 26.0, *) else {
                     preconditionFailure("System Observations used below its availability")
@@ -400,7 +385,6 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
                 case .finish:
                     return nil
                 }
-            #endif
 
             case .terminal:
                 return nil
@@ -429,7 +413,6 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
                 p_backend: .compatibility(.init(state: state, emit: emit))
             )
 
-        #if compiler(>=6.2)
         case .systemElements(let observationsStorage):
             if #available(iOS 26.0, macCatalyst 26.0, macOS 26.0, *) {
                 let observations = observationsStorage.value(
@@ -459,7 +442,6 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
             else {
                 preconditionFailure("System Observations used below its availability")
             }
-        #endif
         }
     }
 }
