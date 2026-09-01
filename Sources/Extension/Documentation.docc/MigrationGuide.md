@@ -182,6 +182,94 @@ registry exists. `@RouterDestination` accepts `flatName:` and
 `generateFlat:`. A destination without a generated or custom flat mapping uses
 itself for exact comparison.
 
+### Migrate `Cache` to the routed dispatcher
+
+The former `Cache` was a nonthrowing wrapper around one `NSCache`. It is now a
+dispatcher that coordinates any number of memory, disk, or custom stores. Its
+key and value types must conform to `Sendable`, and its operations throw store
+or configuration failures.
+
+The routed cache API requires iOS 18.4, Mac Catalyst 18.4, or macOS 15.4. This
+availability applies only to the new cache surface; the package retains its
+lower deployment targets for unrelated APIs.
+
+For the equivalent single-memory cache, replace direct `NSCache` configuration:
+
+```swift
+// 15.x
+let cache = Cache<String, Data> {
+    $0.countLimit = 1_000
+    $0.totalCostLimit = 64 * 1024 * 1024
+}
+cache.insert(data, forKey: key)
+let data = cache.value(forKey: key)
+
+// 16.0, synchronous caller
+let cache = Cache<String, Data>(
+    memoryConfiguration: .init(
+        countLimit: 1_000,
+        totalCostLimit: 64 * 1024 * 1024
+    ),
+    cost: \Data.count
+)
+try cache.insert(data, forKey: key)
+let data = try cache.value(forKey: key)
+```
+
+Use the async overloads from a task or actor. Contended async operations suspend
+cooperatively; they do not block a Swift concurrency worker:
+
+```swift
+try await cache.insert(data, forKey: key)
+let data = try await cache.value(forKey: key)
+```
+
+The public nested `Cache.WrappedKey` and `Cache.Entry` types, direct `cache`
+storage, configuring initializer, and subscript were removed. Use
+`MemoryCacheConfiguration` for the built-in memory store. If both key and
+value are objects and the caller intentionally needs direct `NSCache` behavior,
+use `ObjectCache` instead.
+
+To add tiers, construct `CacheStore` descriptors and pass them to
+`Cache.init(stores:retainedKeyGateLimit:route:)`. The initializer order supplies
+the default fastest-to-slowest hierarchy. Use a fixed `CacheRoute` for a shared
+policy, or `Cache.init(stores:retainedKeyGateLimit:routeProvider:)` for per-key
+routing. Stores no longer expose mutation after construction; all changes go
+through the dispatcher so a key remains consistent across every tier. See the
+FoundationExtension Routed Caching guide for routing, failure, and concurrency
+semantics.
+
+Disk capacity is configured with `CacheCapacityPolicy`. The default is a
+hysteretic soft target: maintenance begins above 400 MiB, trims toward 300 MiB,
+protects recently used entries for ten minutes, and overrides that protection
+above 600 MiB. Capacity is allocated disk size, not encoded payload length. Use
+`.hard(maximumCapacity:trimToCapacity:)` for a strict LRU limit or `.unlimited`
+when the application owns maintenance. An entry whose encoded representation
+alone exceeds the hard ceiling now fails with
+`CacheError.diskEntryExceedsMaximumCapacity`.
+
+Custom stores remain closure-based and do not need to expose their contents to
+the dispatcher. They can optionally reuse `CacheCapacityPolicy` with bytes,
+entry count, database pages, or another consistent weight, then publish the
+unit through `CacheStoreMaintenanceResult`. Capacity telemetry is named
+`removedCapacity` and `remainingCapacity` because it is not necessarily bytes.
+Apply the returned plan atomically under the custom backend's own isolation.
+
+To read one registered store without promotion, use `value(forKey:from:)` or
+`hit(forKey:from:)`. To place a value in a selected store without invalidating
+an already promoted copy, use `insert(_:forKey:targeting:)`. The targeted write
+updates the requested store and every other unexpired resident copy; absent
+stores remain absent. A route write retains its different behavior of removing
+copies outside its configured destinations.
+
+Use `DiskCacheStorage` to select caches, Application Support, temporary, App
+Group, or custom disk locations and to share aggregate capacity between one
+ordinary disk store and named `SparseCache` namespaces. Sparse caching is a
+separate range API rather than a `CacheStore`, so partial data can never satisfy
+the dispatcher's full-value or promotion contract. `Cache.removeAll()` does not
+remove those specialized namespaces; use `SparseCache.removeAll()` for one
+namespace or `DiskCacheStorage.removeAll()` for the complete physical storage.
+
 ### Review corrected behavior
 
 - `Queue` copies now have independent value semantics.

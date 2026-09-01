@@ -17,6 +17,32 @@ FoundationExtension adds higher-level helpers around decoding, caching, and comm
 ### Caching
 
 - ``Cache``
+- ``CacheStore``
+- ``CacheRoute``
+- ``CacheStoreID``
+- ``CacheEntry``
+- ``CacheHit``
+- ``MemoryCacheConfiguration``
+- ``DiskCacheConfiguration``
+- ``DiskCacheStorage``
+- ``DiskCacheLocation``
+- ``DiskCacheAdaptiveCapacityPolicy``
+- ``SparseCache``
+- ``SparseCacheConfiguration``
+- ``SparseCacheSnapshot``
+- ``SparseCacheError``
+- ``CacheCapacityPolicy``
+- ``CacheCapacityUnit``
+- ``CacheKeyEncoder``
+- ``CacheValueCoder``
+- ``CacheFailurePolicy``
+- ``CacheMaintenanceMode``
+- ``CacheMaintenanceReport``
+- ``CacheStoreMaintenanceResult``
+- ``CacheError``
+- ``CacheStoreFailure``
+- ``CacheOperation``
+- ``CacheStoreSynchronousOperations``
 - ``ObjectCache``
 
 ### Coding Utilities
@@ -39,6 +65,8 @@ FoundationExtension adds higher-level helpers around decoding, caching, and comm
 
 ### Guides
 
-- <doc:LossyDecodingAndCaching>
+- <doc:LossyDecoding>
+- <doc:RoutedCaching>
+- <doc:SparseCaching>
 - <doc:BinaryBufferIO>
 - <doc:JSONCodingGuide>
