@@ -1,0 +1,48 @@
+# .swiftformat
+# Extension
+#
+# Created by zeewanderer on 01.09.2026.
+
+--min-version 0.63.0
+--swift-version 6.1
+--language-mode 6
+
+# Project layout conventions.
+--indent 4
+--tab-width 4
+--allman true
+--else-position next-line
+--guard-else same-line
+--ifdef no-indent
+--ranges no-space
+--linebreaks lf
+--trim-whitespace always
+--header ignore
+--max-width none
+
+# Preserve intentional compact declarations and existing line-length choices.
+--wrap-arguments preserve
+--wrap-parameters preserve
+--wrap-conditions preserve
+--wrap-collections before-first
+--closing-paren balanced
+--call-site-paren balanced
+--trailing-commas collections-only
+--indent-case false
+
+# Formatting-only whitelist. SwiftFormat also offers source-rewriting rules,
+# which are intentionally outside the formatter's responsibility here.
+#
+# The braces rule cannot enforce Allman declarations without also moving
+# trailing-closure braces, and the indent rule moves the project's top-level
+# where clauses. Leave both to review until SwiftFormat can express the mixed
+# house style without rewriting already-correct code.
+--rules blankLineAfterImports,blankLinesAroundMark,blankLinesAtEndOfScope
+--rules blankLinesAtStartOfScope,blankLinesBetweenScopes
+--rules consecutiveBlankLines,consecutiveSpaces,consistentSwitchCaseSpacing
+--rules elseOnSameLine,leadingDelimiters,linebreakAtEndOfFile,linebreaks
+--rules spaceAroundBraces,spaceAroundBrackets,spaceAroundComments
+--rules spaceAroundGenerics,spaceAroundOperators,spaceAroundParens
+--rules spaceInsideBraces,spaceInsideBrackets,spaceInsideComments
+--rules spaceInsideGenerics,spaceInsideParens,trailingCommas,trailingSpace
+--rules wrap,wrapArguments

@@ -11,5 +11,19 @@ Highlights:
 See [Documentation](https://zeewanderer.github.io/Extension/documentation/)
 for the cumulative migration guide and package-wide API conventions.
 
+## Development
+
+Apply the repository's pinned Swift formatter:
+
+```sh
+./format
+```
+
+Check formatting without changing files:
+
+```sh
+./format --lint
+```
+
 ---
 License: Unlicense

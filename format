@@ -1,0 +1,20 @@
+#!/bin/zsh
+#
+#  format
+#  Extension
+#
+#  Created by zeewanderer on 01.09.2026.
+#
+
+set -euo pipefail
+
+project_directory=${0:A:h}
+
+swift package \
+    --package-path "$project_directory" \
+    plugin \
+    --allow-writing-to-package-directory \
+    swiftformat \
+    "$project_directory/Package.swift" \
+    --cache ignore \
+    "$@"

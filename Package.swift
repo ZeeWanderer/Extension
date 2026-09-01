@@ -15,13 +15,15 @@ let package = Package(
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "Extension",
-            //type: .static,
-            targets: ["SwiftExtension", "FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions", "Extension"]),
+            // type: .static,
+            targets: ["SwiftExtension", "FoundationExtension", "CoreGraphicsExtension", "UIKitExtension", "SpriteKitExtension", "SwiftUIExtension", "GeneralExtensions", "Extension"]
+        ),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
         .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.5.0"),
+        .package(url: "https://github.com/nicklockwood/SwiftFormat", exact: "0.63.0"),
         .package(url: "https://github.com/apple/swift-numerics", from: "1.1.1"),
         .package(url: "https://github.com/apple/swift-atomics", from: "1.3.1"),
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "604.0.0"),
@@ -45,7 +47,7 @@ let package = Package(
             name: "SwiftExtension",
             dependencies: [
                 .product(name: "RealModule", package: "swift-numerics"), // SE-0246 Accepted but not Implemented into Swift STL due to compiler issues
-                .product(name: "Atomics", package: "swift-atomics")
+                .product(name: "Atomics", package: "swift-atomics"),
             ],
             swiftSettings: []
         ),
@@ -103,43 +105,55 @@ let package = Package(
             name: "MacrosExtensionTests",
             dependencies: [
                 "MacrosExtension", "SwiftUIExtension",
-            ]),
+            ]
+        ),
         .testTarget(
             name: "SwiftExtensionTests",
-            dependencies: ["SwiftExtension"]),
+            dependencies: ["SwiftExtension"]
+        ),
         .testTarget(
             name: "FoundationExtensionTests",
             dependencies: ["FoundationExtension"],
             resources: [
                 .process("Fixtures"),
-            ]),
+            ]
+        ),
         .testTarget(
             name: "osExtensionTests",
-            dependencies: ["osExtension"]),
+            dependencies: ["osExtension"]
+        ),
         .testTarget(
             name: "ObservationExtensionTests",
-            dependencies: ["FoundationExtension", "ObservationExtension"]),
+            dependencies: ["FoundationExtension", "ObservationExtension"]
+        ),
         .testTarget(
             name: "AccelerateExtensionTests",
-            dependencies: ["AccelerateExtension"]),
+            dependencies: ["AccelerateExtension"]
+        ),
         .testTarget(
             name: "CoreGraphicsExtensionTests",
-            dependencies: ["CoreGraphicsExtension"]),
+            dependencies: ["CoreGraphicsExtension"]
+        ),
         .testTarget(
             name: "UIKitExtensionTests",
-            dependencies: ["FoundationExtension", "UIKitExtension"]),
+            dependencies: ["FoundationExtension", "UIKitExtension"]
+        ),
         .testTarget(
             name: "SpriteKitExtensionTests",
-            dependencies: ["SpriteKitExtension"]),
+            dependencies: ["SpriteKitExtension"]
+        ),
         .testTarget(
             name: "SwiftUIExtensionTests",
-            dependencies: ["SwiftUIExtension"]),
+            dependencies: ["SwiftUIExtension"]
+        ),
         .testTarget(
             name: "GeneralExtensionsTests",
-            dependencies: ["GeneralExtensions"]),
+            dependencies: ["GeneralExtensions"]
+        ),
         .testTarget(
             name: "ExtensionTests",
-            dependencies: ["Extension"]),
+            dependencies: ["Extension"]
+        ),
         .testTarget(
             name: "ExtensionMacroTests",
             dependencies: [
@@ -147,13 +161,15 @@ let package = Package(
                 .target(name: "MacrosExtension", condition: .when(platforms: [.macOS])),
                 "SwiftExtension", "FoundationExtension", "GeneralExtensions", "SwiftUIExtension",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax", condition: .when(platforms: [.macOS])),
-            ]),
+            ]
+        ),
         .testTarget(
             name: "ExtensionPerformanceTests",
             dependencies: [
                 "AccelerateExtension", "CoreGraphicsExtension",
                 "FoundationExtension", "SwiftExtension", "SwiftUIExtension",
-            ]),
+            ]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )
