@@ -13,14 +13,14 @@ import FoundationExtension
 extension CGPoint: FloatingPoint2D
 {
     public typealias Magnitude = CGFloat
-    
+
     @inlinable
     @inline(__always)
     public init(xMagnitude: Magnitude, yMagnitude: Magnitude)
     {
         self.init(x: xMagnitude, y: yMagnitude)
     }
-    
+
     @inlinable
     @inline(__always)
     public var xMagnitude: CGFloat {
@@ -31,7 +31,7 @@ extension CGPoint: FloatingPoint2D
             self.x = newValue
         }
     }
-    
+
     @inlinable
     @inline(__always)
     public var yMagnitude: CGFloat {

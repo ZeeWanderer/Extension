@@ -8,5 +8,5 @@
 import SwiftExtension
 import CoreGraphics
 
-infix operator .* : MultiplicationPrecedence
-infix operator ./ : MultiplicationPrecedence
+infix operator .*: MultiplicationPrecedence
+infix operator ./: MultiplicationPrecedence

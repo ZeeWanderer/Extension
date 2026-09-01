@@ -5,7 +5,6 @@
 //  Created by zee wanderer on 12.11.2024.
 //
 
-
 import SwiftExtension
 import RealModule
 import CoreGraphics
@@ -22,15 +21,15 @@ public extension Numeric2D
     @_transparent
     static func * (_ lhs: Self, _ rhs: Magnitude) -> Self
     {
-        return .init(xMagnitude:  lhs.xMagnitude * rhs, yMagnitude: lhs.yMagnitude * rhs)
+        return .init(xMagnitude: lhs.xMagnitude * rhs, yMagnitude: lhs.yMagnitude * rhs)
     }
-    
+
     @_transparent
     static func * <T>(_ lhs: Self, _ rhs: T) -> Magnitude where T: Numeric2D, T.Magnitude == Self.Magnitude
     {
         return lhs.xMagnitude * rhs.xMagnitude + lhs.yMagnitude * rhs.yMagnitude
     }
-    
+
     @_transparent
     static func .* <T>(_ lhs: Self, _ rhs: T) -> Self where T: Numeric2D, T.Magnitude == Self.Magnitude
     {
@@ -51,6 +50,7 @@ public extension Numeric2D
 }
 
 // MARK: Numeric2D - Member variants of static functions
+
 public extension Numeric2D
 {
     // SCALE
@@ -59,40 +59,40 @@ public extension Numeric2D
     {
         return .init(xMagnitude: self.xMagnitude * scaleX, yMagnitude: self.yMagnitude * scaleY)
     }
-    
+
     @_transparent
     func scaled(x scaleX: Magnitude) -> Self
     {
         return .init(xMagnitude: self.xMagnitude * scaleX, yMagnitude: self.yMagnitude)
     }
-    
+
     @_transparent
     func scaled(y scaleY: Magnitude) -> Self
     {
         return .init(xMagnitude: self.xMagnitude, yMagnitude: self.yMagnitude * scaleY)
     }
-    
+
     @_transparent
     func scaled(_ scale: Magnitude) -> Self
     {
         return self * scale
     }
-    
+
     @_transparent
     func scaled<T>(_ scale: T) -> Self where T: Numeric2D, T.Magnitude == Self.Magnitude
     {
         return scaled(x: scale.xMagnitude, y: scale.yMagnitude)
     }
-    
+
     // clamp
-    
+
     /// See ``clamp(_:x:)``
     @_transparent
     func clamped(x range: ClosedRange<Magnitude>) -> Self
     {
         return clamp(self, x: range)
     }
-    
+
     /// See ``clamp(_:y:)``
     @inlinable
     @inline(__always)
@@ -100,79 +100,78 @@ public extension Numeric2D
     {
         return clamp(self, y: range)
     }
-    
+
     /// See ``clamp(_:x:y:)``
     @_transparent
     func clamped(x rangeX: ClosedRange<Magnitude>, y rangeY: ClosedRange<Magnitude>) -> Self
     {
         return clamp(self, x: rangeX, y: rangeY)
     }
-    
+
     /// See  ``clamp(_:to:)-u87g
     @_transparent
     func clamped(to range: ClosedRange<Magnitude>) -> Self
     {
         return clamp(self, to: range)
     }
-    
+
     // LI, RLI
-    
+
     /// linear intepolate a point between `min` and `max` with `self` as `parameter`.
     /// See:  ``lerp(_:min:max:)-6esqb``
     @_transparent
     func lerped<A: Numeric2D, B: Numeric2D, R: Numeric2D>(min: A, max: B) -> R
-    where A.Magnitude: Real, B.Magnitude : Real, R.Magnitude: Real,
+    where A.Magnitude: Real, B.Magnitude: Real, R.Magnitude: Real,
           A.Magnitude == B.Magnitude, A.Magnitude == R.Magnitude, A.Magnitude == Self.Magnitude
     {
         return lerp(self, min: min, max: max)
     }
-    
+
     /// linear intepolate a point between `min` and `max` for `parameter`  with `self` as `min`.
     /// See:  ``lerp(_:min:max:)-6esqb``
     @_transparent
     func lerped<A: Numeric2D, B: Numeric2D, R: Numeric2D>(_ parameter: A, max: B) -> R
-    where A.Magnitude: Real, B.Magnitude : Real, R.Magnitude: Real,
+    where A.Magnitude: Real, B.Magnitude: Real, R.Magnitude: Real,
           A.Magnitude == B.Magnitude, A.Magnitude == R.Magnitude, A.Magnitude == Self.Magnitude
     {
         return lerp(parameter, min: self, max: max)
     }
-    
+
     /// linear intepolate a point between `min` and `max` for `parameter`  with `self` as `max`.
     /// See:  ``lerp(_:min:max:)-6esqb``
     @_transparent
     func lerped<A: Numeric2D, B: Numeric2D, R: Numeric2D>(_ parameter: A, min: B) -> R
-    where A.Magnitude: Real, B.Magnitude : Real, R.Magnitude: Real,
+    where A.Magnitude: Real, B.Magnitude: Real, R.Magnitude: Real,
           A.Magnitude == B.Magnitude, A.Magnitude == R.Magnitude, A.Magnitude == Self.Magnitude
     {
         return lerp(parameter, min: min, max: self)
     }
-    
-    
+
     /// inverse linear intepolate a point between `min` and `max` with `self` as `parameter`.
     /// See:  ``ilerp(_:min:max:)-53q91``
     @_transparent
     func ilerped<A: Numeric2D, B: Numeric2D, R: Numeric2D>(min: A, max: B) -> R
-    where A.Magnitude: Real, B.Magnitude : Real, R.Magnitude: Real,
+    where A.Magnitude: Real, B.Magnitude: Real, R.Magnitude: Real,
           A.Magnitude == B.Magnitude, A.Magnitude == R.Magnitude, A.Magnitude == Self.Magnitude
     {
         return ilerp(self, min: min, max: max)
     }
-    
+
     /// inverse linear intepolate a point between `min` and `max` for `parameter`  with `self` as `min`.
     /// See:  ``ilerp(_:min:max:)-53q91``
     @_transparent
     func ilerped<A: Numeric2D, B: Numeric2D, R: Numeric2D>(_ parameter: A, max: B) -> R
-    where A.Magnitude: Real, B.Magnitude : Real, R.Magnitude: Real,
+    where A.Magnitude: Real, B.Magnitude: Real, R.Magnitude: Real,
           A.Magnitude == B.Magnitude, A.Magnitude == R.Magnitude, A.Magnitude == Self.Magnitude
     {
         return ilerp(parameter, min: self, max: max)
     }
-    
+
     /// inverse linear intepolate a point between `min` and `max` for `parameter`  with `self` as `max`.
     /// See:  ``ilerp(_:min:max:)-53q91``
     @_transparent
     func ilerped<A: Numeric2D, B: Numeric2D, R: Numeric2D>(_ parameter: A, min: B) -> R
-    where A.Magnitude: Real, B.Magnitude : Real, R.Magnitude: Real,
+    where A.Magnitude: Real, B.Magnitude: Real, R.Magnitude: Real,
           A.Magnitude == B.Magnitude, A.Magnitude == R.Magnitude, A.Magnitude == Self.Magnitude
     {
         return ilerp(parameter, min: min, max: self)

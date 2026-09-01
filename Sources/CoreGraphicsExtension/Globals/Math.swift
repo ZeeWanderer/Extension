@@ -1,6 +1,6 @@
 //
 //  Math.swift
-//  
+//
 //
 //  Created by zeewanderer on 19.04.2022.
 //
@@ -149,6 +149,7 @@ public func clamp<T, M>(_ value: T, x rangeX: ClosedRange<M>, y rangeY: ClosedRa
 }
 
 // MARK: - CGRect
+
 /// All rectangles are standardized prior to calculating the union.
 /// If either of the rectangles is a null rectangle, it is ignored. If all rectangles are null, a null rectangle is returned.
 /// Otherwise a rectangle that completely contains the source rectangles is returned.
@@ -158,7 +159,7 @@ public func union(_ rects: [CGRect]) -> CGRect
     let bounding_rect = rects.reduce(CGRect.null) { (result, element) in
         return result.union(element)
     }
-    
+
     return bounding_rect
 }
 

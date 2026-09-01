@@ -5,7 +5,6 @@
 //  Created by zee wanderer on 12.11.2024.
 //
 
-
 import SwiftExtension
 import CoreGraphics
 
@@ -22,7 +21,7 @@ public extension SignedNumeric2D
     {
         return Self(xMagnitude: -operand.xMagnitude, yMagnitude: -operand.yMagnitude)
     }
-    
+
     @_transparent
     mutating func negate()
     {

@@ -126,6 +126,5 @@ final class CoreGraphicsPublicAPITests: XCTestCase {
         XCTAssertEqual(rect.data.count, MemoryLayout<CGRect>.size)
         XCTAssertNil(CGRect(validating: Data(count: MemoryLayout<CGRect>.size - 1)))
     }
-
 }
 #endif

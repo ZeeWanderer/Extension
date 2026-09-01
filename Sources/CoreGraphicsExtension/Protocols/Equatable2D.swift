@@ -5,7 +5,6 @@
 //  Created by zee wanderer on 12.11.2024.
 //
 
-
 import SwiftExtension
 import CoreGraphics
 
@@ -22,7 +21,7 @@ public extension Equatable2D
     {
         return lhs.xMagnitude == rhs.xMagnitude && lhs.yMagnitude == rhs.yMagnitude
     }
-    
+
     @_transparent
     static func != <T>(lhs: Self, rhs: T) -> Bool where T: Equatable2D, T.Magnitude == Self.Magnitude
     {

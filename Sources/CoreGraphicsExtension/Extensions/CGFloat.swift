@@ -17,12 +17,12 @@ public extension CGFloat
     /// See: ``lerp(_:min:max:)-2nn16``
     @_transparent
     func lerped<A: Numeric2D, B: Numeric2D, R: Numeric2D>(min: A, max: B) -> R
-    where A.Magnitude: Real, B.Magnitude : Real, R.Magnitude: Real,
+    where A.Magnitude: Real, B.Magnitude: Real, R.Magnitude: Real,
           A.Magnitude == B.Magnitude, A.Magnitude == R.Magnitude, A.Magnitude == Self
     {
         return lerp(self, min: min, max: max)
     }
-    
+
     /// Linear interpolate a point between `min` and `max` with `self` as `parameter` (t).
     /// See: ``lerp(_:min:max:)-4pww8``
     @_transparent
@@ -31,17 +31,17 @@ public extension CGFloat
     {
         return lerp(self, min: min, max: max)
     }
-    
+
     /// Inverse linear interpolate a point between `min` and `max` with `self` as `parameter` (t).
     /// See:  ``ilerp(_:min:max:)-6yj3m``
     @_transparent
     func ilerped<A: Numeric2D, B: Numeric2D, R: Numeric2D>(min: A, max: B) -> R
-    where A.Magnitude: Real, B.Magnitude : Real, R.Magnitude: Real,
+    where A.Magnitude: Real, B.Magnitude: Real, R.Magnitude: Real,
           A.Magnitude == B.Magnitude, A.Magnitude == R.Magnitude, A.Magnitude == Self
     {
         return ilerp(self, min: min, max: max)
     }
-    
+
     /// Inverse linear interpolate a point between `min` and `max` with `self` as `parameter` (t).
     /// See:  ``ilerp(_:min:max:)-7y90m``
     @_transparent

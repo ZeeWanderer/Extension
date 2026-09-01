@@ -18,25 +18,24 @@ public extension CGSize
     {
         self.init(width: side, height: side)
     }
-    
+
     /// `width * height`
     @_transparent
     var square: CGFloat
     {
         return self.height * self.width
     }
-    
+
     /// Center point of the rectange area defined by `CGSize`
     @_transparent
     var center: CGPoint
     {
-        return .init(x: self.width/2.0, y: self.height/2.0)
+        return .init(x: self.width / 2.0, y: self.height / 2.0)
     }
-    
+
     @_transparent
     var diagonal: CGFloat
     {
         hypot(self.width, self.height)
     }
-    
 }
