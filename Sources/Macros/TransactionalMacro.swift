@@ -52,7 +52,7 @@ extension TransactionalMacro: BodyMacro {
 
         return [
             CodeBlockItemSyntax(item: .decl(DeclSyntax(originalFunction))),
-            CodeBlockItemSyntax(item: .expr(transactionalCall))
+            CodeBlockItemSyntax(item: .expr(transactionalCall)),
         ]
     }
 
@@ -62,7 +62,8 @@ extension TransactionalMacro: BodyMacro {
                 let ctxExpr = ctxArg.expression
                 let isOptional = ctxExpr.as(OptionalChainingExprSyntax.self) != nil
                 return (ctxExpr, isOptional)
-            } else if let keyPathArg = args.first(where: { $0.label?.text == "keyPath" }) {
+            }
+            else if let keyPathArg = args.first(where: { $0.label?.text == "keyPath" }) {
                 let ctxExpr = keyPathArg.expression
                 if let keyPathExpr = ctxExpr.as(KeyPathExprSyntax.self) {
                     let selfExpr = DeclReferenceExprSyntax(baseName: .keyword(.self))
@@ -74,7 +75,7 @@ extension TransactionalMacro: BodyMacro {
                         },
                         rightSquare: .rightSquareToken()
                     )
-                    
+
                     let postfixQuestionMark = keyPathExpr.components.last?.component.as(KeyPathOptionalComponentSyntax.self)?.questionOrExclamationMark.trimmed
                     let isOptional = postfixQuestionMark != nil
                     return (ExprSyntax(subscriptExpr), isOptional)
@@ -86,7 +87,8 @@ extension TransactionalMacro: BodyMacro {
             if let typeId = param.type.as(IdentifierTypeSyntax.self), typeId.name.trimmed.text == "ModelContext" {
                 let name = param.secondName?.trimmed ?? param.firstName.trimmed
                 return (ExprSyntax(DeclReferenceExprSyntax(baseName: name)), false)
-            } else if let opt = param.type.as(OptionalTypeSyntax.self),
+            }
+            else if let opt = param.type.as(OptionalTypeSyntax.self),
                       let wrapped = opt.wrappedType.as(IdentifierTypeSyntax.self), wrapped.name.trimmed.text == "ModelContext" {
                 let name = param.secondName?.trimmed ?? param.firstName.trimmed
                 return (ExprSyntax(DeclReferenceExprSyntax(baseName: name)), true)
@@ -116,7 +118,7 @@ extension TransactionalMacro: BodyMacro {
     ) -> ExprSyntax {
         let ctxExprInit = ctxExpr
         var ctxExpr = ctxExpr
-        
+
         let callArgs = LabeledExprListSyntax {
             function.signature.parameterClause.parameters.map { param in
                 let paramName = param.secondName ?? param.firstName
@@ -152,11 +154,11 @@ extension TransactionalMacro: BodyMacro {
                 elseKeyword: .keyword(.else),
                 elseBody: .codeBlock(CodeBlockSyntax(statements: hasReturn
                     ? CodeBlockItemListSyntax { ReturnStmtSyntax(returnKeyword: .keyword(.return), expression: tryOriginal) }
-                    : CodeBlockItemListSyntax { CodeBlockItemSyntax(item: .expr(tryOriginal)) }
-                ))
+                    : CodeBlockItemListSyntax { CodeBlockItemSyntax(item: .expr(tryOriginal)) }))
             )
             return ExprSyntax(ifExpr)
-        } else {
+        }
+        else {
             return p_makeTransactionIf(hasReturn: hasReturn, isThrowing: isThrowing, returnType: returnType, ctxExpr: ctxExpr, retvalExpr: retvalExpr, tryCall: tryOriginal)
         }
     }
@@ -202,7 +204,7 @@ extension TransactionalMacro: BodyMacro {
                 CodeBlockItemSyntax(item: .expr(ExprSyntax(SequenceExprSyntax(elements: ExprListSyntax([
                     PatternExprSyntax(pattern: IdentifierPatternSyntax(identifier: .identifier("retval"))),
                     AssignmentExprSyntax(equal: .equalToken()),
-                    tryCall
+                    tryCall,
                 ])))))
             })
         )

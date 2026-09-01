@@ -5,7 +5,6 @@
 //  Created by zeewanderer on 10.04.2025.
 //
 
-
 #if canImport(SwiftSyntax) && canImport(SwiftSyntaxMacros) && canImport(SwiftSyntaxBuilder)
 import SwiftSyntax
 import SwiftSyntaxMacros

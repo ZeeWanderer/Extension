@@ -234,7 +234,7 @@ final class MacroTests: XCTestCase
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
-    
+
     func testCustomStringConvertibleEnumMacro() throws {
         #if canImport(Macros)
         assertMacroExpansion(
@@ -276,7 +276,7 @@ final class MacroTests: XCTestCase
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
-    
+
     func testCustomStringConvertibleEnumMacro_FlatEnumMacro() throws {
         #if canImport(Macros)
         assertMacroExpansion(
@@ -352,7 +352,7 @@ final class MacroTests: XCTestCase
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
-    
+
     func testModelSnapshotMacro() throws {
         #if canImport(Macros)
         assertMacroExpansion(
@@ -553,7 +553,7 @@ final class MacroTests: XCTestCase
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
-    
+
     func testActorProtocolMacro() throws {
         #if canImport(Macros)
         assertMacroExpansion(
@@ -609,59 +609,59 @@ final class MacroTests: XCTestCase
 
             class Test {
                 let modelContext: ModelContext
-            
+
                 @Transactional(retval: 0)
                 func test0(_ int: Int) -> Int 
                 {
                     let newInt = 7 + int
                     return newInt
                 }
-            
+
                 @Transactional
                 func test1(_ int: Int)
                 {
                     let newInt = 7 + int
                 }
-            
+
                 @Transactional
                 func test2(_ ctx: ModelContext, _ int: Int)
                 {
                     let newInt = 7 + int
                 }
-            
+
                 @Transactional
                 public static func test3(_ ctx: ModelContext, _ int: Int)
                 {
                     let newInt = 7 + int
                 }
-            
+
                 @Transactional
                 public static func test4(_ ctx: ModelContext?, _ int: Int)
                 {
                     let newInt = 7 + int
                 }
-            
+
                 @Transactional(retval: 0)
                 public static func test5(_ ctx: ModelContext?, _ int: Int) -> Int
                 {
                     let newInt = 7 + int
                     return newInt
                 }
-            
+
                 @Transactional(keyPath: \\.modelContext?, retval: 0)
                 public static func test6(_ int: Int) -> Int
                 {
                     let newInt = 7 + int
                     return newInt
                 }
-            
+
                 @Transactional(keyPath: \\.modelContext?, retval: 0)
                 public static func test7(_ ctx: ModelContext?, _ int: Int) -> Int
                 {
                     let newInt = 7 + int
                     return newInt
                 }
-            
+
                 @Transactional(keyPath: \\.modelContext?, retval: 0)
                 public static func test8(_ ctx: ModelContext?, _ int: Int) -> Int
                 {

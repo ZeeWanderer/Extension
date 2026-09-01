@@ -14,7 +14,7 @@ import SwiftSyntaxBuilder
 internal enum P_FlatEnumMacroSupport {
     static let flatEnumSuffix = "Flat"
     static let flatPropertyName = "flat"
-    
+
     static func expansion<M: P_MacroDiagnosticProtocol>(
         of node: AttributeSyntax,
         providingMembersOf declaration: some DeclGroupSyntax,
@@ -32,19 +32,20 @@ internal enum P_FlatEnumMacroSupport {
             context.diagnose(diag)
             return []
         }
-        
+
         let enumName = enumDecl.name.text
         var customFlatName: String? = forceFlatName
         var generateName = defaultGenerateName
         var hasErrors = false
-        
+
         if !allowArguments {
             if node.arguments != nil {
                 let diag = Diagnostic(node: node, message: P_MacroDiagnostic<M>.error("does not accept arguments"))
                 context.diagnose(diag)
                 return []
             }
-        } else if let arguments = node.arguments?.as(LabeledExprListSyntax.self) {
+        }
+        else if let arguments = node.arguments?.as(LabeledExprListSyntax.self) {
             if let nameExpr = arguments.first(where: { arg in
                 let label = arg.label?.text
                 return label == "name" || label == "flatName"
@@ -52,42 +53,44 @@ internal enum P_FlatEnumMacroSupport {
                 if let name = nameExpr.as(StringLiteralExprSyntax.self)?.representedLiteralValue,
                    !name.isEmpty {
                     customFlatName = name
-                } else {
+                }
+                else {
                     let diag = Diagnostic(node: nameExpr, message: P_MacroDiagnostic<M>.error("name must be a non-empty string literal"))
                     context.diagnose(diag)
                     hasErrors = true
                 }
             }
-            
+
             if let generateExpr = arguments.first(where: { arg in
                 let label = arg.label?.text
                 return label == "generateName"
             })?.expression {
                 if let boolLiteral = generateExpr.as(BooleanLiteralExprSyntax.self) {
                     generateName = boolLiteral.literal.tokenKind == .keyword(.true)
-                } else {
+                }
+                else {
                     let diag = Diagnostic(node: generateExpr, message: P_MacroDiagnostic<M>.error("generateName must be a boolean literal"))
                     context.diagnose(diag)
                     hasErrors = true
                 }
             }
         }
-        
+
         if hasErrors {
             return []
         }
-        
+
         let flatEnumName = customFlatName ?? (generateName ? "\(flatEnumSuffix)\(enumName)" : "Flat")
-        
+
         let hasStringMacro = enumDecl.attributes.contains { attribute in
             guard case .attribute(let attr) = attribute else { return false }
             return attr.attributeName.as(IdentifierTypeSyntax.self)?.name.text == "CustomStringConvertibleEnum"
         }
-        
+
         let cases = enumDecl.memberBlock.members.compactMap { member in
             member.decl.as(EnumCaseDeclSyntax.self)?.elements
         }.flatMap { $0 }
-        
+
         let flatEnumDecl = EnumDeclSyntax(
             attributes: AttributeListSyntax {
                 if hasStringMacro {
@@ -120,7 +123,7 @@ internal enum P_FlatEnumMacroSupport {
                 }
             }
         ).with(\.leadingTrivia, .newline)
-        
+
         let typePropertyDecl = DeclSyntax("""
         public var \(raw: flatPropertyName): \(raw: flatEnumName) {
             switch self {
@@ -128,7 +131,7 @@ internal enum P_FlatEnumMacroSupport {
             }
         }
         """)
-        
+
         return [DeclSyntax(flatEnumDecl), typePropertyDecl]
     }
 }

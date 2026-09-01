@@ -122,8 +122,7 @@ internal func p_hasDirectViewProviderMember(
               !function.modifiers.contains(where: {
                   $0.name.tokenKind == .keyword(.static)
                       || $0.name.tokenKind == .keyword(.class)
-              })
-        else {
+              }) else {
             return false
         }
 
@@ -147,13 +146,12 @@ extension RouterMacro: MemberMacro {
             context.diagnose(diag)
             return []
         }
-        
+
         guard p_hasRouterMember(named: "views", isStatic: true, in: declaration),
-              !p_hasRouterMember(named: "viewTypes", isStatic: true, in: declaration)
-        else {
+              !p_hasRouterMember(named: "viewTypes", isStatic: true, in: declaration) else {
             return []
         }
-        
+
         let access = p_routerAccessLevel(for: declaration)
         let decl = DeclSyntax("\(raw: p_routerAccessPrefix(access))static let viewTypes = computeViewTypes()")
         return [decl]
@@ -172,7 +170,7 @@ extension RouterMacro: ExtensionMacro {
             context.diagnose(diag)
             return []
         }
-        
+
         let existingConformances = p_routerConformances(of: declaration)
         var addedConformances: [String] = []
 
@@ -230,7 +228,7 @@ extension RouterMacro: ExtensionMacro {
                 }
             )
         ) {}
-        
+
         return [extensionDecl]
     }
 }

@@ -21,11 +21,11 @@ internal func p_hasRouterDestinationConformance(_ declaration: some DeclGroupSyn
             return name == "RouterDestination" || name.hasSuffix(".RouterDestination")
         }
     }
-    
+
     if let decl = declaration.as(EnumDeclSyntax.self) {
         return inheritsRouterDestination(decl.inheritanceClause)
     }
-    
+
     return false
 }
 
@@ -41,8 +41,7 @@ extension RouterDestinationMacro: MemberMacro {
                $0.label?.text == "generateFlat"
            })?.expression
         {
-            guard let boolean = generateExpression.as(BooleanLiteralExprSyntax.self)
-            else
+            guard let boolean = generateExpression.as(BooleanLiteralExprSyntax.self) else
             {
                 let diagnostic = Diagnostic(
                     node: generateExpression,
@@ -84,11 +83,11 @@ extension RouterDestinationMacro: ExtensionMacro {
             context.diagnose(diag)
             return []
         }
-        
+
         if p_hasRouterDestinationConformance(declaration) {
             return []
         }
-        
+
         let extensionDecl = ExtensionDeclSyntax(
             extendedType: type,
             inheritanceClause: InheritanceClauseSyntax(
@@ -97,7 +96,7 @@ extension RouterDestinationMacro: ExtensionMacro {
                 }
             )
         ) {}
-        
+
         return [extensionDecl]
     }
 }

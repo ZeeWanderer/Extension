@@ -79,7 +79,7 @@ extension LogSubsystemMacro: ExtensionMacro {
             context.diagnose(diag)
             return []
         }
-        
+
         let access = p_logAccessLevel(for: declaration)
         let extensionDecl = ExtensionDeclSyntax(
             extendedType: type,
@@ -87,13 +87,14 @@ extension LogSubsystemMacro: ExtensionMacro {
             inheritedTypes: InheritedTypeListSyntax {
                 InheritedTypeSyntax(type: TypeSyntax(stringLiteral: "LogSubsystemProtocol"))
             }
-        )) {
+            )
+        ) {
             DeclSyntax("""
                 nonisolated \(raw: p_logAccessPrefix(access))static let logger = makeLogger()
                 nonisolated \(raw: p_logAccessPrefix(access))static let signposter = makeSignposter()
             """)
         }
-        
+
         return [extensionDecl]
     }
 }
@@ -110,44 +111,45 @@ extension LogCategoryMacro: ExtensionMacro {
             context.diagnose(diag)
             return []
         }
-        
+
         guard let arguments = node.arguments,
               let labeledArguments = arguments.as(LabeledExprListSyntax.self) else {
             let diag = Diagnostic(node: node, message: P_MacroDiagnostic<Self>.argumentMissing("subsystem"))
             context.diagnose(diag)
             return []
         }
-        
+
         let subsystemExpr = labeledArguments.first(where: {
             $0.label?.text == "subsystem" || $0.label?.text == "of"
         })?.expression ?? labeledArguments.first?.expression
-        
+
         guard let subsystemExpr else {
             let diag = Diagnostic(node: node, message: P_MacroDiagnostic<Self>.argumentMissing("subsystem"))
             context.diagnose(diag)
             return []
         }
-        
+
         let access = p_logAccessLevel(for: declaration)
         var subsystemName = subsystemExpr.trimmedDescription
         if subsystemName.hasSuffix(".self") {
             subsystemName = String(subsystemName.dropLast(5))
         }
-        
+
         let extensionDecl = ExtensionDeclSyntax(
             extendedType: type,
             inheritanceClause: InheritanceClauseSyntax(
             inheritedTypes: InheritedTypeListSyntax {
                 InheritedTypeSyntax(type: TypeSyntax(stringLiteral: "LogSubsystemCategoryProtocol"))
             }
-        )) {
+            )
+        ) {
             DeclSyntax("""
                 \(raw: p_logAccessPrefix(access))typealias Subsystem = \(raw: subsystemName)
                 nonisolated \(raw: p_logAccessPrefix(access))static let logger = makeLogger()
                 nonisolated \(raw: p_logAccessPrefix(access))static let signposter = makeSignposter()
             """)
         }
-        
+
         return [extensionDecl]
     }
 }

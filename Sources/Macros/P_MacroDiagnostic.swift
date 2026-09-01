@@ -11,7 +11,6 @@ import SwiftSyntaxMacros
 import SwiftSyntaxBuilder
 import SwiftDiagnostics
 
-
 internal enum P_MacroDiagnostic<M: P_MacroDiagnosticProtocol>: Hashable, DiagnosticMessage {
     case error(String)
     case onlyApplicableToEnum
@@ -21,7 +20,7 @@ internal enum P_MacroDiagnostic<M: P_MacroDiagnosticProtocol>: Hashable, Diagnos
     case onlyApplicableToProtocol
     case onlyApplicableToFunction
     case argumentMissing(String)
-    
+
     var severity: DiagnosticSeverity { .error }
     var message: String {
         switch self {
@@ -43,6 +42,7 @@ internal enum P_MacroDiagnostic<M: P_MacroDiagnosticProtocol>: Hashable, Diagnos
             "@\(M.userFacingName) expects \(argName) to be present"
         }
     }
+
     var diagnosticID: MessageID {
         MessageID(domain: "\(M.self)", id: "\(self.hashValue)")
     }

@@ -22,7 +22,7 @@ extension CustomStringConvertibleEnumMacro: ExtensionMacro {
             context.diagnose(diag)
             return []
         }
-        
+
         var switchCases: [String] = []
         for member in enumDecl.memberBlock.members {
             if let caseDecl = member.decl.as(EnumCaseDeclSyntax.self) {
@@ -36,7 +36,8 @@ extension CustomStringConvertibleEnumMacro: ExtensionMacro {
                             let paramName: String = {
                                 if let name = param.firstName?.text, !name.isEmpty {
                                     return name
-                                } else {
+                                }
+                                else {
                                     return "value\(index)"
                                 }
                             }()
@@ -46,7 +47,8 @@ extension CustomStringConvertibleEnumMacro: ExtensionMacro {
                         let pattern = "case .\(caseName)(\(patternBindings.joined(separator: ", ")))"
                         let returnString = "\"\(caseName)(\(interpolatedValues.joined(separator: ", ")))\""
                         switchCases.append("\(pattern): return \(returnString)")
-                    } else {
+                    }
+                    else {
                         let pattern = "case .\(caseName)"
                         let returnString = "\"\(caseName)\""
                         switchCases.append("\(pattern): return \(returnString)")
@@ -54,15 +56,15 @@ extension CustomStringConvertibleEnumMacro: ExtensionMacro {
                 }
             }
         }
-        
+
         let switchBody = switchCases.joined(separator: "\n")
-        
+
         let computedProperties: [(name: String, protocolName: String)] = [
             ("description", "CustomStringConvertible"),
             ("debugDescription", "CustomDebugStringConvertible"),
 //            ("testDescription", "CustomTestStringConvertible"),
         ]
-        
+
         let memberItems = computedProperties.map { (propName, _) in
             MemberBlockItemSyntax(decl: DeclSyntax("""
         public var \(raw: propName): String {
@@ -72,15 +74,15 @@ extension CustomStringConvertibleEnumMacro: ExtensionMacro {
         }
         """))
         }
-        
+
         let inheritanceClause = InheritanceClauseSyntax(
             inheritedTypes: [
                 InheritedTypeSyntax(type: IdentifierTypeSyntax(name: .identifier("CustomStringConvertible")), trailingComma: .commaToken()),
-                InheritedTypeSyntax(type: IdentifierTypeSyntax(name: .identifier("CustomDebugStringConvertible"))/*, trailingComma: .commaToken()*/),
-                //InheritedTypeSyntax(type: IdentifierTypeSyntax(name: .identifier("CustomTestStringConvertible"))),
+                InheritedTypeSyntax(type: IdentifierTypeSyntax(name: .identifier("CustomDebugStringConvertible")) /* , trailingComma: .commaToken() */ ),
+                // InheritedTypeSyntax(type: IdentifierTypeSyntax(name: .identifier("CustomTestStringConvertible"))),
             ]
         )
-        
+
         let extDecl = ExtensionDeclSyntax(
             extensionKeyword: .keyword(.extension),
             extendedType: type,
@@ -91,11 +93,9 @@ extension CustomStringConvertibleEnumMacro: ExtensionMacro {
                 }
             }
         ).with(\.leadingTrivia, .newline)
-        
+
         return [extDecl]
     }
 }
-
-
 
 #endif
