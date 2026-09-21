@@ -1,0 +1,14 @@
+{
+  "_2slots": ["two_slots_sample"],
+  "_2slots_pairs": ["two_slot_pairs_sample"],
+  "digit_answer": ["digit_answer_sample"],
+  "extend_row": ["extend_row_sample"],
+  "extend_row_9": ["extend_row_nine_sample"],
+  "missing_picture_5": ["missing_picture_sample"],
+  "one_from_2": ["one_from_two_sample"],
+  "one_from_2or_more_images": ["variable_image_choice_sample"],
+  "one_from_3": ["one_from_three_sample"],
+  "pattern_matching_images": ["pattern_matching_sample"],
+  "three_from_10": ["three_from_ten_sample"],
+  "true_false_images": ["true_false_sample"]
+}

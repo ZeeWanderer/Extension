@@ -8,6 +8,38 @@
 import Foundation
 
 @usableFromInline
+internal func p_firstJSONToken(in data: Data) -> UInt8?
+{
+    for byte in data
+    {
+        switch byte
+        {
+        case 0x09, 0x0A, 0x0D, 0x20:
+            continue
+        default:
+            return byte
+        }
+    }
+
+    return nil
+}
+
+@usableFromInline
+internal struct P_DictionaryDecodingBox<Key, Value>: Decodable
+where Key: Decodable, Key: Hashable,
+      Value: Decodable
+{
+    @usableFromInline
+    let value: [Key: Value]
+
+    @usableFromInline
+    init(from decoder: Decoder) throws
+    {
+        value = try [Key: Value](from: decoder)
+    }
+}
+
+@usableFromInline
 internal func p_dictionary<Key, Value, RawValue>(
     converting rawDictionary: [RawValue: Value],
     codingPath: [CodingKey]
@@ -53,7 +85,25 @@ public extension JSONDecoder
           V: Decodable,
           R: Decodable, R: Hashable
     {
-        let rawDictionary = try decode([R: V].self, from: data)
-        return try p_dictionary(converting: rawDictionary, codingPath: [])
+        switch p_firstJSONToken(in: data)
+        {
+        case 0x7B:
+            let rawDictionary = try decode([R: V].self, from: data)
+            return try p_dictionary(converting: rawDictionary, codingPath: [])
+        case 0x5B:
+            return try decode(P_DictionaryDecodingBox<K, V>.self, from: data).value
+        default:
+            break
+        }
+
+        do
+        {
+            let rawDictionary = try decode([R: V].self, from: data)
+            return try p_dictionary(converting: rawDictionary, codingPath: [])
+        }
+        catch let DecodingError.typeMismatch(_, context) where context.codingPath.isEmpty
+        {
+            return try decode(P_DictionaryDecodingBox<K, V>.self, from: data).value
+        }
     }
 }

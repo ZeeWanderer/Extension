@@ -20,10 +20,19 @@ public extension KeyedDecodingContainer
           V: Decodable,
           R: Decodable, R: Hashable
     {
-        let rawDictionary = try decode([R: V].self, forKey: key)
-        return try p_dictionary(
-            converting: rawDictionary,
-            codingPath: codingPath + [key]
-        )
+        do
+        {
+            let rawDictionary = try decode([R: V].self, forKey: key)
+            return try p_dictionary(
+                converting: rawDictionary,
+                codingPath: codingPath + [key]
+            )
+        }
+        catch let DecodingError.typeMismatch(_, context)
+            where context.codingPath.count == codingPath.count + 1 &&
+            context.codingPath.last?.stringValue == key.stringValue
+        {
+            return try decode(P_DictionaryDecodingBox<K0, V>.self, forKey: key).value
+        }
     }
 }

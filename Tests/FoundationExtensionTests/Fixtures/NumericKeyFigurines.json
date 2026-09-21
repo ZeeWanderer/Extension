@@ -1,0 +1,40 @@
+{
+  "3": [
+    {
+      "id": "small_shape",
+      "title": "Small shape",
+      "name": {"en":"Small shape","uk":"Small shape","ru":"Small shape"},
+      "colored": true,
+      "lines": [
+        {"start":{"x":1,"y":1},"end":{"x":2,"y":0},"color":"red"},
+        {"start":{"x":2,"y":0},"end":{"x":2,"y":2},"color":"red"}
+      ]
+    }
+  ],
+  "10": [
+    {
+      "id": "large_shape",
+      "title": "Large shape",
+      "name": {"en":"Large shape","uk":"Large shape","ru":"Large shape"},
+      "colored": true,
+      "lines": [
+        {"start":{"x":1,"y":9},"end":{"x":5,"y":9},"color":"orange"},
+        {"start":{"x":5,"y":9},"end":{"x":7,"y":9},"color":"red"},
+        {"start":{"x":7,"y":9},"end":{"x":9,"y":7},"color":"red"},
+        {"start":{"x":9,"y":7},"end":{"x":7,"y":7},"color":"red"},
+        {"start":{"x":7,"y":7},"end":{"x":5,"y":9},"color":"red"},
+        {"start":{"x":5,"y":9},"end":{"x":5,"y":5},"color":"orange"},
+        {"start":{"x":5,"y":5},"end":{"x":1,"y":9},"color":"orange"},
+        {"start":{"x":5,"y":5},"end":{"x":2,"y":2},"color":"red"},
+        {"start":{"x":0,"y":2},"end":{"x":2,"y":0},"color":"orange"},
+        {"start":{"x":0,"y":0},"end":{"x":2,"y":2},"color":"orange"},
+        {"start":{"x":2,"y":2},"end":{"x":2,"y":8},"color":"red"},
+        {"start":{"x":2,"y":2},"end":{"x":0,"y":4},"color":"yellow"},
+        {"start":{"x":0,"y":4},"end":{"x":2,"y":6},"color":"yellow"},
+        {"start":{"x":0,"y":0},"end":{"x":0,"y":2},"color":"red"},
+        {"start":{"x":2,"y":0},"end":{"x":2,"y":2},"color":"red"},
+        {"start":{"x":0,"y":2},"end":{"x":1,"y":3},"color":"red"}
+      ]
+    }
+  ]
+}

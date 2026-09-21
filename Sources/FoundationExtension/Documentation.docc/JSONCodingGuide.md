@@ -49,6 +49,8 @@ let copy = try await coding.decodeAsync(Payload.self, from: data)
 
 Values crossing this isolation boundary must be `Sendable`. The implementation
 executes directly in the caller's task rather than creating a hidden task.
+These entry points are explicitly `@concurrent`, so they continue to leave the
+caller's actor with `NonisolatedNonsendingByDefault` enabled.
 Foundation's encoder and decoder expose synchronous, CPU-bound methods, so the
 async functions execute outside the caller's actor. Cancellation is checked
 before and after each Foundation operation. An encode or decode already in
@@ -83,6 +85,8 @@ let body = try await task.value
 These variants create detached tasks. The caller owns the returned task's
 lifetime and can cancel it directly. Prefer `async let` or a task group whenever
 an asynchronous parent scope is available.
+Awaiting a returned task's `.value` does not attach it to the awaiting task's
+structured lifetime or propagate cancellation from that task.
 
 ## Files and resources
 
@@ -123,11 +127,18 @@ enum Field: String, Decodable
     case secondary
 }
 
-let fields = try JSONDecoder().decode([Field: Int].self, from: data)
+let fields = try JSONCoding().decode([Field: Int].self, from: data)
 ```
 
-The matching `KeyedDecodingContainer` overload applies recursively to dictionary
-properties in decoded models. This is intentionally a decoding feature; adding
-a transparent `encode` overload conflicts with Foundation's generic encoder and
-breaks synthesized `Encodable` overload resolution. General `JSONCoding`
-round trips therefore retain Foundation's standard `Codable` representation.
+`JSONCoding` provides the same raw-key decoding behavior for data, files, and
+bundle resources through synchronous, structured asynchronous, and explicitly
+detached entry points. The `JSONDecoder` root overload remains available, and
+the matching `KeyedDecodingContainer` overload applies recursively to dictionary
+properties in decoded models.
+
+These decoders accept both the external keyed-object form and Foundation's
+alternating-array representation. This remains intentionally a decoding feature;
+adding a transparent `encode` overload conflicts with Foundation's generic
+encoder and breaks synthesized `Encodable` overload resolution. Encoding and
+same-type round trips therefore retain Foundation's standard `Codable`
+representation.

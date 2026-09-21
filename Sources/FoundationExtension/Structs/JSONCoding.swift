@@ -15,7 +15,7 @@ import Foundation
 /// caller's actor, so an actor such as the main actor remains available.
 ///
 /// Use ``detachedEncodingTask(for:priority:)`` or
-/// ``detachedDecodingTask(of:from:priority:)`` to start work from synchronous code,
+/// ``detachedDecodingTask(of:from:priority:)->Task<Value,Error>`` to start work from synchronous code,
 /// continue doing other work, and await the explicitly detached task later.
 public struct JSONCoding: Sendable
 {

@@ -1,0 +1,20 @@
+{
+  "3-6": [
+    {
+      "type": "level_background",
+      "name": "level_0",
+      "road": "road_0",
+      "reversed": false,
+      "decorators": []
+    },
+  ],
+  "5-8": [
+    {
+      "type": "level_background",
+      "name": "level_0_5-8",
+      "road": "road_0_5-8",
+      "reversed": false,
+      "decorators": []
+    }
+  ]
+}
