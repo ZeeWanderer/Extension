@@ -25,7 +25,9 @@ internal final class P_CacheIOExecutor: Sendable
     }
 
     @inlinable
+    @concurrent
     internal func run<Value: Sendable>(
+        isCancellable: Bool = true,
         _ operation: @escaping @Sendable () throws -> Value
     ) async throws -> Value
     {
@@ -33,7 +35,7 @@ internal final class P_CacheIOExecutor: Sendable
             taskExecutor,
             isolation: nil
         ) {
-            try Task.checkCancellation()
+            if isCancellable { try Task.checkCancellation() }
             return try operation()
         }
     }

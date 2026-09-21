@@ -29,6 +29,11 @@ import Foundation
 /// promotion rules of ``Cache``. Sharing ``DiskCacheStorage`` coordinates disk
 /// capacity and maintenance, but does not imply that an object-cache value and
 /// a sparse entry are coherent copies of the same logical resource.
+///
+/// Async operations leave the caller's actor without creating a separate task.
+/// Blocking file I/O uses the storage's dedicated task executor. Debounced
+/// manifest persistence is resource-owned work that can outlive an insert;
+/// await `synchronize(forKey:)` when persistence must finish before returning.
 @available(iOS 18.4, macCatalyst 18.4, macOS 15.4, *)
 public final class SparseCache<Key: Hashable & Sendable>: @unchecked Sendable
 {
@@ -197,6 +202,7 @@ public final class SparseCache<Key: Hashable & Sendable>: @unchecked Sendable
     // MARK: - Asynchronous API
 
     /// Returns an immutable entry snapshot without blocking the caller.
+    @concurrent
     public func snapshot(forKey key: Key) async throws -> SparseCacheSnapshot?
     {
         try await p_withResourceAccess(
@@ -215,6 +221,7 @@ public final class SparseCache<Key: Hashable & Sendable>: @unchecked Sendable
 
     /// Creates or validates an entry without blocking the caller.
     @discardableResult
+    @concurrent
     public func prepare(
         capacity: Int,
         generation: Data? = nil,
@@ -242,6 +249,7 @@ public final class SparseCache<Key: Hashable & Sendable>: @unchecked Sendable
 
     /// Stores bytes at an offset without blocking the caller.
     @discardableResult
+    @concurrent
     public func insert(
         _ data: Data,
         at offset: Int,
@@ -263,6 +271,7 @@ public final class SparseCache<Key: Hashable & Sendable>: @unchecked Sendable
     }
 
     /// Returns a completely available byte range without blocking the caller.
+    @concurrent
     public func data(
         in range: Range<Int>,
         forKey key: Key
@@ -280,6 +289,7 @@ public final class SparseCache<Key: Hashable & Sendable>: @unchecked Sendable
     }
 
     /// Persists the latest manifest and synchronizes its files asynchronously.
+    @concurrent
     public func synchronize(forKey key: Key) async throws
     {
         try await p_withResourceAccess(
@@ -312,6 +322,7 @@ public final class SparseCache<Key: Hashable & Sendable>: @unchecked Sendable
     }
 
     /// Removes one sparse entry without blocking the caller.
+    @concurrent
     public func removeValue(forKey key: Key) async throws
     {
         try await p_withResourceAccess(
@@ -325,6 +336,7 @@ public final class SparseCache<Key: Hashable & Sendable>: @unchecked Sendable
     }
 
     /// Removes this sparse namespace without blocking the caller.
+    @concurrent
     public func removeAll() async throws
     {
         try Task.checkCancellation()
@@ -587,7 +599,8 @@ public final class SparseCache<Key: Hashable & Sendable>: @unchecked Sendable
     internal func p_scheduleFlush(_ resource: P_SparseCacheResource)
     {
         let delay = p_configuration.manifestFlushDelay
-        let task = Task { [self, resource] in
+        // Debounced persistence intentionally outlives the triggering write.
+        resource.scheduleFlush { [self, resource] in
             do
             {
                 if delay > .zero { try await Task.sleep(for: delay) }
@@ -596,7 +609,6 @@ public final class SparseCache<Key: Hashable & Sendable>: @unchecked Sendable
             }
             catch {}
         }
-        resource.replaceFlushTask(task)
     }
 
     @usableFromInline

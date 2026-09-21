@@ -41,6 +41,11 @@ public struct CacheStore<Key: Hashable & Sendable, Value: Sendable>: Sendable
     /// capacity unit, or implement an unrelated maintenance strategy. The
     /// dispatcher intentionally does not enumerate an opaque backend. Supply
     /// `synchronous` only for genuine blocking operations on the same backend.
+    ///
+    /// Mutation closures may run after cancellation to finish an admitted
+    /// transaction or restore its previous contents. They must permit this
+    /// cleanup rather than reject it solely because the current task is
+    /// cancelled. Backend failures are still reported; rollback is best effort.
     @inlinable
     public init(
         id: CacheStoreID,

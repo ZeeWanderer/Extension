@@ -15,6 +15,10 @@ import Foundation
 /// independent. `removeAll()` is a cache-wide barrier. Maintenance is an
 /// optional store-local eviction operation and relies on each store's own
 /// concurrency boundary.
+///
+/// Async operations leave the caller's actor in the same task. Parallel store
+/// operations are structured children and finish before the operation returns.
+/// Synchronous overloads block the calling thread without creating tasks.
 @available(iOS 18.4, macCatalyst 18.4, macOS 15.4, *)
 public final class Cache<
     Key: Hashable & Sendable,
@@ -484,6 +488,7 @@ public final class Cache<
 
     /// Returns a value and the store that supplied it without blocking the caller.
     @inlinable
+    @concurrent
     public func hit(
         forKey key: Key,
         route: CacheRoute? = nil
@@ -500,6 +505,7 @@ public final class Cache<
 
     /// Returns the cached value without blocking the caller.
     @inlinable
+    @concurrent
     public func value(
         forKey key: Key,
         route: CacheRoute? = nil
@@ -510,6 +516,7 @@ public final class Cache<
 
     /// Returns a hit from exactly one registered store without promotion.
     @inlinable
+    @concurrent
     public func hit(
         forKey key: Key,
         from storeID: CacheStoreID
@@ -529,6 +536,7 @@ public final class Cache<
 
     /// Returns a value from exactly one registered store without promotion.
     @inlinable
+    @concurrent
     public func value(
         forKey key: Key,
         from storeID: CacheStoreID
@@ -539,6 +547,7 @@ public final class Cache<
 
     /// Inserts a value without blocking the caller.
     @inlinable
+    @concurrent
     public func insert(
         _ value: Value,
         forKey key: Key,
@@ -560,6 +569,7 @@ public final class Cache<
 
     /// Inserts an entry without blocking the caller.
     @inlinable
+    @concurrent
     public func insert(
         _ entry: CacheEntry<Value>,
         forKey key: Key,
@@ -582,6 +592,7 @@ public final class Cache<
     /// cannot be determined. Use a ``CacheRoute`` write when the intended
     /// behavior is instead to invalidate every store outside a fixed target set.
     @inlinable
+    @concurrent
     public func insert(
         _ value: Value,
         forKey key: Key,
@@ -603,6 +614,7 @@ public final class Cache<
 
     /// Inserts an entry into a requested store while preserving resident copies.
     @inlinable
+    @concurrent
     public func insert(
         _ entry: CacheEntry<Value>,
         forKey key: Key,
@@ -624,6 +636,7 @@ public final class Cache<
 
     /// Removes a key from every store without blocking the caller.
     @inlinable
+    @concurrent
     public func removeValue(forKey key: Key) async throws
     {
         try await p_withAsyncKeyAccess(key, access: .write) {
@@ -640,6 +653,7 @@ public final class Cache<
 
     /// Removes every entry behind a cache-wide asynchronous barrier.
     @inlinable
+    @concurrent
     public func removeAll() async throws
     {
         try Task.checkCancellation()
@@ -717,6 +731,7 @@ public final class Cache<
     /// is responsible for protecting its own eviction boundary. Results and
     /// tolerated failures retain deterministic selection order.
     @inlinable
+    @concurrent
     public func performMaintenance(
         storeIDs: [CacheStoreID]? = nil,
         mode: CacheMaintenanceMode = .forced,
@@ -1033,6 +1048,7 @@ public final class Cache<
     ) async throws
     {
         let outcomes = await p_read(p_stores, for: key)
+        try Task.checkCancellation()
         let failures = outcomes.compactMap { outcome -> CacheStoreFailure? in
             guard case let .failure(failure) = outcome else { return nil }
             return failure

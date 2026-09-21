@@ -12,8 +12,10 @@ stores for out-of-band mutation.
 > macOS 15.4. Other FoundationExtension APIs retain the package's lower
 > deployment targets.
 
-The async API is the primary API. Waiting for another operation suspends the
-current Swift task, so it does not occupy a cooperative executor thread. Stores
+The async API is the primary API. Its `@concurrent` entry points leave the
+caller's actor in the same task, including route selection, key encoding, and
+memory cost calculation. Waiting for another operation suspends the current
+Swift task, so it does not occupy a cooperative executor thread. Stores
 within one read stage run as structured child tasks. The built-in disk store
 runs blocking Foundation file I/O on a dedicated utility `TaskExecutor` rather
 than Swift's cooperative global executor.
@@ -175,6 +177,12 @@ it reaches the front of the queue. Once a mutation has started, its stores are
 allowed to finish or roll back so cancellation cannot intentionally leave a
 partial hierarchy.
 
+The built-in stores allow admitted mutations and rollback to run even when the
+calling task has been cancelled. Custom `store`, `remove`, and `removeAll`
+closures must likewise permit cleanup in a cancelled task rather than reject it
+solely on cancellation. Backend errors can still prevent restoration and are
+reported as store failures; rollback remains best effort.
+
 ## Add a custom store
 
 Create a ``CacheStore`` from concurrency-safe operations. Supply
@@ -288,7 +296,19 @@ invariants. A store without a maintenance implementation reports `unsupported`.
 Store failures throw by default, or can be collected in the report with
 `failurePolicy: .ignore`.
 
-When maintenance should begin now but be awaited later, keep the returned task:
+From an async context, use a structured child to begin maintenance now and await
+it later:
+
+```swift
+async let maintenance = cache.performMaintenance(mode: .ifNeeded)
+
+// Continue unrelated work.
+
+let report = try await maintenance
+```
+
+For a synchronous entry point that needs to launch background maintenance,
+keep the explicitly owned task handle:
 
 ```swift
 let maintenance = cache.startMaintenance(mode: .ifNeeded)
@@ -298,9 +318,11 @@ let maintenance = cache.startMaintenance(mode: .ifNeeded)
 let report = try await maintenance.value
 ```
 
-`startMaintenance` uses an unstructured utility-priority task and does not
-inherit the caller's actor. Cancelling that task cooperatively cancels the
-maintenance operation. The synchronous `performMaintenance` overload uses a
+`startMaintenance` uses a detached utility-priority task and does not inherit
+the caller's actor or task-local values. Awaiting its `.value` does not make it
+a structured child or forward the awaiting task's cancellation. Cancelling the
+handle cooperatively cancels the maintenance operation. The synchronous
+`performMaintenance` overload uses a
 store's blocking maintenance operation and is available only from synchronous
 contexts.
 

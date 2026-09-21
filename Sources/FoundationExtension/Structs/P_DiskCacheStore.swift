@@ -217,8 +217,6 @@ internal final class P_DiskCacheStore<
             coordinator.accessGate.release(.read)
             requestAutomaticMaintenance()
         }
-        try Task.checkCancellation()
-
         let url = try fileURL(for: key)
         let fileGate = coordinator.fileGates.retainGate(for: url)
         await fileGate.acquire(.write)
@@ -227,8 +225,9 @@ internal final class P_DiskCacheStore<
             fileGate.release(.write)
             coordinator.fileGates.releaseGate(fileGate, for: url)
         }
-        try Task.checkCancellation()
-        try await ioExecutor.run {
+        // The dispatcher has admitted this mutation. Completing it, including
+        // a possible rollback, must not be abandoned when the task is cancelled.
+        try await ioExecutor.run(isCancellable: false) {
             try self.storeFile(entry, at: url)
         }
     }
@@ -242,8 +241,6 @@ internal final class P_DiskCacheStore<
             coordinator.accessGate.release(.read)
             requestAutomaticMaintenance()
         }
-        try Task.checkCancellation()
-
         let url = try fileURL(for: key)
         let fileGate = coordinator.fileGates.retainGate(for: url)
         await fileGate.acquire(.write)
@@ -252,8 +249,8 @@ internal final class P_DiskCacheStore<
             fileGate.release(.write)
             coordinator.fileGates.releaseGate(fileGate, for: url)
         }
-        try Task.checkCancellation()
-        try await ioExecutor.run {
+        // Removal is also used to roll back partially completed writes.
+        try await ioExecutor.run(isCancellable: false) {
             try self.removeFile(at: url)
         }
     }
@@ -263,8 +260,7 @@ internal final class P_DiskCacheStore<
     {
         await coordinator.accessGate.acquire(.write)
         defer { coordinator.accessGate.release(.write) }
-        try Task.checkCancellation()
-        try await ioExecutor.run {
+        try await ioExecutor.run(isCancellable: false) {
             try self.removeAllFiles()
         }
     }

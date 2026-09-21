@@ -161,11 +161,15 @@ internal final class P_SparseCacheResource: @unchecked Sendable
     }
 
     @usableFromInline
-    internal func replaceFlushTask(_ task: Task<Void, Never>)
+    internal func scheduleFlush(
+        _ operation: @escaping @Sendable () async -> Void
+    )
     {
         stateLock.withLock {
             flushTask?.cancel()
-            flushTask = task
+            // Install the handle before the job can inspect the manifest. A
+            // completed older job must not replace and cancel a newer flush.
+            flushTask = Task { await operation() }
         }
     }
 

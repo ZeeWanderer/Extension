@@ -18,6 +18,9 @@ import Foundation
 /// Coordination is process-local. An App Group location may be used to retain
 /// data across an app and its extensions, but simultaneous access from multiple
 /// processes requires an external process-level exclusion boundary.
+///
+/// Async maintenance and removal leave the caller's actor in the same task;
+/// blocking file I/O runs on a dedicated task executor.
 @available(iOS 18.4, macCatalyst 18.4, macOS 15.4, *)
 public final class DiskCacheStorage: @unchecked Sendable
 {
@@ -186,6 +189,7 @@ public final class DiskCacheStorage: @unchecked Sendable
     }
 
     /// Performs aggregate maintenance without blocking the caller.
+    @concurrent
     public func performMaintenance(
         _ mode: CacheMaintenanceMode = .forced
     ) async throws -> CacheStoreMaintenanceResult
@@ -201,6 +205,7 @@ public final class DiskCacheStorage: @unchecked Sendable
     }
 
     /// Removes all object and specialized cache namespaces without blocking.
+    @concurrent
     public func removeAll() async throws
     {
         try await p_maintenance.removeAll()
