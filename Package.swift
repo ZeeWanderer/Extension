@@ -173,3 +173,10 @@ let package = Package(
     ],
     swiftLanguageModes: [.v6]
 )
+
+// Keep library, macro, and test targets on the same async isolation defaults.
+for target in package.targets {
+    target.swiftSettings = (target.swiftSettings ?? []) + [
+        .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+    ]
+}
