@@ -10,6 +10,10 @@ import UIKit
 import AVFoundation
 
 /// A simple class made to trigger standard haptic and sound feedbacks
+///
+/// Await the async overloads to perform feedback on the main actor in the
+/// calling task. Synchronous overloads enqueue independent main-actor work
+/// and return before feedback completes.
 @MainActor public final class FeedbackHelper
 {
     // MARK: - Internal
@@ -108,8 +112,7 @@ import AVFoundation
     @inlinable
     nonisolated public static func prepare_selection_generator()
     {
-        Task
-        {
+        Task { @MainActor in
             await prepare_selection_generator()
         }
     }
@@ -128,8 +131,7 @@ import AVFoundation
     @inlinable
     nonisolated public static func prepare_notification_generator()
     {
-        Task
-        {
+        Task { @MainActor in
             await prepare_notification_generator()
         }
     }
@@ -162,8 +164,7 @@ import AVFoundation
     @inlinable
     nonisolated public static func prepare_impact_generator(_ fs: UIImpactFeedbackGenerator.FeedbackStyle)
     {
-        Task
-        {
+        Task { @MainActor in
             await prepare_impact_generator(fs)
         }
     }
@@ -186,8 +187,7 @@ import AVFoundation
     @inlinable
     nonisolated public static func prepare_impact_generators()
     {
-        Task
-        {
+        Task { @MainActor in
             await prepare_impact_generators()
         }
     }
@@ -207,8 +207,7 @@ import AVFoundation
     @inlinable
     nonisolated public static func play_button_sound()
     {
-        Task
-        {
+        Task { @MainActor in
             await play_button_sound()
         }
     }
@@ -226,8 +225,7 @@ import AVFoundation
     @inlinable
     nonisolated public static func selectionChanged()
     {
-        Task
-        {
+        Task { @MainActor in
             await selectionChanged()
         }
     }
@@ -246,8 +244,7 @@ import AVFoundation
     @inlinable
     nonisolated public static func notificationOccurred(_ ft: UINotificationFeedbackGenerator.FeedbackType)
     {
-        Task
-        {
+        Task { @MainActor in
             await notificationOccurred(ft)
         }
     }
@@ -280,8 +277,7 @@ import AVFoundation
     @inlinable
     nonisolated public static func impactOccurred(_ fs: UIImpactFeedbackGenerator.FeedbackStyle)
     {
-        Task
-        {
+        Task { @MainActor in
             await impactOccurred(fs)
         }
     }
@@ -314,8 +310,7 @@ import AVFoundation
     @inlinable
     nonisolated public static func impactOccurred(_ fs: UIImpactFeedbackGenerator.FeedbackStyle, intensity: CGFloat)
     {
-        Task
-        {
+        Task { @MainActor in
             await impactOccurred(fs, intensity: intensity)
         }
     }
