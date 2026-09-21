@@ -17,19 +17,28 @@ public struct ClearBackgroundView: UIViewRepresentable
 
     @inlinable
     public func makeUIView(context: Context) -> some UIView
-    {
-        let view = UIView()
-        Task {
-            await MainActor.run {
-                view.superview?.superview?.backgroundColor = .clear
-            }
-        }
-        return view
-    }
+    { P_View() }
 
     @inlinable
     public func updateUIView(_ uiView: UIViewType, context: Context)
     {
+    }
+
+    /// Waits for hierarchy attachment through UIKit's lifecycle callbacks.
+    @usableFromInline
+    internal final class P_View: UIView
+    {
+        override func didMoveToSuperview()
+        {
+            super.didMoveToSuperview()
+            superview?.superview?.backgroundColor = .clear
+        }
+
+        override func didMoveToWindow()
+        {
+            super.didMoveToWindow()
+            superview?.superview?.backgroundColor = .clear
+        }
     }
 }
 #endif

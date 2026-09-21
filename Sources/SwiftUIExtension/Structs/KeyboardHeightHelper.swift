@@ -68,10 +68,8 @@ public final class KeyboardHeightHelper: LogSubsystemCategoryProtocol
     }
 
     @usableFromInline @MainActor
-    internal func p_setKeyboardHeight(_ value: CGFloat) async
-    {
-        self.keyboardHeight = value
-    }
+    internal func p_setKeyboardHeight(_ value: CGFloat)
+    { self.keyboardHeight = value }
 
     @usableFromInline
     internal func p_listenForKeyboardNotifications()
@@ -97,7 +95,7 @@ public final class KeyboardHeightHelper: LogSubsystemCategoryProtocol
                 self.p_duration = CGFloat(truncating: duration)
                 Self.logger.debug("\(Self.logScope, privacy: .public) Keyboard will show: height=\(height, privacy: .public) duration=\(self.p_duration, privacy: .public) curve=\(curve.rawValue, privacy: .public)")
 
-                await self.p_setKeyboardHeight(height)
+                self.p_setKeyboardHeight(height)
             }
         }
 
@@ -108,7 +106,7 @@ public final class KeyboardHeightHelper: LogSubsystemCategoryProtocol
             {
                 guard let self else { break }
                 Self.logger.debug("\(Self.logScope, privacy: .public) Keyboard will hide")
-                await self.p_setKeyboardHeight(0)
+                self.p_setKeyboardHeight(0)
             }
         }
     }
