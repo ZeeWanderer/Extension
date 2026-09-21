@@ -33,6 +33,25 @@ library implementation. `@usableFromInline` does not make such a declaration
 supported public API; it only permits an `@inlinable` public body to reference
 it.
 
+## Concurrency
+
+Every package target enables `NonisolatedNonsendingByDefault`. An ordinary
+nonisolated async function therefore keeps the caller's actor isolation rather
+than implicitly moving to the generic executor.
+
+Use `@concurrent` at async API boundaries that must leave the caller's actor,
+such as JSON coding and cache operations. This changes execution isolation,
+not task ownership: execution remains in the calling task, preserving task-local
+values, priority, and cancellation. Internal helpers normally inherit the
+execution context selected by that boundary. UI operations stay on `MainActor`;
+observation and suspension-only helpers preserve their required caller isolation.
+
+Use `async let` or task groups for parallel work whose lifetime belongs to the
+current operation. Creating `Task {}` or `Task.detached` and awaiting `.value`
+does not make that task a structured child. Unstructured work needs an explicit
+owner and lifetime, such as a synchronous-to-async bridge, an object-owned
+notification subscription, or coalesced cache maintenance and persistence.
+
 ## Compatibility
 
 The package follows semantic versioning. Source-breaking changes ship only in a

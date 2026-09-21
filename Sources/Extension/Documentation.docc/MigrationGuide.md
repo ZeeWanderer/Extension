@@ -24,6 +24,13 @@ dependency override that forces Extension itself into Swift 5 mode. Language
 mode is selected per target, so a client target does not have to adopt Swift 6
 merely because it imports Extension.
 
+All Extension targets enable `NonisolatedNonsendingByDefault`. Ordinary async
+helpers preserve the caller's actor; JSON and cache APIs that must run outside
+it are explicitly `@concurrent`. Calling these methods does not create a new
+task. UI APIs remain main-actor isolated. This flag applies to Extension's
+targets, not automatically to client targets; clients adopting it should also
+review their own async execution boundaries. See <doc:APIConventions>.
+
 ### Replace the legacy JSON loading globals
 
 The nonthrowing `load_collection` and `load_object` overloads were removed.
@@ -60,9 +67,11 @@ return a handle owned by the caller. Prefer the structured async methods when an
 asynchronous parent scope already exists.
 
 The unusable `SingleValueDecodingContainer` raw-representable dictionary
-overload was removed. Continue using the `JSONDecoder` root overload for a
+overload was removed. Use the `JSONCoding` or `JSONDecoder` root overload for a
 top-level keyed JSON object; synthesized model decoding continues to use the
-`KeyedDecodingContainer` overload recursively.
+`KeyedDecodingContainer` overload recursively. These decoding paths accept both
+keyed JSON objects and Foundation's alternating-array representation, preserving
+ordinary `Codable` round trips.
 
 ### Update binary collection imports and constraints
 
