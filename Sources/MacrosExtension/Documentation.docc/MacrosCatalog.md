@@ -41,3 +41,9 @@ MacrosExtension provides code generation helpers that live at compile time. They
 ### Support Types
 
 - `TransactionContext` for transactional execution context.
+
+### Temporary View Diagnostics
+
+- `@debug_view` to split difficult SwiftUI expressions while diagnosing an error.
+  It rewrites only targets defining `DEBUG`, and always emits a reminder warning.
+- <doc:DebugViewMacro>

@@ -11,7 +11,7 @@ eviction reuses a disk inventory instead of rescanning the directory.
 - `<Module>Tests` contains that module's public behavior contracts.
 - `ExtensionTests` verifies representative umbrella-module re-exports only.
 - `ExtensionMacroTests` contains exact implementation expansion snapshots and
-  runs in the macOS-only macro scheme.
+  compiler integration fixtures, and runs in the macOS-only macro scheme.
 - `ExtensionPerformanceTests` mirrors the source-module directories and
   contains realistic hot-path measurements. Run these in release mode when
   recording or comparing baselines:
@@ -42,7 +42,7 @@ exact expansion tests:
 
 | Module | Representative coverage |
 | --- | --- |
-| `Macros` | Direct expansion snapshots for every registered macro implementation |
+| `Macros` | Direct expansion snapshots for every registered macro implementation; real compiler diagnostics and Debug/Release gating for `debug_view` |
 | `MacrosExtension` | Compiled generated-API and macro-usage tests |
 | `SwiftExtension` | Collections, math, builders, and input-safety contracts |
 | `FoundationExtension` | JSON coding, raw-key dictionaries, unknown-case raw values, binary representation, lossy decoding, caching, localization, and defaults |
@@ -59,6 +59,28 @@ exact expansion tests:
 This is a minimum surface check, not a claim that every public declaration has
 behavioral coverage. The API-diff gate remains responsible for detecting
 unexercised source-compatible surface changes.
+
+## View diagnostic macro coverage
+
+`DebugViewMacroTests` checks expansion structure, conservative exclusions, and
+unchanged output when `DEBUG` is absent or the compiler cannot report its build
+configuration. `DebugViewPublicAPITests` compiles the public macro and checks
+concrete types, evaluation order, short-circuiting, autoclosures, and branches.
+
+`DebugViewCompilerTests` invokes the selected host compiler on resource fixtures
+in `ExtensionMacroTests/Fixtures`. Intentionally invalid files are not ordinary
+test-module sources. These tests check real diagnostics at the default solver
+budget and a small controlled budget, corrected code with and without the
+macro, both `@ViewBuilder` attribute orders, and the consuming target's DEBUG
+condition independently of the plugin configuration. Processes have a safety
+timeout; elapsed time is not a performance assertion. Compiler improvements to
+the original default-budget diagnostic are accepted.
+
+Run `swift test --filter DebugView`, or use the macOS macro scheme in Xcode.
+Run the same filter with `-c release` to exercise a release-built macro plugin.
+The harness finds the plugin beside the active test products; an unusual build
+layout can set `EXTENSION_MACRO_PLUGIN_PATH` to its executable path. The host
+compiler tests are never run inside an iOS Simulator.
 
 ## Cache coverage
 
