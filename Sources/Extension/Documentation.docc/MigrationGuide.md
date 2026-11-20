@@ -40,8 +40,8 @@ its own discriminator to distinguish them.
 
 ### Adopt Swift 6
 
-Extension now compiles exclusively in the Swift 6 language mode. Use a Swift
-6.2 or newer toolchain, as required by the package manifest, and remove any
+Extension now compiles exclusively in the Swift 6 language mode. Use Xcode 27
+or newer (Swift tools 6.4 or newer), and remove any
 dependency override that forces Extension itself into Swift 5 mode. Language
 mode is selected per target, so a client target does not have to adopt Swift 6
 merely because it imports Extension.

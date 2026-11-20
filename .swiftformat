@@ -4,7 +4,7 @@
 # Created by zeewanderer on 01.09.2026.
 
 --min-version 0.63.0
---swift-version 6.2
+--swift-version 6.4
 --language-mode 6
 
 # Project layout conventions.
