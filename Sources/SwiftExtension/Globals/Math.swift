@@ -45,30 +45,35 @@ public func ilerp<T>(_ parameter: T, min: T, max: T) -> T where T: Real
     return (parameter - min) / (max - min)
 }
 
-/// Greatest Common Divisor of 2 integers (GCD also known as Greatest Common Factor or GCF).
 @inlinable
-public func greatestCommonDivisor<T>(_ m: T, _ n: T) -> T where T: BinaryInteger
+internal func p_gcd<M: BinaryInteger>(_ m: M, _ n: M) -> M
 {
-    var lhs = m.magnitude
-    var rhs = n.magnitude
-
+    var lhs = m
+    var rhs = n
     while rhs != 0 {
         (lhs, rhs) = (rhs, lhs % rhs)
     }
+    return lhs
+}
 
-    guard let result = T(exactly: lhs) else {
+/// Greatest nonnegative common divisor. The result must be representable by `T`.
+@inlinable
+public func greatestCommonDivisor<T>(_ m: T, _ n: T) -> T where T: BinaryInteger
+{
+    guard let result = T(exactly: p_gcd(m.magnitude, n.magnitude)) else {
         preconditionFailure("The nonnegative GCD is not representable by \(T.self)")
     }
     return result
 }
 
 /// Greatest Common Divisor of an array of integers (GCD also known as Greatest Common Factor or GCF).
-/// - Precondition: 2 or more elements in array.
-@_transparent
+/// An empty array returns zero. The final result must be representable by `T`.
+@inlinable
 public func greatestCommonDivisor<T>(_ arr: [T]) -> T where T: BinaryInteger
 {
-    let result = arr.reduce(0) { result, element in
-        greatestCommonDivisor(result, element)
+    let magnitude = arr.reduce(T.Magnitude.zero) { p_gcd($0, $1.magnitude) }
+    guard let result = T(exactly: magnitude) else {
+        preconditionFailure("The nonnegative GCD is not representable by \(T.self)")
     }
     return result
 }
@@ -79,13 +84,8 @@ public func leastCommonMultiple<T>(_ m: T, _ n: T) -> T where T: BinaryInteger
 {
     guard m != 0, n != 0 else { return 0 }
 
-    var lhs = m.magnitude
-    var rhs = n.magnitude
-    while rhs != 0 {
-        (lhs, rhs) = (rhs, lhs % rhs)
-    }
-
-    let magnitude = (m.magnitude / lhs) * n.magnitude
+    let divisor = p_gcd(m.magnitude, n.magnitude)
+    let magnitude = (m.magnitude / divisor) * n.magnitude
     guard let result = T(exactly: magnitude) else {
         preconditionFailure("The nonnegative LCM is not representable by \(T.self)")
     }
@@ -98,7 +98,9 @@ public func leastCommonMultiple<T>(_ m: T, _ n: T) -> T where T: BinaryInteger
 @_transparent
 public func lowestTerms<T>(numerator: T, denominator: T) -> (T, T) where T: BinaryInteger
 {
-    let gcd = greatestCommonDivisor(numerator, denominator)
+    let magnitude = p_gcd(numerator.magnitude, denominator.magnitude)
+    // When only the negative divisor fits, both inputs are zero or that divisor.
+    let gcd = T(exactly: magnitude) ?? min(numerator, denominator)
     return (numerator / gcd, denominator / gcd)
 }
 

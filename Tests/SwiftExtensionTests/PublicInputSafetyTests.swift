@@ -81,4 +81,12 @@ final class SwiftInputSafetyPublicAPITests: XCTestCase {
         XCTAssertEqual(leastCommonMultiple(-3, 4), 12)
         XCTAssertEqual(leastCommonMultiple(3, -4), 12)
     }
+
+    func testSignedMinimumDoesNotOverflowAnIntermediateDivisor() {
+        XCTAssertEqual(greatestCommonDivisor([Int.min, 0, 6]), 2)
+        XCTAssertEqual(greatestCommonDivisor([6, Int.min]), 2)
+        let fraction = lowestTerms(numerator: Int.min, denominator: Int.min)
+        XCTAssertEqual(fraction.0, 1)
+        XCTAssertEqual(fraction.1, 1)
+    }
 }
