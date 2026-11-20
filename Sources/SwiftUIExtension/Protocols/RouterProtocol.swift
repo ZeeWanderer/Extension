@@ -17,6 +17,8 @@ public protocol RouterProtocol: AnyObject
     associatedtype PathID: Hashable
 
     /// A fallback path used when an operation does not explicitly identify one.
+    /// Declare an optional identifier explicitly, including `nil` for a router
+    /// that only accepts explicit paths or resolves its active path dynamically.
     static var defaultPathID: PathID? { get }
 
     /// Resolves an explicit or implicit path request.

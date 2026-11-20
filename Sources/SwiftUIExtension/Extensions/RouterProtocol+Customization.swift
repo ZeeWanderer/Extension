@@ -7,8 +7,6 @@
 
 public extension RouterProtocol
 {
-    static var defaultPathID: PathID? { nil }
-
     func resolvePathID(_ pathID: PathID?) -> PathID?
     {
         pathID ?? Self.defaultPathID

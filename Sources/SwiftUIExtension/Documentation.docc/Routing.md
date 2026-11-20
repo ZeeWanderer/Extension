@@ -45,6 +45,8 @@ Implement ``RouterProtocol/path(for:)`` and
 nested sheet stacks, presentation roots, or queues. Override
 ``RouterProtocol/resolvePathID(_:)`` when an omitted path should select the
 currently active tab or presentation.
+Declare `static let defaultPathID: PathID? = nil` for a custom router without
+a fixed fallback. Single-path routers receive `.main` automatically.
 
 `withPath` returns `false` when an identifier has no mutable storage. Default
 navigation operations then report failure without claiming that a mutation

@@ -9,8 +9,6 @@ import XCTest
 import SwiftUI
 import SwiftUIExtension
 
-#if canImport(SwiftUI) && canImport(MacrosExtension)
-
 private enum ExactOnlyDestination: RouterDestination
 {
     case detail(Int)
@@ -50,6 +48,7 @@ private final class CustomStorageRouter: RouterProtocol
     }
 
     var activePathID: PathID = .primary
+    static let defaultPathID: PathID? = nil
     var primaryPath: [Destination] = []
     var secondaryPath: [Destination] = []
     var events: [RouterNavigationEvent<Destination, PathID>] = []
@@ -116,6 +115,7 @@ private final class GeneratedPathRouter: RouterProtocol
     }
 
     var nextSheetID = 0
+    static let defaultPathID: PathID? = nil
     var sheetPaths: [Int: [Destination]] = [:]
 
     func path(for pathID: PathID) -> [Destination]
@@ -439,5 +439,3 @@ final class RouterFlexibilityTests: XCTestCase
         XCTAssertEqual(router.events.first?.pathCountAfter, 1)
     }
 }
-
-#endif

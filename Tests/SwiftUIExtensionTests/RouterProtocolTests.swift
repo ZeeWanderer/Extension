@@ -10,8 +10,6 @@ import SwiftUI
 import Observation
 import SwiftUIExtension
 
-#if canImport(SwiftUI) && canImport(MacrosExtension)
-
 enum DemoDestination: RouterDestination {
     case detail(id: Int)
     case settings
@@ -168,5 +166,3 @@ final class RouterPublicAPITests: XCTestCase {
         _ = DemoRouter.view(for: .detail(id: 1), pathID: DemoRouter.PathID.root)
     }
 }
-
-#endif
