@@ -12,16 +12,15 @@ on:
 jobs:
   build:
 
-    runs-on: macos-latest
+    runs-on: xcode-27
 
     steps:
-    - uses: maxim-lobanov/setup-xcode@v1
-      with:
-        xcode-version: latest-stable
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Check formatting
       run: ./format --lint --reporter github-actions-log
     - name: Build
       run: swift build -v
     - name: Run tests
       run: swift test -v
+    - name: Run release tests
+      run: swift test -c release
