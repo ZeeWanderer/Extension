@@ -16,6 +16,28 @@ migrate through each boundary without consulting old generated documentation.
 
 ## Migrating from 15.x to 16.0
 
+### Read data saved by 15.x
+
+Existing native scalar, array, and set payloads can be read in place when the
+element type, layout and endianness match the writer. Both `[UInt32](validating:)`
+and `data.saferLoad(as: [UInt32].self)` read the original headerless elements.
+Set membership survives even when iteration order differs. Use the validating
+entry points for files and preferences: a trailing partial element returns
+`nil`, while an unchecked collection load now traps. Native element storage is
+only suitable for bitwise-copyable elements. A memory dump of a nested array
+or a reference-containing element never contained its referenced values.
+
+The collection `RawRepresentable` strings used by `@AppStorage` still contain
+UTF-8 JSON. A `Date` raw value still counts seconds from Foundation's reference
+date. Existing preferences can be read with the same key and type.
+
+For a raw-representable JSON dictionary key, the root and keyed decoders give
+15.x raw values precedence. For example, a dictionary keyed by `UInt8` may be
+stored as `[1,"saved"]`. The reader constructs the key with `init(rawValue: 1)`
+even when the key's custom `init(from:)` would assign a different meaning to
+`1`. An app that intentionally gives those encodings different meanings needs
+its own discriminator to distinguish them.
+
 ### Adopt Swift 6
 
 Extension now compiles exclusively in the Swift 6 language mode. Use a Swift
@@ -158,6 +180,16 @@ For dictionary storage, make the default identifier optional:
 static let defaultPathID: PathID? = .main
 ```
 
+Declare it as `nil` for custom routers without a fixed fallback. Requiring an
+explicit declaration prevents an old nonoptional property from being silently
+ignored when routing through the protocol. Single-path routers inherit `.main`.
+
+When rendering through a router **instance**, omitting the path now passes
+the resolved path ID to the destination; in 15.x the renderer received `nil`.
+If a model distinguishes an explicitly supplied ID from an omitted one,
+override `destinationContext(for:pathID:requester:userInfo:)` to preserve
+that distinction. The static registry renderer forwards the supplied ID.
+
 For custom storage, implement `path(for:)` and `withPath(_:_:)`. Return `false`
 from `withPath` when the requested mutable path does not exist. Override
 `resolvePathID(_:)` to substitute an active tab or presentation when a caller
@@ -287,14 +319,25 @@ namespace or `DiskCacheStorage.removeAll()` for the complete physical storage.
 
 ### Review corrected behavior
 
-- `Queue` copies now have independent value semantics.
+- `Queue` copies now have independent value semantics. If two consumers must
+  drain the same queue, give them one shared owner.
 - `HashedHeap` maintains its index map through construction and mutation and
-  treats duplicate insertions as no-ops.
-- Missing typed numeric `UserDefaults` values now return `nil`.
+  treats duplicate insertions as no-ops. Rebuilding it from saved jobs will
+  coalesce equal jobs. Use `Heap` or distinct job identifiers when every
+  occurrence must run.
+- Typed `UserDefaults.integer`, `float` and `double` return `nil` for an
+  absent key. An explicitly stored zero still reads as zero. Use `?? 0` to
+  retain the old missing-key behavior, or register the app's intended default.
 - GCD and LCM results are nonnegative and LCM divides before multiplying.
+  If the positive result exceeds the signed return type (for example,
+  `greatestCommonDivisor(Int.min, 0)`), pass operand magnitudes to get an
+  unsigned result.
 - Non-center SwiftUI rectangle anchors, empty cyclic schedules, router pop
   bounds, collection chunk sizes, and empty-string partial ranges no longer
   trap or produce invalid geometry.
+- Saved rectangle coordinates load as before. Resizing with a non-center
+  anchor now keeps that point of the original rectangle fixed. Remove any
+  manual offset that compensated for the previous center-based origin.
 - `ModelSnapshot` preserves nonoptional to-one relationship optionality in its
   generated public snapshot API. Remove obsolete optional unwrapping at affected
   call sites.
