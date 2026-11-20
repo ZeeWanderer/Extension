@@ -12,7 +12,10 @@ public extension Data
     @inlinable
     func load<T: BinaryRepresentable>(as type: T.Type) -> T
     {
-        self.withUnsafeBytes { bytes in
+        if let collection = type as? any BinaryRepresentableCollection.Type {
+            return load(as: collection) as! T
+        }
+        return withUnsafeBytes { bytes in
             bytes.loadUnaligned(as: type)
         }
     }
@@ -27,6 +30,9 @@ public extension Data
     @inlinable
     func saferLoad<T: BinaryRepresentable>(as type: T.Type) -> T?
     {
+        if let collection = type as? any BinaryRepresentableCollection.Type {
+            return saferLoad(as: collection) as? T
+        }
         guard count >= MemoryLayout<T>.size else { return nil }
         return withUnsafeBytes { bytes in
             bytes.loadUnaligned(as: type)

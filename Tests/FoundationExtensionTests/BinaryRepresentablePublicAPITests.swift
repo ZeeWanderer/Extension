@@ -155,6 +155,28 @@ final class BinaryRepresentablePublicAPITests: XCTestCase {
         XCTAssertEqual(NoncontiguousUInt32Collection(validating: values.data), values)
     }
 
+    func testLegacyDataCollectionLoadOverloadsReadElements() {
+        let words: [UInt32] = [42, 17, 42]
+        let bytes = words.withUnsafeBufferPointer { Data(buffer: $0) }
+        let array: [UInt32] = bytes.load()
+        let set: Set<UInt32>? = bytes.saferLoad()
+        XCTAssertEqual(array, words)
+        XCTAssertEqual(set, Set(words))
+        XCTAssertEqual(bytes.load(as: Set<UInt32>.self), Set(words))
+        XCTAssertEqual(bytes.saferLoad(as: [UInt32].self), words)
+        XCTAssertEqual(Data().load(as: [UInt32].self), [])
+        XCTAssertNil(bytes.dropLast().saferLoad(as: [UInt32].self))
+    }
+
+    func testGenericBinaryLoadsDispatchToCollectionStorage() {
+        func load<T: BinaryRepresentable>(_ type: T.Type, from bytes: Data) -> T { bytes.load() }
+        func validate<T: BinaryRepresentable>(_ type: T.Type, from bytes: Data) -> T? { bytes.saferLoad() }
+        let values = NoncontiguousUInt32Collection([1, 2, 3, 4])
+        XCTAssertEqual(load(NoncontiguousUInt32Collection.self, from: values.data), values)
+        XCTAssertEqual(validate([UInt32].self, from: Data()), [])
+        XCTAssertNil(validate([UInt32].self, from: values.data.dropLast()))
+    }
+
     func testSetRoundTripPreservesMembership() {
         let values: Set<Int64> = [-1, 0, 1, 2, 3]
         let legacyBytes = ContiguousArray(values).withUnsafeBufferPointer {
