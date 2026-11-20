@@ -54,4 +54,24 @@ final class UserDefaultsObservablePublicAPITests: XCTestCase {
         XCTAssertEqual(defaults.string(forKey: TestObservable.UserDefaultsKey.mode), "enabled")
         XCTAssertEqual(decoded, .enabled)
     }
+
+    func testReadsExistingPropertyListRawJSONAndBinaryPreferences() throws {
+        let suiteName = "ExtensionTests.UserDefaultsObservable.Upgrade.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let observable = TestObservable()
+
+        // Seed the underlying defaults as a previous installation would leave them.
+        defaults.set([7, 42], forKey: "array")
+        let plist: [UInt32]? = observable.userDefaultsGet(.array, defaults)
+        XCTAssertEqual(plist, [7, 42])
+
+        defaults.set("[7,42]", forKey: "array")
+        let json: Set<UInt32>? = observable.userDefaultsGet(.array, defaults)
+        XCTAssertEqual(json, [7, 42])
+
+        defaults.set(Data([7, 0, 0, 0, 42, 0, 0, 0]), forKey: "array")
+        let binary: Set<UInt32>? = observable.userDefaultsGet(.array, defaults)
+        XCTAssertEqual(binary, [7, 42])
+    }
 }
