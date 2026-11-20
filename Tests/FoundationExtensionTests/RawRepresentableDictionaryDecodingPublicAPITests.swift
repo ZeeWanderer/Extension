@@ -83,6 +83,25 @@ final class RawRepresentableDictionaryDecodingPublicAPITests: XCTestCase {
         }
     }
 
+    func testLegacyAlternatingRawKeyPayloadKeepsItsOriginalMeaning() throws {
+        enum Priority: UInt8, Decodable {
+            case normal = 1, urgent = 2
+
+            init(from decoder: Decoder) throws {
+                let number = try decoder.singleValueContainer().decode(UInt8.self)
+                self = number == 1 ? .urgent : .normal
+            }
+        }
+        struct Envelope: Decodable { let values: [Priority: String] }
+
+        let bytes = Data(#"[1,"saved"]"#.utf8)
+        let expected: [Priority: String] = [.normal: "saved"]
+        XCTAssertEqual(try JSONDecoder().decode([Priority: String].self, from: bytes), expected)
+        XCTAssertEqual(try JSONCoding().decode([Priority: String].self, from: bytes), expected)
+        let nested = Data(#"{"values":[1,"saved"]}"#.utf8)
+        XCTAssertEqual(try JSONDecoder().decode(Envelope.self, from: nested).values, expected)
+    }
+
     func testUnknownNestedRawRepresentableKeyReportsItsFullCodingPath() {
         let data = Data(#"{"values":{"unknown":1}}"#.utf8)
 

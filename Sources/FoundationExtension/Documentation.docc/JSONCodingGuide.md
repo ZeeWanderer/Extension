@@ -141,4 +141,6 @@ alternating-array representation. This remains intentionally a decoding feature;
 adding a transparent `encode` overload conflicts with Foundation's generic
 encoder and breaks synthesized `Encodable` overload resolution. Encoding and
 same-type round trips therefore retain Foundation's standard `Codable`
-representation.
+representation. When a key's custom decoding differs from its raw-value
+initializer and both representations have the same shape, raw keys take
+precedence for compatibility with 15.x payloads.

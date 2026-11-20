@@ -8,23 +8,6 @@
 import Foundation
 
 @usableFromInline
-internal func p_firstJSONToken(in data: Data) -> UInt8?
-{
-    for byte in data
-    {
-        switch byte
-        {
-        case 0x09, 0x0A, 0x0D, 0x20:
-            continue
-        default:
-            return byte
-        }
-    }
-
-    return nil
-}
-
-@usableFromInline
 internal struct P_DictionaryDecodingBox<Key, Value>: Decodable
 where Key: Decodable, Key: Hashable,
       Value: Decodable
@@ -85,17 +68,8 @@ public extension JSONDecoder
           V: Decodable,
           R: Decodable, R: Hashable
     {
-        switch p_firstJSONToken(in: data)
-        {
-        case 0x7B:
-            let rawDictionary = try decode([R: V].self, from: data)
-            return try p_dictionary(converting: rawDictionary, codingPath: [])
-        case 0x5B:
-            return try decode(P_DictionaryDecodingBox<K, V>.self, from: data).value
-        default:
-            break
-        }
-
+        // Raw keys such as UInt8 also use an alternating array. Give existing
+        // raw-key payloads the same interpretation as nested dictionaries.
         do
         {
             let rawDictionary = try decode([R: V].self, from: data)
