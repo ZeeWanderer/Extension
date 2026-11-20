@@ -46,8 +46,8 @@ SwiftExtension provides a small, dependency-light baseline: container types, int
 
 ### Ranges
 
-- ``ClosedRange``
-- ``Range``
+- ``Swift/ClosedRange``
+- ``Swift/Range``
 
 ### Guides
 
