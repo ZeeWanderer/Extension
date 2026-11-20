@@ -208,13 +208,11 @@ public struct ObservationsCompat<Element: Sendable, Failure: Error>: AsyncSequen
             self.emit = emit
         }
 
-        #if compiler(>=6.4)
         @diagnose(
             ConversionFromIsolatedAnyToSynchronous,
             as: ignored,
             reason: "https://github.com/swiftlang/swift/issues/89361"
         )
-        #endif
         internal static func trackEmission(
             isolation: isolated (any Actor)?,
             state: P_CriticalState<P_State>,
