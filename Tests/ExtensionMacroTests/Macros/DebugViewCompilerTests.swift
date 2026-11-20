@@ -16,7 +16,8 @@ final class DebugViewCompilerTests: XCTestCase
 {
     func testDefaultBudgetExposesTheActualErrorWithoutAcceptingInvalidCode() async throws
     {
-        let original = try await P_DebugViewCompiler.compile("ModifierChain", conditions: ["DEBUG"])
+        // The unsplit, invalid expression deliberately exhausts the solver on some toolchains.
+        let original = try await P_DebugViewCompiler.compile("ModifierChain", conditions: ["DEBUG"], timeout: .seconds(180))
         XCTAssertNotEqual(original.status, 0, original.output)
         // A newer compiler improving the baseline diagnostic is welcome.
         XCTAssertTrue(original.output.contains("unable to type-check") || original.output.contains("has no member 'p_missingColor'"), original.output)
@@ -87,7 +88,7 @@ internal enum P_DebugViewCompiler
         let description: String
     }
 
-    static func compile(_ fixture: String, conditions: Set<String>, scopeLimit: Int? = nil, extra: [String] = []) async throws -> Result
+    static func compile(_ fixture: String, conditions: Set<String>, scopeLimit: Int? = nil, extra: [String] = [], timeout: Duration = .seconds(45)) async throws -> Result
     {
         let compiler = try await run(URL(fileURLWithPath: "/usr/bin/xcrun"), arguments: ["--find", "swiftc"])
         let sdk = try await run(URL(fileURLWithPath: "/usr/bin/xcrun"), arguments: ["--sdk", "macosx", "--show-sdk-path"])
@@ -116,7 +117,7 @@ internal enum P_DebugViewCompiler
         if let scopeLimit { arguments.append("-solver-scope-threshold=\(scopeLimit)") }
         arguments += extra
         arguments += [resources.appendingPathComponent("MacroDeclaration.swift").path, resources.appendingPathComponent("\(fixture).swift").path]
-        return try await run(compilerURL, arguments: arguments)
+        return try await run(compilerURL, arguments: arguments, timeout: timeout)
     }
 
     static func pluginURL() throws -> URL
@@ -144,7 +145,7 @@ internal enum P_DebugViewCompiler
         throw Failure(description: "The built Macros plugin was not found beside the test products. Set EXTENSION_MACRO_PLUGIN_PATH to its executable path.")
     }
 
-    static func run(_ executable: URL, arguments: [String]) async throws -> Result
+    static func run(_ executable: URL, arguments: [String], timeout: Duration = .seconds(45)) async throws -> Result
     {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent("Extension-debug-view-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
@@ -163,14 +164,14 @@ internal enum P_DebugViewCompiler
         defer { if process.isRunning { process.terminate() } }
 
         let clock = ContinuousClock()
-        let deadline = clock.now.advanced(by: .seconds(45))
+        let deadline = clock.now.advanced(by: timeout)
         while process.isRunning {
             try Task.checkCancellation()
             guard clock.now < deadline else {
                 process.terminate()
                 try await Task.sleep(for: .milliseconds(200))
                 if process.isRunning { kill(process.processIdentifier, SIGKILL) }
-                throw Failure(description: "Compiler exceeded its 45-second safety timeout: \(arguments)")
+                throw Failure(description: "Compiler exceeded its safety timeout (\(timeout)): \(arguments)")
             }
             try await Task.sleep(for: .milliseconds(20))
         }
