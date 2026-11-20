@@ -23,6 +23,7 @@ internal struct P_MacrosPlugin: CompilerPlugin {
         RouterMacro.self,
         LogSubsystemMacro.self,
         LogCategoryMacro.self,
+        DebugViewMacro.self,
     ]
 }
 

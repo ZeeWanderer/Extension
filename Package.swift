@@ -161,7 +161,8 @@ let package = Package(
                 .target(name: "MacrosExtension", condition: .when(platforms: [.macOS])),
                 "SwiftExtension", "FoundationExtension", "GeneralExtensions", "SwiftUIExtension",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax", condition: .when(platforms: [.macOS])),
-            ]
+            ],
+            resources: [.copy("Fixtures")]
         ),
         .testTarget(
             name: "ExtensionPerformanceTests",
